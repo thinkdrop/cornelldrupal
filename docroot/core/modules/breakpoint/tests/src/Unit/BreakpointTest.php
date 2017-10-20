@@ -1,10 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\breakpoint\Unit\BreakpointTest.
+ */
+
 namespace Drupal\Tests\breakpoint\Unit;
 
 use Drupal\breakpoint\Breakpoint;
 use Drupal\Tests\UnitTestCase;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * @coversDefaultClass \Drupal\breakpoint\Breakpoint
@@ -24,9 +28,9 @@ class BreakpointTest extends UnitTestCase {
    *
    * @var array
    */
-  protected $pluginDefinition = [
+  protected $pluginDefinition = array(
     'id' => 'breakpoint',
-  ];
+  );
 
   /**
    * The breakpoint under test.
@@ -52,7 +56,7 @@ class BreakpointTest extends UnitTestCase {
    * Sets up the breakpoint defaults.
    */
   protected function setupBreakpoint() {
-    $this->breakpoint = new Breakpoint([], $this->pluginId, $this->pluginDefinition);
+    $this->breakpoint = new Breakpoint(array(), $this->pluginId, $this->pluginDefinition);
     $this->breakpoint->setStringTranslation($this->stringTranslation);
   }
 
@@ -61,8 +65,12 @@ class BreakpointTest extends UnitTestCase {
    */
   public function testGetLabel() {
     $this->pluginDefinition['label'] = 'Test label';
+    $this->stringTranslation->expects($this->once())
+      ->method('translate')
+      ->with($this->pluginDefinition['label'], array(), array('context' => 'breakpoint'))
+      ->will($this->returnValue('Test label translated'));
     $this->setupBreakpoint();
-    $this->assertEquals(new TranslatableMarkup('Test label', [], ['context' => 'breakpoint'], $this->stringTranslation), $this->breakpoint->getLabel());
+    $this->assertEquals('Test label translated', $this->breakpoint->getLabel());
   }
 
   /**
@@ -88,9 +96,9 @@ class BreakpointTest extends UnitTestCase {
    * @covers ::getMultipliers
    */
   public function testGetMultipliers() {
-    $this->pluginDefinition['multipliers'] = ['1x', '2x'];
+    $this->pluginDefinition['multipliers'] = array('1x', '2x');
     $this->setupBreakpoint();
-    $this->assertSame(['1x', '2x'], $this->breakpoint->getMultipliers());
+    $this->assertSame(array('1x', '2x'), $this->breakpoint->getMultipliers());
   }
 
   /**

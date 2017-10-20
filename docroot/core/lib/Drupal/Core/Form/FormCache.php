@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Form\FormCache.
+ */
+
 namespace Drupal\Core\Form;
 
 use Drupal\Component\Utility\Crypt;
@@ -156,7 +161,7 @@ class FormCache implements FormCacheInterface {
       $build_info += ['files' => []];
       foreach ($build_info['files'] as $file) {
         if (is_array($file)) {
-          $file += ['type' => 'inc', 'name' => $file['module']];
+          $file += array('type' => 'inc', 'name' => $file['module']);
           $this->moduleHandler->loadInclude($file['module'], $file['type'], $file['name']);
         }
         elseif (file_exists($file)) {

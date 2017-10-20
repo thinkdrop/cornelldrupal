@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityConstraintViolationList.
+ */
+
 namespace Drupal\Core\Entity;
 
 use Drupal\Core\Entity\Plugin\Validation\Constraint\CompositeConstraintBase;
@@ -47,7 +52,7 @@ class EntityConstraintViolationList extends ConstraintViolationList implements E
    * @param array $violations
    *   The array of violations.
    */
-  public function __construct(FieldableEntityInterface $entity, array $violations = []) {
+  public function __construct(FieldableEntityInterface $entity, array $violations = array()) {
     parent::__construct($violations);
     $this->entity = $entity;
   }
@@ -156,7 +161,7 @@ class EntityConstraintViolationList extends ConstraintViolationList implements E
    * {@inheritdoc}
    */
   public function filterByFieldAccess(AccountInterface $account = NULL) {
-    $filtered_fields = [];
+    $filtered_fields = array();
     foreach ($this->getFieldNames() as $field_name) {
       if (!$this->entity->get($field_name)->access('edit', $account)) {
         $filtered_fields[] = $field_name;

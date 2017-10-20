@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Plugin\ImageToolkit\Operation\gd\Convert.
+ */
+
 namespace Drupal\system\Plugin\ImageToolkit\Operation\gd;
 
 /**
@@ -19,11 +24,11 @@ class Convert extends GDImageToolkitOperationBase {
    * {@inheritdoc}
    */
   protected function arguments() {
-    return [
-      'extension' => [
+    return array(
+      'extension' => array(
         'description' => 'The new extension of the converted image',
-      ],
-    ];
+      ),
+    );
   }
 
   /**
@@ -47,13 +52,13 @@ class Convert extends GDImageToolkitOperationBase {
     $height = $this->getToolkit()->getHeight();
     $original_resource = $this->getToolkit()->getResource();
     $original_type = $this->getToolkit()->getType();
-    $data = [
+    $data = array(
       'width' => $width,
       'height' => $height,
       'extension' => $arguments['extension'],
       'transparent_color' => $this->getToolkit()->getTransparentColor(),
       'is_temp' => TRUE,
-    ];
+    );
     if ($this->getToolkit()->apply('create_new', $data)) {
       if (imagecopyresampled($this->getToolkit()->getResource(), $original_resource, 0, 0, 0, 0, $width, $height, $width, $height)) {
         imagedestroy($original_resource);

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Fieldgroup.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 /**
@@ -19,9 +24,9 @@ namespace Drupal\Core\Render\Element;
 class Fieldgroup extends Fieldset {
 
   public function getInfo() {
-    return [
-      '#attributes' => ['class' => ['fieldgroup']],
-    ] + parent::getInfo();
+    return array(
+      '#attributes' => array('class' => array('fieldgroup')),
+    ) + parent::getInfo();
   }
 
 }

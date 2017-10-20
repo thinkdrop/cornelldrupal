@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\StringTranslation\TranslationInterface.
+ */
+
 namespace Drupal\Core\StringTranslation;
 
 /**
@@ -33,9 +38,7 @@ interface TranslationInterface {
    *   - 'langcode' (defaults to the current language): A language code, to
    *     translate to a language other than what is used to display the page.
    *   - 'context' (defaults to the empty context): The context the source
-   *     string belongs to. See the
-   *     @link i18n Internationalization topic @endlink for more information
-   *     about string contexts.
+   *     string belongs to.
    *
    * @return \Drupal\Core\StringTranslation\TranslatableMarkup
    *   An object that, when cast to a string, returns the translated string.
@@ -45,7 +48,7 @@ interface TranslationInterface {
    *
    * @ingroup sanitization
    */
-  public function translate($string, array $args = [], array $options = []);
+  public function translate($string, array $args = array(), array $options = array());
 
   /**
    * Translates a TranslatableMarkup object to a string.
@@ -107,6 +110,6 @@ interface TranslationInterface {
    * @see \Drupal\Component\Utility\SafeMarkup::format()
    * @see \Drupal\Core\StringTranslation\PluralTranslatableMarkup::createFromTranslatedString()
    */
-  public function formatPlural($count, $singular, $plural, array $args = [], array $options = []);
+  public function formatPlural($count, $singular, $plural, array $args = array(), array $options = array());
 
 }

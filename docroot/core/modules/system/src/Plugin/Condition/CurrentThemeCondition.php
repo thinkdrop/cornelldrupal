@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Plugin\Condition\CurrentThemeCondition.
+ */
+
 namespace Drupal\system\Plugin\Condition;
 
 use Drupal\Core\Condition\ConditionPluginBase;
@@ -70,21 +75,21 @@ class CurrentThemeCondition extends ConditionPluginBase implements ContainerFact
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return ['theme' => ''] + parent::defaultConfiguration();
+    return array('theme' => '') + parent::defaultConfiguration();
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['theme'] = [
+    $form['theme'] = array(
       '#type' => 'select',
       '#title' => $this->t('Theme'),
       '#default_value' => $this->configuration['theme'],
       '#options' => array_map(function ($theme_info) {
         return $theme_info->info['name'];
       }, $this->themeHandler->listInfo()),
-    ];
+    );
     return parent::buildConfigurationForm($form, $form_state);
   }
 
@@ -112,10 +117,10 @@ class CurrentThemeCondition extends ConditionPluginBase implements ContainerFact
    */
   public function summary() {
     if ($this->isNegated()) {
-      return $this->t('The current theme is not @theme', ['@theme' => $this->configuration['theme']]);
+      return $this->t('The current theme is not @theme', array('@theme' => $this->configuration['theme']));
     }
 
-    return $this->t('The current theme is @theme', ['@theme' => $this->configuration['theme']]);
+    return $this->t('The current theme is @theme', array('@theme' => $this->configuration['theme']));
   }
 
   /**

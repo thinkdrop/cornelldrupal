@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\sort\GroupByNumeric.
+ */
+
 namespace Drupal\views\Plugin\views\sort;
 
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
@@ -30,9 +35,9 @@ class GroupByNumeric extends SortPluginBase {
   public function query() {
     $this->ensureMyTable();
 
-    $params = [
+    $params = array(
       'function' => $this->options['group_type'],
-    ];
+    );
 
     $this->query->addOrderBy($this->tableAlias, $this->realField, $this->options['order'], NULL, $params);
   }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\CommentTranslationHandler.
+ */
+
 namespace Drupal\comment;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -30,7 +35,7 @@ class CommentTranslationHandler extends ContentTranslationHandler {
    * {@inheritdoc}
    */
   protected function entityFormTitle(EntityInterface $entity) {
-    return t('Edit comment @subject', ['@subject' => $entity->label()]);
+    return t('Edit comment @subject', array('@subject' => $entity->label()));
   }
 
   /**

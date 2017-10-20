@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Entity\Vocabulary.
+ */
+
 namespace Drupal\taxonomy\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
@@ -73,18 +78,18 @@ class Vocabulary extends ConfigEntityBundleBase implements VocabularyInterface {
    * The type of hierarchy allowed within the vocabulary.
    *
    * Possible values:
-   * - VocabularyInterface::HIERARCHY_DISABLED: No parents.
-   * - VocabularyInterface::HIERARCHY_SINGLE: Single parent.
-   * - VocabularyInterface::HIERARCHY_MULTIPL: Multiple parents.
+   * - TAXONOMY_HIERARCHY_DISABLED: No parents.
+   * - TAXONOMY_HIERARCHY_SINGLE: Single parent.
+   * - TAXONOMY_HIERARCHY_MULTIPLE: Multiple parents.
    *
-   * @var int
+   * @var integer
    */
-  protected $hierarchy = VocabularyInterface::HIERARCHY_DISABLED;
+  protected $hierarchy = TAXONOMY_HIERARCHY_DISABLED;
 
   /**
    * The weight of this vocabulary in relation to other vocabularies.
    *
-   * @var int
+   * @var integer
    */
   protected $weight = 0;
 
@@ -140,13 +145,13 @@ class Vocabulary extends ConfigEntityBundleBase implements VocabularyInterface {
       return;
     }
 
-    $vocabularies = [];
+    $vocabularies = array();
     foreach ($entities as $vocabulary) {
       $vocabularies[$vocabulary->id()] = $vocabulary->id();
     }
     // Load all Taxonomy module fields and delete those which use only this
     // vocabulary.
-    $field_storages = entity_load_multiple_by_properties('field_storage_config', ['module' => 'taxonomy']);
+    $field_storages = entity_load_multiple_by_properties('field_storage_config', array('module' => 'taxonomy'));
     foreach ($field_storages as $field_storage) {
       $modified_storage = FALSE;
       // Term reference fields may reference terms from more than one

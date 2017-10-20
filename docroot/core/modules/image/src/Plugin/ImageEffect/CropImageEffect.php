@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\image\Plugin\ImageEffect\CropImageEffect.
+ */
+
 namespace Drupal\image\Plugin\ImageEffect;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -24,7 +29,7 @@ class CropImageEffect extends ResizeImageEffect {
     $x = image_filter_keyword($x, $image->getWidth(), $this->configuration['width']);
     $y = image_filter_keyword($y, $image->getHeight(), $this->configuration['height']);
     if (!$image->crop($x, $y, $this->configuration['width'], $this->configuration['height'])) {
-      $this->logger->error('Image crop failed using the %toolkit toolkit on %path (%mimetype, %dimensions)', ['%toolkit' => $image->getToolkitId(), '%path' => $image->getSource(), '%mimetype' => $image->getMimeType(), '%dimensions' => $image->getWidth() . 'x' . $image->getHeight()]);
+      $this->logger->error('Image crop failed using the %toolkit toolkit on %path (%mimetype, %dimensions)', array('%toolkit' => $image->getToolkitId(), '%path' => $image->getSource(), '%mimetype' => $image->getMimeType(), '%dimensions' => $image->getWidth() . 'x' . $image->getHeight()));
       return FALSE;
     }
     return TRUE;
@@ -34,10 +39,10 @@ class CropImageEffect extends ResizeImageEffect {
    * {@inheritdoc}
    */
   public function getSummary() {
-    $summary = [
+    $summary = array(
       '#theme' => 'image_crop_summary',
       '#data' => $this->configuration,
-    ];
+    );
     $summary += parent::getSummary();
 
     return $summary;
@@ -47,9 +52,9 @@ class CropImageEffect extends ResizeImageEffect {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return parent::defaultConfiguration() + [
+    return parent::defaultConfiguration() + array(
       'anchor' => 'center-center',
-    ];
+    );
   }
 
   /**
@@ -57,10 +62,10 @@ class CropImageEffect extends ResizeImageEffect {
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
-    $form['anchor'] = [
+    $form['anchor'] = array(
       '#type' => 'radios',
       '#title' => t('Anchor'),
-      '#options' => [
+      '#options' => array(
         'left-top' => t('Top left'),
         'center-top' => t('Top center'),
         'right-top' => t('Top right'),
@@ -70,11 +75,11 @@ class CropImageEffect extends ResizeImageEffect {
         'left-bottom' => t('Bottom left'),
         'center-bottom' => t('Bottom center'),
         'right-bottom' => t('Bottom right'),
-      ],
+      ),
       '#theme' => 'image_anchor',
       '#default_value' => $this->configuration['anchor'],
       '#description' => t('The part of the image that will be retained during the crop.'),
-    ];
+    );
     return $form;
   }
 

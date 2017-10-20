@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\DataReferenceDefinitionInterface.
+ */
+
 namespace Drupal\Core\TypedData;
 
 /**
@@ -10,7 +15,7 @@ namespace Drupal\Core\TypedData;
  *
  * @ingroup typed_data
  */
-interface DataReferenceDefinitionInterface extends DataDefinitionInterface {
+interface DataReferenceDefinitionInterface extends DataDefinitionInterface  {
 
   /**
    * Gets the data definition of the referenced data.

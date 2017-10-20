@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\options\Plugin\Field\FieldFormatter\OptionsDefaultFormatter.
+ */
+
 namespace Drupal\options\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\AllowedTagsXssTrait;
@@ -29,7 +34,7 @@ class OptionsDefaultFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $elements = [];
+    $elements = array();
 
     // Only collect allowed options if there are actually items to display.
     if ($items->count()) {
@@ -44,10 +49,10 @@ class OptionsDefaultFormatter extends FormatterBase {
         // If the stored value is in the current set of allowed values, display
         // the associated label, otherwise just display the raw value.
         $output = isset($options[$value]) ? $options[$value] : $value;
-        $elements[$delta] = [
+        $elements[$delta] = array(
           '#markup' => $output,
           '#allowed_tags' => FieldFilteredMarkup::allowedTags(),
-        ];
+        );
       }
     }
 

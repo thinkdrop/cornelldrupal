@@ -1,14 +1,18 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\simpletest\TestDiscovery.
+ */
+
 namespace Drupal\simpletest;
 
 use Doctrine\Common\Annotations\SimpleAnnotationReader;
 use Doctrine\Common\Reflection\StaticReflectionParser;
 use Drupal\Component\Annotation\Reflection\MockFileFinder;
-use Drupal\Component\Utility\NestedArray;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ExtensionDiscovery;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\simpletest\Exception\MissingGroupException;
 use PHPUnit_Util_Test;
 
@@ -46,42 +50,22 @@ class TestDiscovery {
   protected $availableExtensions;
 
   /**
-   * The app root.
-   *
-   * @var string
-   */
-  protected $root;
-
-  /**
-   * The module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
-
-  /**
    * Constructs a new test discovery.
    *
-   * @param string $root
-   *   The app root.
    * @param $class_loader
    *   The class loader. Normally Composer's ClassLoader, as included by the
    *   front controller, but may also be decorated; e.g.,
    *   \Symfony\Component\ClassLoader\ApcClassLoader.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
    *   (optional) Backend for caching discovery results.
    */
-  public function __construct($root, $class_loader, ModuleHandlerInterface $module_handler, CacheBackendInterface $cache_backend = NULL) {
-    $this->root = $root;
+  public function __construct($class_loader, CacheBackendInterface $cache_backend = NULL) {
     $this->classLoader = $class_loader;
-    $this->moduleHandler = $module_handler;
     $this->cacheBackend = $cache_backend;
   }
 
   /**
-   * Registers test namespaces of all extensions and core test classes.
+   * Registers test namespaces of all available extensions.
    *
    * @return array
    *   An associative array whose keys are PSR-4 namespace prefixes and whose
@@ -91,21 +75,20 @@ class TestDiscovery {
     if (isset($this->testNamespaces)) {
       return $this->testNamespaces;
     }
-    $this->testNamespaces = [];
+    $this->testNamespaces = array();
 
     $existing = $this->classLoader->getPrefixesPsr4();
 
     // Add PHPUnit test namespaces of Drupal core.
-    $this->testNamespaces['Drupal\\Tests\\'] = [$this->root . '/core/tests/Drupal/Tests'];
-    $this->testNamespaces['Drupal\\KernelTests\\'] = [$this->root . '/core/tests/Drupal/KernelTests'];
-    $this->testNamespaces['Drupal\\FunctionalTests\\'] = [$this->root . '/core/tests/Drupal/FunctionalTests'];
-    $this->testNamespaces['Drupal\\FunctionalJavascriptTests\\'] = [$this->root . '/core/tests/Drupal/FunctionalJavascriptTests'];
+    $this->testNamespaces['Drupal\\Tests\\'] = [DRUPAL_ROOT . '/core/tests/Drupal/Tests'];
+    $this->testNamespaces['Drupal\\KernelTests\\'] = [DRUPAL_ROOT . '/core/tests/Drupal/KernelTests'];
+    $this->testNamespaces['Drupal\\FunctionalTests\\'] = [DRUPAL_ROOT . '/core/tests/Drupal/FunctionalTests'];
 
-    $this->availableExtensions = [];
+    $this->availableExtensions = array();
     foreach ($this->getExtensions() as $name => $extension) {
       $this->availableExtensions[$extension->getType()][$name] = $name;
 
-      $base_path = $this->root . '/' . $extension->getPath();
+      $base_path = DRUPAL_ROOT . '/' . $extension->getPath();
 
       // Add namespace of disabled/uninstalled extensions.
       if (!isset($existing["Drupal\\$name\\"])) {
@@ -118,11 +101,6 @@ class TestDiscovery {
       $this->testNamespaces["Drupal\\Tests\\$name\\Unit\\"][] = "$base_path/tests/src/Unit";
       $this->testNamespaces["Drupal\\Tests\\$name\\Kernel\\"][] = "$base_path/tests/src/Kernel";
       $this->testNamespaces["Drupal\\Tests\\$name\\Functional\\"][] = "$base_path/tests/src/Functional";
-      $this->testNamespaces["Drupal\\Tests\\$name\\FunctionalJavascript\\"][] = "$base_path/tests/src/FunctionalJavascript";
-
-      // Add discovery for traits which are shared between different test
-      // suites.
-      $this->testNamespaces["Drupal\\Tests\\$name\\Traits\\"][] = "$base_path/tests/src/Traits";
     }
 
     foreach ($this->testNamespaces as $prefix => $paths) {
@@ -137,12 +115,11 @@ class TestDiscovery {
    *
    * @param string $extension
    *   (optional) The name of an extension to limit discovery to; e.g., 'node'.
-   * @param string[] $types
-   *   An array of included test types.
    *
    * @return array
-   *   An array of tests keyed by the the group name.
-   * @code
+   *   An array of tests keyed by the first @group specified in each test's
+   *   PHPDoc comment block, and then keyed by class names. For example:
+   *   @code
    *     $groups['block'] => array(
    *       'Drupal\block\Tests\BlockTest' => array(
    *         'name' => 'Drupal\block\Tests\BlockTest',
@@ -150,12 +127,16 @@ class TestDiscovery {
    *         'group' => 'block',
    *       ),
    *     );
-   * @endcode
+   *   @endcode
+   *
+   * @throws \ReflectionException
+   *   If a discovered test class does not match the expected class name.
    *
    * @todo Remove singular grouping; retain list of groups in 'group' key.
    * @see https://www.drupal.org/node/2296615
+   * @todo Add base class groups 'Kernel' + 'Web', complementing 'PHPUnit'.
    */
-  public function getTestClasses($extension = NULL, array $types = []) {
+  public function getTestClasses($extension = NULL) {
     $reader = new SimpleAnnotationReader();
     $reader->addNamespace('Drupal\\simpletest\\Annotation');
 
@@ -164,7 +145,7 @@ class TestDiscovery {
         return $cache->data;
       }
     }
-    $list = [];
+    $list = array();
 
     $classmap = $this->findAllClassFiles($extension);
 
@@ -210,20 +191,13 @@ class TestDiscovery {
     }
 
     // Allow modules extending core tests to disable originals.
-    $this->moduleHandler->alter('simpletest', $list);
+    \Drupal::moduleHandler()->alter('simpletest', $list);
 
     if (!isset($extension)) {
       if ($this->cacheBackend) {
         $this->cacheBackend->set('simpletest:discovery:classes', $list);
       }
     }
-
-    if ($types) {
-      $list = NestedArray::filter($list, function ($element) use ($types) {
-        return !(is_array($element) && isset($element['type']) && !in_array($element['type'], $types));
-      });
-    }
-
     return $list;
   }
 
@@ -238,7 +212,7 @@ class TestDiscovery {
    *   fully-qualified classnames to pathnames.
    */
   public function findAllClassFiles($extension = NULL) {
-    $classmap = [];
+    $classmap = array();
     $namespaces = $this->registerTestNamespaces();
     if (isset($extension)) {
       // Include tests in the \Drupal\Tests\{$extension} namespace.
@@ -294,7 +268,7 @@ class TestDiscovery {
       return $current->isFile() && $current->getExtension() === 'php';
     });
     $files = new \RecursiveIteratorIterator($filter);
-    $classes = [];
+    $classes = array();
     foreach ($files as $fileinfo) {
       $class = $namespace_prefix;
       if ('' !== $subpath = $fileinfo->getSubPath()) {
@@ -332,10 +306,10 @@ class TestDiscovery {
       $reflection = new \ReflectionClass($classname);
       $doc_comment = $reflection->getDocComment();
     }
-    $info = [
+    $info = array(
       'name' => $classname,
-    ];
-    $annotations = [];
+    );
+    $annotations = array();
     // Look for annotations, allow an arbitrary amount of spaces before the
     // * but nothing else.
     preg_match_all('/^[ ]*\* \@([^\s]*) (.*$)/m', $doc_comment, $matches);
@@ -354,13 +328,12 @@ class TestDiscovery {
       // Concrete tests must have a group.
       throw new MissingGroupException(sprintf('Missing @group annotation in %s', $classname));
     }
-    $info['group'] = $annotations['group'];
-    // Put PHPUnit test suites into their own custom groups.
-    if ($testsuite = static::getPhpunitTestSuite($classname)) {
-      $info['type'] = 'PHPUnit-' . $testsuite;
+    // Force all PHPUnit tests into the same group.
+    if (static::isUnitTest($classname)) {
+      $info['group'] = 'PHPUnit';
     }
     else {
-      $info['type'] = 'Simpletest';
+      $info['group'] = $annotations['group'];
     }
 
     if (!empty($annotations['coversDefaultClass'])) {
@@ -379,7 +352,7 @@ class TestDiscovery {
   /**
    * Parses the phpDoc summary line of a test class.
    *
-   * @param string $doc_comment
+   * @param string $doc_comment.
    *
    * @return string
    *   The parsed phpDoc summary line. An empty string is returned if no summary
@@ -441,31 +414,26 @@ class TestDiscovery {
   }
 
   /**
-   * Determines the phpunit testsuite for a given classname.
+   * Determines if the provided classname is a unit test.
    *
-   * @param string $classname
+   * @param $classname
    *   The test classname.
    *
-   * @return string|false
-   *   The testsuite name or FALSE if its not a phpunit test.
+   * @return bool
+   *   TRUE if the class is a unit test. FALSE if not.
    */
-  public static function getPhpunitTestSuite($classname) {
-    if (preg_match('/Drupal\\\\Tests\\\\Core\\\\(\w+)/', $classname, $matches)) {
-      return 'Unit';
-    }
-    if (preg_match('/Drupal\\\\Tests\\\\Component\\\\(\w+)/', $classname, $matches)) {
-      return 'Unit';
-    }
-    // Module tests.
-    if (preg_match('/Drupal\\\\Tests\\\\(\w+)\\\\(\w+)/', $classname, $matches)) {
-      return $matches[2];
-    }
-    // Core tests.
-    elseif (preg_match('/Drupal\\\\(\w*)Tests\\\\/', $classname, $matches)) {
-      if ($matches[1] == '') {
-        return 'Unit';
+  public static function isUnitTest($classname) {
+    if (strpos($classname, 'Drupal\\Tests\\') === 0) {
+      $namespace = explode('\\', $classname);
+      $first_letter = Unicode::substr($namespace[2], 0, 1);
+      if (Unicode::strtoupper($first_letter) === $first_letter) {
+        // A core unit test.
+        return TRUE;
       }
-      return $matches[1];
+      elseif ($namespace[3] == 'Unit') {
+        // A module unit test.
+        return TRUE;
+      }
     }
     return FALSE;
   }
@@ -477,9 +445,9 @@ class TestDiscovery {
    *   An array of Extension objects, keyed by extension name.
    */
   protected function getExtensions() {
-    $listing = new ExtensionDiscovery($this->root);
+    $listing = new ExtensionDiscovery(DRUPAL_ROOT);
     // Ensure that tests in all profiles are discovered.
-    $listing->setProfileDirectories([]);
+    $listing->setProfileDirectories(array());
     $extensions = $listing->scan('module', TRUE);
     $extensions += $listing->scan('profile', TRUE);
     $extensions += $listing->scan('theme', TRUE);

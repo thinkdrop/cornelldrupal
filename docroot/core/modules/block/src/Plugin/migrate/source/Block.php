@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block\Plugin\migrate\source\Block.
+ */
+
 namespace Drupal\block\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
@@ -44,13 +49,6 @@ class Block extends DrupalSqlBase {
   protected $blockRoleTable;
 
   /**
-   * Table listing user roles.
-   *
-   * @var string
-   */
-  protected $userRoleTable;
-
-  /**
    * {@inheritdoc}
    */
   public function query() {
@@ -62,9 +60,6 @@ class Block extends DrupalSqlBase {
       $this->blockTable = 'blocks';
       $this->blockRoleTable = 'blocks_roles';
     }
-    // Drupal 6 & 7 both use the same name for the user roles table.
-    $this->userRoleTable = 'role';
-
     return $this->select($this->blockTable, 'b')->fields('b');
   }
 
@@ -73,7 +68,7 @@ class Block extends DrupalSqlBase {
    */
   protected function initializeIterator() {
     $this->defaultTheme = $this->variableGet('theme_default', 'Garland');
-    $this->adminTheme = $this->variableGet('admin_theme', NULL);
+    $this->adminTheme = $this->variableGet('admin_theme', null);
     return parent::initializeIterator();
   }
 
@@ -81,7 +76,7 @@ class Block extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'bid' => $this->t('The block numeric identifier.'),
       'module' => $this->t('The module providing the block.'),
       'delta' => $this->t('The block\'s delta.'),
@@ -93,7 +88,7 @@ class Block extends DrupalSqlBase {
       'pages' => $this->t('Pages list.'),
       'title' => $this->t('Block title.'),
       'cache' => $this->t('Cache rule.'),
-    ];
+    );
   }
 
   /**
@@ -116,16 +111,15 @@ class Block extends DrupalSqlBase {
     $module = $row->getSourceProperty('module');
     $delta = $row->getSourceProperty('delta');
 
-    $query = $this->select($this->blockRoleTable, 'br')
-      ->fields('br', ['rid'])
+    $roles = $this->select($this->blockRoleTable, 'br')
+      ->fields('br', array('rid'))
       ->condition('module', $module)
-      ->condition('delta', $delta);
-    $query->join($this->userRoleTable, 'ur', 'br.rid = ur.rid');
-    $roles = $query->execute()
+      ->condition('delta', $delta)
+      ->execute()
       ->fetchCol();
     $row->setSourceProperty('roles', $roles);
 
-    $settings = [];
+    $settings = array();
     switch ($module) {
       case 'aggregator':
         list($type, $id) = explode('-', $delta);
@@ -149,10 +143,10 @@ class Block extends DrupalSqlBase {
         $settings['book']['block_mode'] = $this->variableGet('book_block_mode', 'all pages');
         break;
       case 'forum':
-        $settings['forum']['block_num'] = $this->variableGet('forum_block_num_' . $delta, 5);
+        $settings['forum']['block_num'] = $this->variableGet('forum_block_num_'. $delta, 5);
         break;
       case 'statistics':
-        foreach (['statistics_block_top_day_num', 'statistics_block_top_all_num', 'statistics_block_top_last_num'] as $name) {
+        foreach (array('statistics_block_top_day_num', 'statistics_block_top_all_num', 'statistics_block_top_last_num') as $name) {
           $settings['statistics'][$name] = $this->variableGet($name, 0);
         }
         break;

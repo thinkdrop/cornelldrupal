@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Plugin\Search\UserSearch.
+ */
+
 namespace Drupal\user\Plugin\Search;
 
 use Drupal\Core\Access\AccessResult;
@@ -104,7 +109,7 @@ class UserSearch extends SearchPluginBase implements AccessibleInterface {
    * {@inheritdoc}
    */
   public function execute() {
-    $results = [];
+    $results = array();
     if (!$this->isSearchExecutable()) {
       return $results;
     }
@@ -120,12 +125,12 @@ class UserSearch extends SearchPluginBase implements AccessibleInterface {
     $query = $this->database
       ->select('users_field_data', 'users')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender');
-    $query->fields('users', ['uid']);
+    $query->fields('users', array('uid'));
     $query->condition('default_langcode', 1);
     if ($this->currentUser->hasPermission('administer users')) {
       // Administrators can also search in the otherwise private email field,
       // and they don't need to be restricted to only active users.
-      $query->fields('users', ['mail']);
+      $query->fields('users', array('mail'));
       $query->condition($query->orConditionGroup()
         ->condition('name', '%' . $keys . '%', 'LIKE')
         ->condition('mail', '%' . $keys . '%', 'LIKE')
@@ -144,10 +149,10 @@ class UserSearch extends SearchPluginBase implements AccessibleInterface {
     $accounts = $this->entityManager->getStorage('user')->loadMultiple($uids);
 
     foreach ($accounts as $account) {
-      $result = [
+      $result = array(
         'title' => $account->getDisplayName(),
-        'link' => $account->url('canonical', ['absolute' => TRUE]),
-      ];
+        'link' => $account->url('canonical', array('absolute' => TRUE)),
+      );
       if ($this->currentUser->hasPermission('administer users')) {
         $result['title'] .= ' (' . $account->getEmail() . ')';
       }
@@ -158,17 +163,17 @@ class UserSearch extends SearchPluginBase implements AccessibleInterface {
     return $results;
   }
 
-  /**
+  /*
    * {@inheritdoc}
    */
   public function getHelp() {
-    $help = ['list' => [
+    $help = array('list' => array(
       '#theme' => 'item_list',
-      '#items' => [
+      '#items' => array(
         $this->t('User search looks for user names and partial user names. Example: mar would match usernames mar, delmar, and maryjane.'),
         $this->t('You can use * as a wildcard within your keyword. Example: m*r would match user names mar, delmar, and elementary.'),
-      ],
-    ]];
+      ),
+    ));
 
     return $help;
   }

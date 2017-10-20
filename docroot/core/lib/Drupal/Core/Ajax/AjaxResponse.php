@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Ajax\AjaxResponse.
+ */
+
 namespace Drupal\Core\Ajax;
 
 use Drupal\Core\Render\BubbleableMetadata;
@@ -21,7 +26,7 @@ class AjaxResponse extends JsonResponse implements AttachmentsInterface {
    *
    * @var array
    */
-  protected $commands = [];
+  protected $commands = array();
 
   /**
    * Add an AJAX command to the response.

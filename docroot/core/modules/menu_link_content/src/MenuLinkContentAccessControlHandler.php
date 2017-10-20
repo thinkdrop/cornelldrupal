@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\menu_link_content\MenuLinkContentAccessControlHandler.
+ */
 
 namespace Drupal\menu_link_content;
 
@@ -56,15 +60,14 @@ class MenuLinkContentAccessControlHandler extends EntityAccessControlHandler imp
 
       case 'update':
         if (!$account->hasPermission('administer menu')) {
-          return AccessResult::neutral("The 'administer menu' permission is required.")->cachePerPermissions();
+          return AccessResult::neutral()->cachePerPermissions();
         }
         else {
-          // Assume that access is allowed.
-          $access = AccessResult::allowed()->cachePerPermissions()->addCacheableDependency($entity);
+          // If there is a URL, this is an external link so always accessible.
+          $access = AccessResult::allowed()->cachePerPermissions()->cacheUntilEntityChanges($entity);
           /** @var \Drupal\menu_link_content\MenuLinkContentInterface $entity */
-          // If the link is routed determine whether the user has access unless
-          // they have the 'link to any page' permission.
-          if (!$account->hasPermission('link to any page') && ($url_object = $entity->getUrlObject()) && $url_object->isRouted()) {
+          // We allow access, but only if the link is accessible as well.
+          if (($url_object = $entity->getUrlObject()) && $url_object->isRouted()) {
             $link_access = $this->accessManager->checkNamedRoute($url_object->getRouteName(), $url_object->getRouteParameters(), $account, TRUE);
             $access = $access->andIf($link_access);
           }
@@ -72,7 +75,7 @@ class MenuLinkContentAccessControlHandler extends EntityAccessControlHandler imp
         }
 
       case 'delete':
-        return AccessResult::allowedIf(!$entity->isNew() && $account->hasPermission('administer menu'))->cachePerPermissions()->addCacheableDependency($entity);
+        return AccessResult::allowedIf(!$entity->isNew() && $account->hasPermission('administer menu'))->cachePerPermissions()->cacheUntilEntityChanges($entity);
     }
   }
 

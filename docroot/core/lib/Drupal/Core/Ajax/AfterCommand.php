@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Ajax\AfterCommand.
+ */
+
 namespace Drupal\Core\Ajax;
 
 /**
@@ -23,13 +28,13 @@ class AfterCommand extends InsertCommand {
    */
   public function render() {
 
-    return [
+    return array(
       'command' => 'insert',
       'method' => 'after',
       'selector' => $this->selector,
       'data' => $this->getRenderedContent(),
       'settings' => $this->settings,
-    ];
+    );
   }
 
 }

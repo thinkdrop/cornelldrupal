@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\Entity\ConfigEntityStorageInterface.
+ */
+
 namespace Drupal\Core\Config\Entity;
 
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -13,10 +18,10 @@ interface ConfigEntityStorageInterface extends EntityStorageInterface {
    * Extracts the configuration entity ID from the full configuration name.
    *
    * @param string $config_name
-   *   The full configuration name to extract the ID from; for example,
+   *   The full configuration name to extract the ID from. E.g.
    *   'views.view.archive'.
    * @param string $config_prefix
-   *   The config prefix of the configuration entity; for example, 'views.view'.
+   *   The config prefix of the configuration entity. E.g. 'views.view'
    *
    * @return string
    *   The ID of the configuration entity.

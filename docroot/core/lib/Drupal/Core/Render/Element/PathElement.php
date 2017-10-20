@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\PathElement.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -38,9 +43,9 @@ class PathElement extends Textfield {
     $class = get_class($this);
     $info['#validate_path'] = TRUE;
     $info['#convert_path'] = self::CONVERT_ROUTE;
-    $info['#element_validate'] = [
-      [$class, 'validateMatchedPath'],
-    ];
+    $info['#element_validate'] = array(
+      array($class, 'validateMatchedPath'),
+    );
     return $info;
   }
 
@@ -73,10 +78,10 @@ class PathElement extends Textfield {
         // We do the value conversion here whilst the Url object is in scope
         // after validation has occurred.
         if ($element['#convert_path'] == self::CONVERT_ROUTE) {
-          $form_state->setValueForElement($element, [
+          $form_state->setValueForElement($element, array(
             'route_name' => $url->getRouteName(),
             'route_parameters' => $url->getRouteParameters(),
-          ]);
+          ));
           return;
         }
         elseif ($element['#convert_path'] == self::CONVERT_URL) {
@@ -84,9 +89,9 @@ class PathElement extends Textfield {
           return;
         }
       }
-      $form_state->setError($element, t('This path does not exist or you do not have permission to link to %path.', [
+      $form_state->setError($element, t('This path does not exist or you do not have permission to link to %path.', array(
         '%path' => $element['#value'],
-      ]));
+      )));
     }
   }
 

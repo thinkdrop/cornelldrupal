@@ -1,12 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Tests\CommentCacheTagsTest.
+ */
+
 namespace Drupal\comment\Tests;
 
 use Drupal\comment\CommentInterface;
 use Drupal\comment\CommentManagerInterface;
 use Drupal\comment\Entity\Comment;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\entity_test\Entity\EntityTest;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\system\Tests\Entity\EntityWithUriCacheTagsTestBase;
 use Drupal\user\Entity\Role;
@@ -24,7 +28,7 @@ class CommentCacheTagsTest extends EntityWithUriCacheTagsTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['comment'];
+  public static $modules = array('comment');
 
   /**
    * @var \Drupal\entity_test\Entity\EntityTest
@@ -66,24 +70,24 @@ class CommentCacheTagsTest extends EntityWithUriCacheTagsTestBase {
     $field->save();
 
     // Create a "Camelids" test entity that the comment will be assigned to.
-    $this->entityTestCamelid = EntityTest::create([
+    $this->entityTestCamelid = entity_create('entity_test', array(
       'name' => 'Camelids',
       'type' => 'bar',
-    ]);
+    ));
     $this->entityTestCamelid->save();
 
     // Create a "Llama" comment.
-    $comment = Comment::create([
+    $comment = entity_create('comment', array(
       'subject' => 'Llama',
-      'comment_body' => [
+      'comment_body' => array(
         'value' => 'The name "llama" was adopted by European settlers from native Peruvians.',
         'format' => 'plain_text',
-      ],
+      ),
       'entity_id' => $this->entityTestCamelid->id(),
       'entity_type' => 'entity_test',
       'field_name' => 'comment',
-      'status' => CommentInterface::PUBLISHED,
-    ]);
+      'status' => \Drupal\comment\CommentInterface::PUBLISHED,
+    ));
     $comment->save();
 
     return $comment;
@@ -97,26 +101,26 @@ class CommentCacheTagsTest extends EntityWithUriCacheTagsTestBase {
     $this->verifyPageCache($this->entityTestCamelid->urlInfo(), 'HIT');
 
     // Create a "Hippopotamus" comment.
-    $this->entityTestHippopotamidae = EntityTest::create([
+    $this->entityTestHippopotamidae = entity_create('entity_test', array(
       'name' => 'Hippopotamus',
       'type' => 'bar',
-    ]);
+    ));
     $this->entityTestHippopotamidae->save();
 
     $this->verifyPageCache($this->entityTestHippopotamidae->urlInfo(), 'MISS');
     $this->verifyPageCache($this->entityTestHippopotamidae->urlInfo(), 'HIT');
 
-    $hippo_comment = Comment::create([
+    $hippo_comment = Comment::create(array(
       'subject' => 'Hippopotamus',
-      'comment_body' => [
+      'comment_body' => array(
         'value' => 'The common hippopotamus (Hippopotamus amphibius), or hippo, is a large, mostly herbivorous mammal in sub-Saharan Africa',
         'format' => 'plain_text',
-      ],
+      ),
       'entity_id' => $this->entityTestHippopotamidae->id(),
       'entity_type' => 'entity_test',
       'field_name' => 'comment',
       'status' => CommentInterface::PUBLISHED,
-    ]);
+    ));
     $hippo_comment->save();
 
     // Ensure that a new comment only invalidates the commented entity.
@@ -145,11 +149,11 @@ class CommentCacheTagsTest extends EntityWithUriCacheTagsTestBase {
    */
   protected function getAdditionalCacheTagsForEntity(EntityInterface $entity) {
     /** @var \Drupal\comment\CommentInterface $entity */
-    return [
+    return array(
       'config:filter.format.plain_text',
       'user:' . $entity->getOwnerId(),
       'user_view',
-    ];
+    );
   }
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Search.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 use Drupal\Core\Render\Element;
@@ -11,7 +16,7 @@ use Drupal\Core\Render\Element;
  * @code
  * $form['search'] = array(
  *   '#type' => 'search',
- *   '#title' => $this->t('Search'),
+ *   '#title' => t('Search'),
  * );
  * @endcode
  *
@@ -26,21 +31,21 @@ class Search extends FormElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
+    return array(
       '#input' => TRUE,
       '#size' => 60,
       '#maxlength' => 128,
       '#autocomplete_route_name' => FALSE,
-      '#process' => [
-        [$class, 'processAutocomplete'],
-        [$class, 'processAjaxForm'],
-      ],
-      '#pre_render' => [
-        [$class, 'preRenderSearch'],
-      ],
+      '#process' => array(
+        array($class, 'processAutocomplete'),
+        array($class, 'processAjaxForm'),
+      ),
+      '#pre_render' => array(
+        array($class, 'preRenderSearch'),
+      ),
       '#theme' => 'input__search',
-      '#theme_wrappers' => ['form_element'],
-    ];
+      '#theme_wrappers' => array('form_element'),
+    );
   }
 
   /**
@@ -56,8 +61,8 @@ class Search extends FormElement {
    */
   public static function preRenderSearch($element) {
     $element['#attributes']['type'] = 'search';
-    Element::setAttributes($element, ['id', 'name', 'value', 'size', 'maxlength', 'placeholder']);
-    static::setAttributes($element, ['form-search']);
+    Element::setAttributes($element, array('id', 'name', 'value', 'size', 'maxlength', 'placeholder'));
+    static::setAttributes($element, array('form-search'));
 
     return $element;
   }

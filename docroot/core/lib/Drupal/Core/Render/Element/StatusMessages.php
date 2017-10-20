@@ -1,18 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\StatusMessages.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 /**
  * Provides a messages element.
- *
- * Used to display results of drupal_set_message() calls.
- *
- * Usage example:
- * @code
- * $build['status_messages'] = [
- *   '#type' => 'status_messages',
- * ];
- * @endcode
  *
  * @RenderElement("status_messages")
  */
@@ -45,15 +41,12 @@ class StatusMessages extends RenderElement {
    *   The updated renderable array containing the placeholder.
    */
   public static function generatePlaceholder(array $element) {
-    $element = [
+    $element['messages_placeholder'] = [
       '#lazy_builder' => [get_class() . '::renderMessages', [$element['#display']]],
       '#create_placeholder' => TRUE,
     ];
 
-    // Directly create a placeholder as we need this to be placeholdered
-    // regardless if this is a POST or GET request.
-    // @todo remove this when https://www.drupal.org/node/2367555 lands.
-    return \Drupal::service('render_placeholder_generator')->createPlaceholder($element);
+    return $element;
   }
 
   /**

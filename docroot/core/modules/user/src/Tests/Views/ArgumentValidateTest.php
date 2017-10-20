@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Tests\Views\ArgumentValidateTest.
+ */
+
 namespace Drupal\user\Tests\Views;
 
 use Drupal\Core\Form\FormState;
@@ -18,7 +23,7 @@ class ArgumentValidateTest extends UserTestBase {
    *
    * @var array
    */
-  public static $testViews = ['test_view_argument_validate_user', 'test_view_argument_validate_username'];
+  public static $testViews = array('test_view_argument_validate_user', 'test_view_argument_validate_username');
 
   /**
    * A user for this test.
@@ -36,7 +41,7 @@ class ArgumentValidateTest extends UserTestBase {
   /**
    * Tests the User (ID) argument validator.
    */
-  public function testArgumentValidateUserUid() {
+  function testArgumentValidateUserUid() {
     $account = $this->account;
 
     $view = Views::getView('test_view_argument_validate_user');
@@ -48,7 +53,7 @@ class ArgumentValidateTest extends UserTestBase {
     // Fail for a valid numeric, but for a user that doesn't exist
     $this->assertFalse($view->argument['null']->validateArgument(32));
 
-    $form = [];
+    $form = array();
     $form_state = new FormState();
     $view->argument['null']->buildOptionsForm($form, $form_state);
     $sanitized_id = ArgumentPluginBase::encodeValidatorId('entity:user');

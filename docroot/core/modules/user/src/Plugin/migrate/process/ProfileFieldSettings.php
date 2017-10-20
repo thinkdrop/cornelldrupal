@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Plugin\migrate\process\ProfileFieldSettings.
+ */
+
 namespace Drupal\user\Plugin\migrate\process;
 
 use Drupal\migrate\MigrateExecutableInterface;
@@ -17,7 +22,7 @@ class ProfileFieldSettings extends ProcessPluginBase {
    * {@inheritdoc}
    */
   public function transform($type, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    $settings = [];
+    $settings = array();
     switch ($type) {
       case 'date':
         $settings['datetime_type'] = 'date';

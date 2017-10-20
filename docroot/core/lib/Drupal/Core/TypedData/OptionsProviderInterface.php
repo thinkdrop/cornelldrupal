@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\OptionsProviderInterface.
+ */
+
 namespace Drupal\Core\TypedData;
 
 use Drupal\Core\Session\AccountInterface;
@@ -95,5 +100,4 @@ interface OptionsProviderInterface {
    *   label). Note that labels should NOT be sanitized.
    */
   public function getSettableOptions(AccountInterface $account = NULL);
-
 }

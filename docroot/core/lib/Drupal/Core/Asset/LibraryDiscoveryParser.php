@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Asset\LibraryDiscoveryParser.
+ */
+
 namespace Drupal\Core\Asset;
 
 use Drupal\Core\Asset\Exception\IncompleteLibraryDefinitionException;
@@ -7,9 +12,9 @@ use Drupal\Core\Asset\Exception\InvalidLibrariesOverrideSpecificationException;
 use Drupal\Core\Asset\Exception\InvalidLibraryFileException;
 use Drupal\Core\Asset\Exception\LibraryDefinitionMissingLicenseException;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Theme\ThemeManagerInterface;
 use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Utility\NestedArray;
 
 /**
@@ -45,8 +50,6 @@ class LibraryDiscoveryParser {
    *   The app root.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
-   * @param \Drupal\Core\Theme\ThemeManagerInterface $theme_manager
-   *   The theme manager.
    */
   public function __construct($root, ModuleHandlerInterface $module_handler, ThemeManagerInterface $theme_manager) {
     $this->root = $root;
@@ -69,7 +72,7 @@ class LibraryDiscoveryParser {
    *   Thrown when a js file defines a positive weight.
    */
   public function buildByExtension($extension) {
-    $libraries = [];
+    $libraries = array();
 
     if ($extension === 'core') {
       $path = 'core';
@@ -92,7 +95,7 @@ class LibraryDiscoveryParser {
       if (!isset($library['js']) && !isset($library['css']) && !isset($library['drupalSettings'])) {
         throw new IncompleteLibraryDefinitionException(sprintf("Incomplete library definition for definition '%s' in extension '%s'", $id, $extension));
       }
-      $library += ['dependencies' => [], 'js' => [], 'css' => []];
+      $library += array('dependencies' => array(), 'js' => array(), 'css' => array());
 
       if (isset($library['header']) && !is_bool($library['header'])) {
         throw new \LogicException(sprintf("The 'header' key in the library definition '%s' in extension '%s' is invalid: it must be a boolean.", $id, $extension));
@@ -116,14 +119,14 @@ class LibraryDiscoveryParser {
 
       // Assign Drupal's license to libraries that don't have license info.
       if (!isset($library['license'])) {
-        $library['license'] = [
+        $library['license'] = array(
           'name' => 'GNU-GPL-2.0-or-later',
           'url' => 'https://www.drupal.org/licensing/faq',
           'gpl-compatible' => TRUE,
-        ];
+        );
       }
 
-      foreach (['js', 'css'] as $type) {
+      foreach (array('js', 'css') as $type) {
         // Prepare (flatten) the SMACSS-categorized definitions.
         // @todo After Asset(ic) changes, retain the definitions as-is and
         //   properly resolve dependencies for all (css) libraries per category,
@@ -145,7 +148,7 @@ class LibraryDiscoveryParser {
           unset($library[$type][$source]);
           // Allow to omit the options hashmap in YAML declarations.
           if (!is_array($options)) {
-            $options = [];
+            $options = array();
           }
           if ($type == 'js' && isset($options['weight']) && $options['weight'] > 0) {
             throw new \UnexpectedValueException("The $extension/$id library defines a positive weight for '$source'. Only negative weights are allowed (but should be avoided). Instead of a positive weight, specify accurate dependencies for this library.");

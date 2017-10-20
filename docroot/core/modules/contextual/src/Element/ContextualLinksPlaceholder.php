@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\contextual\Element\ContextualLinksPlaceholder.
+ */
+
 namespace Drupal\contextual\Element;
 
 use Drupal\Core\Template\Attribute;
@@ -18,12 +23,12 @@ class ContextualLinksPlaceholder extends RenderElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
-      '#pre_render' => [
-        [$class, 'preRenderPlaceholder'],
-      ],
+    return array(
+      '#pre_render' => array(
+        array($class, 'preRenderPlaceholder'),
+      ),
       '#id' => NULL,
-    ];
+    );
   }
 
   /**

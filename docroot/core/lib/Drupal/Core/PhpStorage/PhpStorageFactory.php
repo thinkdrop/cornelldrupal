@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\PhpStorage\PhpStorageFactory.
+ */
+
 namespace Drupal\Core\PhpStorage;
 
 use Drupal\Core\Site\Settings;
@@ -28,8 +33,7 @@ class PhpStorageFactory {
    * @return \Drupal\Component\PhpStorage\PhpStorageInterface
    *   An instantiated storage for the specified name.
    */
-  public static function get($name) {
-    $configuration = [];
+  static function get($name) {
     $overrides = Settings::get('php_storage');
     if (isset($overrides[$name])) {
       $configuration = $overrides[$name];
@@ -37,11 +41,13 @@ class PhpStorageFactory {
     elseif (isset($overrides['default'])) {
       $configuration = $overrides['default'];
     }
-    // Make sure all the necessary configuration values are set.
-    $class = isset($configuration['class']) ? $configuration['class'] : 'Drupal\Component\PhpStorage\MTimeProtectedFileStorage';
-    if (!isset($configuration['secret'])) {
-      $configuration['secret'] = Settings::getHashSalt();
+    else {
+      $configuration = array(
+        'class' => 'Drupal\Component\PhpStorage\MTimeProtectedFileStorage',
+        'secret' => Settings::getHashSalt(),
+      );
     }
+    $class = isset($configuration['class']) ? $configuration['class'] : 'Drupal\Component\PhpStorage\MTimeProtectedFileStorage';
     if (!isset($configuration['bin'])) {
       $configuration['bin'] = $name;
     }

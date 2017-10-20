@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\Entity\ConfigEntityTypeInterface.
+ */
+
 namespace Drupal\Core\Config\Entity;
 
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -65,7 +70,7 @@ interface ConfigEntityTypeInterface extends EntityTypeInterface {
   /**
    * Gets the config entity properties to export if declared on the annotation.
    *
-   * @return array|null
+   * @return array|NULL
    *   The properties to export or NULL if they can not be determine from the
    *   config entity type annotation.
    */

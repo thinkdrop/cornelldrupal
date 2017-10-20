@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Session\SessionManager.
+ */
+
 namespace Drupal\Core\Session;
 
 use Drupal\Component\Utility\Crypt;
@@ -78,12 +83,12 @@ class SessionManager extends NativeSessionStorage implements SessionManagerInter
    *   The session metadata bag.
    * @param \Drupal\Core\Session\SessionConfigurationInterface $session_configuration
    *   The session configuration interface.
-   * @param \Symfony\Component\HttpFoundation\Session\Storage\Proxy\AbstractProxy|Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler|\SessionHandlerInterface|null $handler
+   * @param \Symfony\Component\HttpFoundation\Session\Storage\Proxy\AbstractProxy|Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler|\SessionHandlerInterface|NULL $handler
    *   The object to register as a PHP session handler.
    *   @see \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage::setSaveHandler()
    */
   public function __construct(RequestStack $request_stack, Connection $connection, MetadataBag $metadata_bag, SessionConfigurationInterface $session_configuration, $handler = NULL) {
-    $options = [];
+    $options = array();
     $this->sessionConfiguration = $session_configuration;
     $this->requestStack = $request_stack;
     $this->connection = $connection;
@@ -96,7 +101,7 @@ class SessionManager extends NativeSessionStorage implements SessionManagerInter
     //   https://www.drupal.org/node/2229145, when we will be using the Symfony
     //   session object (which registers an attribute bag with the
     //   manager upon instantiation).
-    $this->bags = [];
+    $this->bags = array();
   }
 
   /**
@@ -130,7 +135,7 @@ class SessionManager extends NativeSessionStorage implements SessionManagerInter
       $this->setId(Crypt::randomBytesBase64());
 
       // Initialize the session global and attach the Symfony session bags.
-      $_SESSION = [];
+      $_SESSION = array();
       $this->loadSession();
 
       // NativeSessionStorage::loadSession() sets started to TRUE, reset it to
@@ -257,8 +262,7 @@ class SessionManager extends NativeSessionStorage implements SessionManagerInter
     // Unset the session cookies.
     $session_name = $this->getName();
     $cookies = $this->requestStack->getCurrentRequest()->cookies;
-    // setcookie() can only be called when headers are not yet sent.
-    if ($cookies->has($session_name) && !headers_sent()) {
+    if ($cookies->has($session_name)) {
       $params = session_get_cookie_params();
       setcookie($session_name, '', REQUEST_TIME - 3600, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
       $cookies->remove($session_name);
@@ -305,7 +309,7 @@ class SessionManager extends NativeSessionStorage implements SessionManagerInter
    */
   protected function getSessionDataMask() {
     if (empty($_SESSION)) {
-      return [];
+      return array();
     }
 
     // Start out with a completely filled mask.
@@ -327,10 +331,11 @@ class SessionManager extends NativeSessionStorage implements SessionManagerInter
    * Migrates the current session to a new session id.
    *
    * @param string $old_session_id
-   *   The old session ID. The new session ID is $this->getId().
+   *   The old session id. The new session id is $this->getId() unless
+   *   $new_insecure_session_id is not empty.
    */
   protected function migrateStoredSession($old_session_id) {
-    $fields = ['sid' => Crypt::hashBase64($this->getId())];
+    $fields = array('sid' => Crypt::hashBase64($this->getId()));
     $this->connection->update('sessions')
       ->fields($fields)
       ->condition('sid', Crypt::hashBase64($old_session_id))

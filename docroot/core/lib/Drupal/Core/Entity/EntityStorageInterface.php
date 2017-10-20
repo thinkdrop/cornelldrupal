@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityStorageInterface.
+ */
+
 namespace Drupal\Core\Entity;
 
 /**
@@ -102,7 +107,7 @@ interface EntityStorageInterface {
    * @return \Drupal\Core\Entity\EntityInterface[]
    *   An array of entity objects indexed by their ids.
    */
-  public function loadByProperties(array $values = []);
+  public function loadByProperties(array $values = array());
 
   /**
    * Constructs a new entity object, without permanently saving it.
@@ -114,7 +119,7 @@ interface EntityStorageInterface {
    * @return \Drupal\Core\Entity\EntityInterface
    *   A new entity object.
    */
-  public function create(array $values = []);
+  public function create(array $values = array());
 
   /**
    * Deletes permanently saved entities.

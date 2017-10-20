@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\RedirectResponseSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Component\HttpFoundation\SecuredRedirectResponse;
@@ -165,10 +170,9 @@ class RedirectResponseSubscriber implements EventSubscriberInterface {
    * @return array
    *   An array of event listener definitions.
    */
-  public static function getSubscribedEvents() {
-    $events[KernelEvents::RESPONSE][] = ['checkRedirectUrl'];
-    $events[KernelEvents::REQUEST][] = ['sanitizeDestination', 100];
+  static function getSubscribedEvents() {
+    $events[KernelEvents::RESPONSE][] = array('checkRedirectUrl');
+    $events[KernelEvents::REQUEST][] = array('sanitizeDestination', 100);
     return $events;
   }
-
 }

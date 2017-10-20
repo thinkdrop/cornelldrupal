@@ -1,11 +1,18 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views_ui\ViewUI.
+ */
+
 namespace Drupal\views_ui;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\Timer;
+use Drupal\Component\Utility\Xss;
 use Drupal\Core\EventSubscriber\AjaxResponseSubscriber;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\views\Views;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\views\ViewExecutable;
@@ -38,11 +45,25 @@ class ViewUI implements ViewEntityInterface {
   public $changed_display;
 
   /**
-   * How long the view takes to render in microseconds.
+   * How long the view takes to build.
    *
-   * @var float
+   * @var int
+   */
+  public $build_time;
+
+  /**
+   * How long the view takes to render.
+   *
+   * @var int
    */
   public $render_time;
+
+  /**
+   * How long the view takes to execute.
+   *
+   * @var int
+   */
+  public $execute_time;
 
   /**
    * If this view is locked for editing.
@@ -106,7 +127,7 @@ class ViewUI implements ViewEntityInterface {
    *
    * @var array
    */
-  public static $forms = [
+  public static $forms = array(
     'add-handler' => '\Drupal\views_ui\Form\Ajax\AddItem',
     'analyze' => '\Drupal\views_ui\Form\Ajax\Analyze',
     'handler' => '\Drupal\views_ui\Form\Ajax\ConfigHandler',
@@ -117,7 +138,7 @@ class ViewUI implements ViewEntityInterface {
     'rearrange' => '\Drupal\views_ui\Form\Ajax\Rearrange',
     'rearrange-filter' => '\Drupal\views_ui\Form\Ajax\RearrangeFilter',
     'reorder-displays' => '\Drupal\views_ui\Form\Ajax\ReorderDisplays',
-  ];
+  );
 
   /**
    * Whether the config is being created, updated or deleted through the
@@ -276,22 +297,27 @@ class ViewUI implements ViewEntityInterface {
    * docblock outdated?
    */
   public function getStandardButtons(&$form, FormStateInterface $form_state, $form_id, $name = NULL) {
-    $form['actions'] = [
+    $form['actions'] = array(
       '#type' => 'actions',
-    ];
+    );
 
     if (empty($name)) {
       $name = t('Apply');
       if (!empty($this->stack) && count($this->stack) > 1) {
         $name = t('Apply and continue');
       }
-      $names = [t('Apply'), t('Apply and continue')];
+      $names = array(t('Apply'), t('Apply and continue'));
     }
+
+    // Views provides its own custom handling of AJAX form submissions. Usually
+    // this happens at the same path, but custom paths may be specified in
+    // $form_state.
+    $form_url = $form_state->get('url') ?: Url::fromRouteMatch(\Drupal::routeMatch());
 
     // Forms that are purely informational set an ok_button flag, so we know not
     // to create an "Apply" button for them.
     if (!$form_state->get('ok_button')) {
-      $form['actions']['submit'] = [
+      $form['actions']['submit'] = array(
         '#type' => 'submit',
         '#value' => $name,
         '#id' => 'edit-submit-' . Html::getUniqueId($form_id),
@@ -300,9 +326,12 @@ class ViewUI implements ViewEntityInterface {
         // the current display. Since we have no way of knowing at this point
         // which display the user wants to update, views_ui_standard_submit will
         // take care of running the regular submit handler as appropriate.
-        '#submit' => [[$this, 'standardSubmit']],
+        '#submit' => array(array($this, 'standardSubmit')),
         '#button_type' => 'primary',
-      ];
+        '#ajax' => array(
+          'url' => $form_url,
+        ),
+      );
       // Form API button click detection requires the button's #value to be the
       // same between the form build of the initial page request, and the
       // initial form build of the request processing the form submission.
@@ -314,21 +343,24 @@ class ViewUI implements ViewEntityInterface {
       // button labels.
       if (isset($names)) {
         $form['actions']['submit']['#values'] = $names;
-        $form['actions']['submit']['#process'] = array_merge(['views_ui_form_button_was_clicked'], \Drupal::service('element_info')->getInfoProperty($form['actions']['submit']['#type'], '#process', []));
+        $form['actions']['submit']['#process'] = array_merge(array('views_ui_form_button_was_clicked'), \Drupal::service('element_info')->getInfoProperty($form['actions']['submit']['#type'], '#process', array()));
       }
       // If a validation handler exists for the form, assign it to this button.
       $form['actions']['submit']['#validate'][] = [$form_state->getFormObject(), 'validateForm'];
     }
 
     // Create a "Cancel" button. For purely informational forms, label it "OK".
-    $cancel_submit = function_exists($form_id . '_cancel') ? $form_id . '_cancel' : [$this, 'standardCancel'];
-    $form['actions']['cancel'] = [
+    $cancel_submit = function_exists($form_id . '_cancel') ? $form_id . '_cancel' : array($this, 'standardCancel');
+    $form['actions']['cancel'] = array(
       '#type' => 'submit',
       '#value' => !$form_state->get('ok_button') ? t('Cancel') : t('Ok'),
-      '#submit' => [$cancel_submit],
-      '#validate' => [],
-      '#limit_validation_errors' => [],
-    ];
+      '#submit' => array($cancel_submit),
+      '#validate' => array(),
+      '#ajax' => array(
+        'path' => $form_url,
+      ),
+      '#limit_validation_errors' => array(),
+    );
 
     // Compatibility, to be removed later: // TODO: When is "later"?
     // We used to set these items on the form, but now we want them on the $form_state:
@@ -347,11 +379,11 @@ class ViewUI implements ViewEntityInterface {
    */
   public function getOverrideValues($form, FormStateInterface $form_state) {
     // Make sure the dropdown exists in the first place.
-    if ($form_state->hasValue(['override', 'dropdown'])) {
+    if ($form_state->hasValue(array('override', 'dropdown'))) {
       // #default_value is used to determine whether it was the default value or not.
       // So the available options are: $display, 'default' and 'default_revert', not 'defaults'.
       $was_defaulted = ($form['override']['dropdown']['#default_value'] === 'defaults');
-      $dropdown = $form_state->getValue(['override', 'dropdown']);
+      $dropdown = $form_state->getValue(array('override', 'dropdown'));
       $is_defaulted = ($dropdown === 'default');
       $revert = ($dropdown === 'default_revert');
 
@@ -368,7 +400,7 @@ class ViewUI implements ViewEntityInterface {
       $revert = FALSE;
     }
 
-    return [$was_defaulted, $is_defaulted, $revert];
+    return array($was_defaulted, $is_defaulted, $revert);
   }
 
   /**
@@ -382,10 +414,10 @@ class ViewUI implements ViewEntityInterface {
     Html::resetSeenIds();
 
     if (empty($this->stack)) {
-      $this->stack = [];
+      $this->stack = array();
     }
 
-    $stack = [implode('-', array_filter([$key, $this->id(), $display_id, $type, $id])), $key, $display_id, $type, $id];
+    $stack = array(implode('-', array_filter(array($key, $this->id(), $display_id, $type, $id))), $key, $display_id, $type, $id);
     // If we're being asked to add this form to the bottom of the stack, no
     // special logic is required. Our work is equally easy if we were asked to add
     // to the top of the stack, but there's nothing in it yet.
@@ -462,10 +494,10 @@ class ViewUI implements ViewEntityInterface {
         if (isset($types[$type]['type'])) {
           $key = $types[$type]['type'];
         }
-        $item = [
+        $item = array(
           'table' => $table,
           'field' => $field,
-        ];
+        );
         $handler = Views::handlerManager($key)->getHandler($item);
         if ($this->getExecutable()->displayHandlers->get('default')->useGroupBy() && $handler->usesGroupBy()) {
           $this->addFormToStack('handler-group', $display_id, $type, $id);
@@ -511,7 +543,7 @@ class ViewUI implements ViewEntityInterface {
     $this->additionalQueries = $queries;
   }
 
-  public function renderPreview($display_id, $args = []) {
+  public function renderPreview($display_id, $args = array()) {
     // Save the current path so it can be restored before returning from this function.
     $request_stack = \Drupal::requestStack();
     $current_request = $request_stack->getCurrentRequest();
@@ -530,7 +562,7 @@ class ViewUI implements ViewEntityInterface {
 
     $combined = $show_query && $show_stats;
 
-    $rows = ['query' => [], 'statistics' => []];
+    $rows = array('query' => array(), 'statistics' => array());
 
     $errors = $executable->validate();
     $executable->destroy();
@@ -544,7 +576,7 @@ class ViewUI implements ViewEntityInterface {
       // have some input in the query parameters, so we merge request() and
       // query() to ensure we get it all.
       $exposed_input = array_merge(\Drupal::request()->request->all(), \Drupal::request()->query->all());
-      foreach (['view_name', 'view_display_id', 'view_args', 'view_path', 'view_dom_id', 'pager_element', 'view_base_path', AjaxResponseSubscriber::AJAX_REQUEST_PARAMETER, 'ajax_page_state', 'form_id', 'form_build_id', 'form_token'] as $key) {
+      foreach (array('view_name', 'view_display_id', 'view_args', 'view_path', 'view_dom_id', 'pager_element', 'view_base_path', AjaxResponseSubscriber::AJAX_REQUEST_PARAMETER, 'ajax_page_state', 'form_id', 'form_build_id', 'form_token') as $key) {
         if (isset($exposed_input[$key])) {
           unset($exposed_input[$key]);
         }
@@ -553,7 +585,7 @@ class ViewUI implements ViewEntityInterface {
 
       if (!$executable->setDisplay($display_id)) {
         return [
-          '#markup' => t('Invalid display id @display', ['@display' => $display_id]),
+          '#markup' => t('Invalid display id @display', array('@display' => $display_id)),
         ];
       }
 
@@ -604,95 +636,88 @@ class ViewUI implements ViewEntityInterface {
         $this->endQueryCapture();
       }
 
-      $this->render_time = Timer::stop('entity.view.preview_form')['time'];
+      $this->render_time = Timer::stop('entity.view.preview_form');
 
       views_ui_contextual_links_suppress_pop();
 
       // Prepare the query information and statistics to show either above or
       // below the view preview.
-      // Initialise the empty rows arrays so we can safely merge them later.
-      $rows['query'] = [];
-      $rows['statistics'] = [];
       if ($show_info || $show_query || $show_stats) {
         // Get information from the preview for display.
         if (!empty($executable->build_info['query'])) {
           if ($show_query) {
             $query_string = $executable->build_info['query'];
             // Only the sql default class has a method getArguments.
-            $quoted = [];
+            $quoted = array();
 
             if ($executable->query instanceof Sql) {
               $quoted = $query_string->getArguments();
               $connection = Database::getConnection();
               foreach ($quoted as $key => $val) {
                 if (is_array($val)) {
-                  $quoted[$key] = implode(', ', array_map([$connection, 'quote'], $val));
+                  $quoted[$key] = implode(', ', array_map(array($connection, 'quote'), $val));
                 }
                 else {
                   $quoted[$key] = $connection->quote($val);
                 }
               }
             }
-            $rows['query'][] = [
-              [
-                'data' => [
+            $rows['query'][] = array(
+              array(
+                'data' => array(
                   '#type' => 'inline_template',
                   '#template' => "<strong>{% trans 'Query' %}</strong>",
-                ],
-              ],
-              [
-                'data' => [
+                ),
+              ),
+              array(
+                'data' => array(
                   '#type' => 'inline_template',
                   '#template' => '<pre>{{ query }}</pre>',
-                  '#context' => ['query' => strtr($query_string, $quoted)],
-                ],
-              ],
-            ];
+                  '#context' => array('query' => strtr($query_string, $quoted)),
+                ),
+              ),
+            );
             if (!empty($this->additionalQueries)) {
-              $queries[] = [
+              $queries[] = array(
                 '#prefix' => '<strong>',
                 '#markup' => t('These queries were run during view rendering:'),
                 '#suffix' => '</strong>',
-              ];
+              );
               foreach ($this->additionalQueries as $query) {
                 $query_string = strtr($query['query'], $query['args']);
-                $queries[] = [
+                $queries[] = array(
                   '#prefix' => "\n",
-                  '#markup' => t('[@time ms] @query', ['@time' => round($query['time'] * 100000, 1) / 100000.0, '@query' => $query_string]),
-                ];
+                  '#markup' => t('[@time ms] @query', array('@time' => round($query['time'] * 100000, 1) / 100000.0, '@query' => $query_string)),
+                );
               }
 
-              $rows['query'][] = [
-                [
-                  'data' => [
+              $rows['query'][] = array(
+                array(
+                  'data' => array(
                     '#type' => 'inline_template',
                     '#template' => "<strong>{% trans 'Other queries' %}</strong>",
-                  ],
-                ],
-                [
-                  'data' => [
+                  ),
+                ),
+                array(
+                  'data' => array(
                     '#prefix' => '<pre>',
                      'queries' => $queries,
                      '#suffix' => '</pre>',
-                    ],
-                ],
-              ];
+                    ),
+                ),
+              );
             }
           }
           if ($show_info) {
-            $rows['query'][] = [
-              [
-                'data' => [
+            $rows['query'][] = array(
+              array(
+                'data' => array(
                   '#type' => 'inline_template',
                   '#template' => "<strong>{% trans 'Title' %}</strong>",
-                ],
-              ],
-              [
-                'data' => [
-                  '#markup' => $executable->getTitle(),
-                ],
-              ],
-            ];
+                ),
+              ),
+              Xss::filterAdmin($executable->getTitle()),
+            );
             if (isset($path)) {
               // @todo Views should expect and store a leading /. See:
               //   https://www.drupal.org/node/2423913
@@ -701,51 +726,51 @@ class ViewUI implements ViewEntityInterface {
             else {
               $path = t('This display has no path.');
             }
-            $rows['query'][] = [
-              [
-                'data' => [
+            $rows['query'][] = array(
+              array(
+                'data' => array(
                   '#prefix' => '<strong>',
                   '#markup' => t('Path'),
                   '#suffix' => '</strong>',
-                ],
-              ],
-              [
-                'data' => [
+                ),
+              ),
+              array(
+                'data' => array(
                   '#markup' => $path,
-                ],
-              ]
-            ];
+                ),
+              )
+            );
           }
           if ($show_stats) {
-            $rows['statistics'][] = [
-              [
-                'data' => [
+            $rows['statistics'][] = array(
+              array(
+                'data' => array(
                   '#type' => 'inline_template',
                   '#template' => "<strong>{% trans 'Query build time' %}</strong>",
-                ],
-              ],
-              t('@time ms', ['@time' => intval($executable->build_time * 100000) / 100]),
-            ];
+                ),
+              ),
+              t('@time ms', array('@time' => intval($executable->build_time * 100000) / 100)),
+            );
 
-            $rows['statistics'][] = [
-              [
-                'data' => [
+            $rows['statistics'][] = array(
+              array(
+                'data' => array(
                   '#type' => 'inline_template',
                   '#template' => "<strong>{% trans 'Query execute time' %}</strong>",
-                ],
-              ],
-              t('@time ms', ['@time' => intval($executable->execute_time * 100000) / 100]),
-            ];
+                ),
+              ),
+              t('@time ms', array('@time' => intval($executable->execute_time * 100000) / 100)),
+            );
 
-            $rows['statistics'][] = [
-              [
-                'data' => [
+            $rows['statistics'][] = array(
+              array(
+                'data' => array(
                   '#type' => 'inline_template',
                   '#template' => "<strong>{% trans 'View render time' %}</strong>",
-                ],
-              ],
-              t('@time ms', ['@time' => intval($this->render_time * 100) / 100]),
-            ];
+                ),
+              ),
+              t('@time ms', array('@time' => intval($executable->render_time * 100000) / 100)),
+            );
           }
           \Drupal::moduleHandler()->alter('views_preview_info', $rows, $executable);
         }
@@ -753,36 +778,36 @@ class ViewUI implements ViewEntityInterface {
           // No query was run. Display that information in place of either the
           // query or the performance statistics, whichever comes first.
           if ($combined || ($show_location === 'above')) {
-            $rows['query'][] = [
-              [
-                'data' => [
+            $rows['query'][] = array(
+              array(
+                'data' => array(
                   '#prefix' => '<strong>',
                   '#markup' => t('Query'),
                   '#suffix' => '</strong>',
-                ],
-              ],
-              [
-                'data' => [
+                ),
+              ),
+              array(
+                'data' => array(
                   '#markup' => t('No query was run'),
-                ],
-              ],
-            ];
+                ),
+              ),
+            );
           }
           else {
-            $rows['statistics'][] = [
-              [
-                'data' => [
+            $rows['statistics'][] = array(
+              array(
+                'data' => array(
                   '#prefix' => '<strong>',
                   '#markup' => t('Query'),
                   '#suffix' => '</strong>',
-                ],
-              ],
-              [
-                'data' => [
+                ),
+              ),
+              array(
+                'data' => array(
                   '#markup' => t('No query was run'),
-                ],
-              ],
-            ];
+                ),
+              ),
+            );
           }
         }
       }
@@ -793,25 +818,35 @@ class ViewUI implements ViewEntityInterface {
           drupal_set_message($error, 'error');
         }
       }
-      $preview = ['#markup' => t('Unable to preview due to validation errors.')];
+      $preview = t('Unable to preview due to validation errors.');
     }
 
     // Assemble the preview, the query info, and the query statistics in the
     // requested order.
-    $table = [
+    $table = array(
       '#type' => 'table',
       '#prefix' => '<div class="views-query-info">',
       '#suffix' => '</div>',
-      '#rows' => array_merge($rows['query'], $rows['statistics']),
-    ];
+    );
+    if ($show_location === 'above' || $show_location === 'below') {
+      if ($combined) {
+        $table['#rows'] = array_merge($rows['query'], $rows['statistics']);
+      }
+      else {
+        $table['#rows'] = $rows['query'];
+      }
+    }
+    elseif ($show_stats === 'above' || $show_stats === 'below') {
+      $table['#rows'] = $rows['statistics'];
+    }
 
-    if ($show_location == 'above') {
+    if ($show_location === 'above' || $show_stats === 'above') {
       $output = [
         'table' => $table,
         'preview' => $preview,
       ];
     }
-    else {
+    elseif ($show_location === 'below' || $show_stats === 'below') {
       $output = [
         'preview' => $preview,
         'table' => $table,
@@ -846,7 +881,7 @@ class ViewUI implements ViewEntityInterface {
       $current = reset($keys) + 1;
       $total = end($keys) + 1;
       if ($total > 1) {
-        $progress = [];
+        $progress = array();
         $progress['current'] = $current;
         $progress['total'] = $total;
       }
@@ -895,7 +930,7 @@ class ViewUI implements ViewEntityInterface {
    * Passes through all unknown calls onto the storage object.
    */
   public function __call($method, $args) {
-    return call_user_func_array([$this->storage, $method], $args);
+    return call_user_func_array(array($this->storage, $method), $args);
   }
 
   /**
@@ -971,7 +1006,7 @@ class ViewUI implements ViewEntityInterface {
   /**
    * {@inheritdoc}
    */
-  public static function create(array $values = []) {
+  public static function create(array $values = array()) {
     return View::create($values);
   }
 
@@ -1163,14 +1198,14 @@ class ViewUI implements ViewEntityInterface {
   /**
    * {@inheritdoc}
    */
-  public function referencedEntities() {
-    return $this->storage->referencedEntities();
-  }
+   public function referencedEntities() {
+     return $this->storage->referencedEntities();
+   }
 
   /**
    * {@inheritdoc}
    */
-  public function url($rel = 'edit-form', $options = []) {
+  public function url($rel = 'edit-form', $options = array()) {
     return $this->storage->url($rel, $options);
   }
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Form\ModulesListConfirmForm.
+ */
+
 namespace Drupal\system\Form;
 
 use Drupal\Core\Config\PreExistingConfigException;
@@ -36,7 +41,7 @@ class ModulesListConfirmForm extends ConfirmFormBase {
    *
    * @var array
    */
-  protected $modules = [];
+  protected $modules = array();
 
   /**
    * The module installer.
@@ -119,38 +124,22 @@ class ModulesListConfirmForm extends ConfirmFormBase {
       return $this->redirect('system.modules_list');
     }
 
-    $items = $this->buildMessageList();
-    $form['message'] = [
+    $items = array();
+    // Display a list of required modules that have to be installed as well but
+    // were not manually selected.
+    foreach ($this->modules['dependencies'] as $module => $dependencies) {
+      $items[] = $this->formatPlural(count($dependencies), 'You must enable the @required module to install @module.', 'You must enable the @required modules to install @module.', array(
+        '@module' => $this->modules['install'][$module],
+        '@required' => implode(', ', $dependencies),
+      ));
+    }
+
+    $form['message'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
-    ];
+    );
 
     return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * Builds the message list for the confirmation form.
-   *
-   * @return \Drupal\Component\Render\MarkupInterface[]
-   *   Array of markup for the list of messages on the form.
-   *
-   * @see \Drupal\system\Form\ModulesListForm::buildModuleList()
-   */
-  protected function buildMessageList() {
-    $items = [];
-    if (!empty($this->modules['dependencies'])) {
-      // Display a list of required modules that have to be installed as well
-      // but were not manually selected.
-      foreach ($this->modules['dependencies'] as $module => $dependencies) {
-        $items[] = $this->formatPlural(count($dependencies), 'You must enable the @required module to install @module.', 'You must enable the @required modules to install @module.', [
-          '@module' => $this->modules['install'][$module],
-          // It is safe to implode this because module names are not translated
-          // markup and so will not be double-escaped.
-          '@required' => implode(', ', $dependencies),
-        ]);
-      }
-    }
-    return $items;
   }
 
   /**
@@ -177,10 +166,10 @@ class ModulesListConfirmForm extends ConfirmFormBase {
             count($config_objects),
             'Unable to install @extension, %config_names already exists in active configuration.',
             'Unable to install @extension, %config_names already exist in active configuration.',
-            [
+            array(
               '%config_names' => implode(', ', $config_objects),
               '@extension' => $this->modules['install'][$e->getExtension()]
-            ]),
+            )),
           'error'
         );
         return;
@@ -194,10 +183,10 @@ class ModulesListConfirmForm extends ConfirmFormBase {
       }
 
       $module_names = array_values($this->modules['install']);
-      drupal_set_message($this->formatPlural(count($module_names), 'Module %name has been enabled.', '@count modules have been enabled: %names.', [
+      drupal_set_message($this->formatPlural(count($module_names), 'Module %name has been enabled.', '@count modules have been enabled: %names.', array(
         '%name' => $module_names[0],
         '%names' => implode(', ', $module_names),
-      ]));
+      )));
     }
 
     $form_state->setRedirectUrl($this->getCancelUrl());

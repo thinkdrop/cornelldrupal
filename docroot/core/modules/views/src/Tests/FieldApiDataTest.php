@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Tests\FieldApiDataTest.
+ */
+
 namespace Drupal\views\Tests;
 
 use Drupal\Component\Render\MarkupInterface;
@@ -19,13 +24,13 @@ class FieldApiDataTest extends FieldTestBase {
     $field_names = $this->setUpFieldStorages(1);
 
     // Attach the field to nodes only.
-    $field = [
+    $field = array(
       'field_name' => $field_names[0],
       'entity_type' => 'node',
       'bundle' => 'page',
       'label' => 'GiraffeA" label'
-    ];
-    FieldConfig::create($field)->save();
+    );
+    entity_create('field_config', $field)->save();
 
     // Attach the same field to a different bundle with a different label.
     $this->drupalCreateContentType(['type' => 'article']);
@@ -38,9 +43,9 @@ class FieldApiDataTest extends FieldTestBase {
 
     // Now create some example nodes/users for the view result.
     for ($i = 0; $i < 5; $i++) {
-      $edit = [
-        $field_names[0] => [(['value' => $this->randomMachineName()])],
-      ];
+      $edit = array(
+        $field_names[0] => array((array('value' => $this->randomMachineName()))),
+      );
       $nodes[] = $this->drupalCreateNode($edit);
     }
   }
@@ -50,7 +55,7 @@ class FieldApiDataTest extends FieldTestBase {
    *
    * We check data structure for both node and node revision tables.
    */
-  public function testViewsData() {
+  function testViewsData() {
     $table_mapping = \Drupal::entityManager()->getStorage('node')->getTableMapping();
     $field_storage = $this->fieldStorages[0];
     $current_table = $table_mapping->getDedicatedDataTableName($field_storage);
@@ -63,25 +68,23 @@ class FieldApiDataTest extends FieldTestBase {
     $this->assertTrue(isset($data[$current_table]['table']['join']['node_field_data']));
     $this->assertTrue(isset($data[$revision_table]['table']['join']['node_field_revision']));
 
-    $expected_join = [
-      'table' => $current_table,
+    $expected_join = array(
       'left_field' => 'nid',
       'field' => 'entity_id',
-      'extra' => [
-        ['field' => 'deleted', 'value' => 0, 'numeric' => TRUE],
-        ['left_field' => 'langcode', 'field' => 'langcode'],
-      ],
-    ];
+      'extra' => array(
+        array('field' => 'deleted', 'value' => 0, 'numeric' => TRUE),
+        array('left_field' => 'langcode', 'field' => 'langcode'),
+      ),
+    );
     $this->assertEqual($expected_join, $data[$current_table]['table']['join']['node_field_data']);
-    $expected_join = [
-      'table' => $revision_table,
+    $expected_join = array(
       'left_field' => 'vid',
       'field' => 'revision_id',
-      'extra' => [
-        ['field' => 'deleted', 'value' => 0, 'numeric' => TRUE],
-        ['left_field' => 'langcode', 'field' => 'langcode'],
-      ],
-    ];
+      'extra' => array(
+        array('field' => 'deleted', 'value' => 0, 'numeric' => TRUE),
+        array('left_field' => 'langcode', 'field' => 'langcode'),
+      ),
+    );
     $this->assertEqual($expected_join, $data[$revision_table]['table']['join']['node_field_revision']);
 
     // Test click sortable.
@@ -124,7 +127,7 @@ class FieldApiDataTest extends FieldTestBase {
    */
   protected function getViewsData() {
     $views_data = $this->container->get('views.views_data');
-    $data = [];
+    $data = array();
 
     // Check the table and the joins of the first field.
     // Attached to node only.

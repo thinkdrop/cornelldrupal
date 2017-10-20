@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\Action\UnpublishByKeywordNode.
+ */
+
 namespace Drupal\node\Plugin\Action;
 
 use Drupal\Component\Utility\Tags;
@@ -36,21 +41,21 @@ class UnpublishByKeywordNode extends ConfigurableActionBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [
-      'keywords' => [],
-    ];
+    return array(
+      'keywords' => array(),
+    );
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['keywords'] = [
+    $form['keywords'] = array(
       '#title' => t('Keywords'),
       '#type' => 'textarea',
       '#description' => t('The content will be unpublished if it contains any of the phrases above. Use a case-sensitive, comma-separated list of phrases. Example: funny, bungee jumping, "Company, Inc."'),
       '#default_value' => Tags::implode($this->configuration['keywords']),
-    ];
+    );
     return $form;
   }
 

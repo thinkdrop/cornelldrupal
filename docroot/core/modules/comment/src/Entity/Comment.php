@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Entity\Comment.
+ */
+
 namespace Drupal\comment\Entity;
 
 use Drupal\Component\Utility\Number;
@@ -7,7 +12,6 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\comment\CommentInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
-use Drupal\Core\Entity\EntityPublishedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -21,13 +25,7 @@ use Drupal\user\UserInterface;
  * @ContentEntityType(
  *   id = "comment",
  *   label = @Translation("Comment"),
- *   label_singular = @Translation("comment"),
- *   label_plural = @Translation("comments"),
- *   label_count = @PluralTranslation(
- *     singular = "@count comment",
- *     plural = "@count comments",
- *   ),
- *   bundle_label = @Translation("Comment type"),
+ *   bundle_label = @Translation("Content type"),
  *   handlers = {
  *     "storage" = "Drupal\comment\CommentStorage",
  *     "storage_schema" = "Drupal\comment\CommentStorageSchema",
@@ -50,8 +48,7 @@ use Drupal\user\UserInterface;
  *     "bundle" = "comment_type",
  *     "label" = "subject",
  *     "langcode" = "langcode",
- *     "uuid" = "uuid",
- *     "published" = "status",
+ *     "uuid" = "uuid"
  *   },
  *   links = {
  *     "canonical" = "/comment/{comment}",
@@ -68,7 +65,6 @@ use Drupal\user\UserInterface;
 class Comment extends ContentEntityBase implements CommentInterface {
 
   use EntityChangedTrait;
-  use EntityPublishedTrait;
 
   /**
    * The thread for which a lock was acquired.
@@ -81,6 +77,10 @@ class Comment extends ContentEntityBase implements CommentInterface {
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
+    if (is_null($this->get('status')->value)) {
+      $published = \Drupal::currentUser()->hasPermission('skip comment approval') ? CommentInterface::PUBLISHED : CommentInterface::NOT_PUBLISHED;
+      $this->setPublished($published);
+    }
     if ($this->isNew()) {
       // Add the comment to database. This next section builds the thread field.
       // @see \Drupal\comment\CommentViewBuilder::buildComponents()
@@ -143,11 +143,9 @@ class Comment extends ContentEntityBase implements CommentInterface {
       if ($this->getOwnerId() === \Drupal::currentUser()->id() && \Drupal::currentUser()->isAuthenticated()) {
         $this->setAuthorName(\Drupal::currentUser()->getUsername());
       }
+      // Add the values which aren't passed into the function.
       $this->setThread($thread);
-      if (!$this->getHostname()) {
-        // Ensure a client host from the current request.
-        $this->setHostname(\Drupal::request()->getClientIP());
-      }
+      $this->setHostname(\Drupal::request()->getClientIP());
     }
   }
 
@@ -206,7 +204,8 @@ class Comment extends ContentEntityBase implements CommentInterface {
    * {@inheritdoc}
    */
   public function permalink() {
-    $uri = $this->urlInfo();
+    $entity = $this->getCommentedEntity();
+    $uri = $entity->urlInfo();
     $uri->setOption('fragment', 'comment-' . $this->id());
     return $uri;
   }
@@ -215,22 +214,16 @@ class Comment extends ContentEntityBase implements CommentInterface {
    * {@inheritdoc}
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
-    /** @var \Drupal\Core\Field\BaseFieldDefinition[] $fields */
-    $fields = parent::baseFieldDefinitions($entity_type);
-    $fields += static::publishedBaseFieldDefinitions($entity_type);
+    $fields['cid'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Comment ID'))
+      ->setDescription(t('The comment ID.'))
+      ->setReadOnly(TRUE)
+      ->setSetting('unsigned', TRUE);
 
-    $fields['cid']->setLabel(t('Comment ID'))
-      ->setDescription(t('The comment ID.'));
-
-    $fields['uuid']->setDescription(t('The comment UUID.'));
-
-    $fields['comment_type']->setLabel(t('Comment Type'))
-      ->setDescription(t('The comment type.'));
-
-    $fields['langcode']->setDescription(t('The comment language code.'));
-
-    // Set the default value callback for the status field.
-    $fields['status']->setDefaultValueCallback('Drupal\comment\Entity\Comment::getDefaultStatus');
+    $fields['uuid'] = BaseFieldDefinition::create('uuid')
+      ->setLabel(t('UUID'))
+      ->setDescription(t('The comment UUID.'))
+      ->setReadOnly(TRUE);
 
     $fields['pid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Parent ID'))
@@ -242,15 +235,27 @@ class Comment extends ContentEntityBase implements CommentInterface {
       ->setDescription(t('The ID of the entity of which this comment is a reply.'))
       ->setRequired(TRUE);
 
+    $fields['langcode'] = BaseFieldDefinition::create('language')
+      ->setLabel(t('Language'))
+      ->setDescription(t('The comment language code.'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', array(
+        'type' => 'hidden',
+      ))
+      ->setDisplayOptions('form', array(
+        'type' => 'language_select',
+        'weight' => 2,
+      ));
+
     $fields['subject'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Subject'))
       ->setTranslatable(TRUE)
       ->setSetting('max_length', 64)
-      ->setDisplayOptions('form', [
+      ->setDisplayOptions('form', array(
         'type' => 'string_textfield',
         // Default comment body field has weight 20.
         'weight' => 10,
-      ])
+      ))
       ->setDisplayConfigurable('form', TRUE);
 
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')
@@ -296,6 +301,12 @@ class Comment extends ContentEntityBase implements CommentInterface {
       ->setDescription(t('The time that the comment was last edited.'))
       ->setTranslatable(TRUE);
 
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Publishing status'))
+      ->setDescription(t('A boolean indicating whether the comment is published.'))
+      ->setTranslatable(TRUE)
+      ->setDefaultValue(TRUE);
+
     $fields['thread'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Thread place'))
       ->setDescription(t("The alphadecimal representation of the comment's place in a thread, consisting of a base 36 string prefixed by an integer indicating its length."))
@@ -306,6 +317,11 @@ class Comment extends ContentEntityBase implements CommentInterface {
       ->setDescription(t('The entity type to which this comment is attached.'))
       ->setSetting('is_ascii', TRUE)
       ->setSetting('max_length', EntityTypeInterface::ID_MAX_LENGTH);
+
+    $fields['comment_type'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Comment Type'))
+      ->setDescription(t('The comment type.'))
+      ->setSetting('target_type', 'comment_type');
 
     $fields['field_name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Comment field name'))
@@ -325,7 +341,7 @@ class Comment extends ContentEntityBase implements CommentInterface {
       $fields['entity_id']->setSetting('target_type', $comment_type->getTargetEntityTypeId());
       return $fields;
     }
-    return [];
+    return array();
   }
 
   /**
@@ -475,8 +491,23 @@ class Comment extends ContentEntityBase implements CommentInterface {
   /**
    * {@inheritdoc}
    */
+  public function isPublished() {
+    return $this->get('status')->value == CommentInterface::PUBLISHED;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getStatus() {
     return $this->get('status')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPublished($status) {
+    $this->set('status', $status ? CommentInterface::PUBLISHED : CommentInterface::NOT_PUBLISHED);
+    return $this;
   }
 
   /**
@@ -551,18 +582,6 @@ class Comment extends ContentEntityBase implements CommentInterface {
    */
   public function getTypeId() {
     return $this->bundle();
-  }
-
-  /**
-   * Default value callback for 'status' base field definition.
-   *
-   * @see ::baseFieldDefinitions()
-   *
-   * @return bool
-   *  TRUE if the comment should be published, FALSE otherwise.
-   */
-  public static function getDefaultStatus() {
-    return \Drupal::currentUser()->hasPermission('skip comment approval') ? CommentInterface::PUBLISHED : CommentInterface::NOT_PUBLISHED;
   }
 
 }

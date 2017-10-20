@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Plugin\Validation\Constraint\EntityChangedConstraint.
+ */
+
 namespace Drupal\Core\Entity\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -16,5 +21,4 @@ use Symfony\Component\Validator\Constraint;
 class EntityChangedConstraint extends Constraint {
 
   public $message = 'The content has either been modified by another user, or you have already submitted modifications. As a result, your changes cannot be saved.';
-
 }

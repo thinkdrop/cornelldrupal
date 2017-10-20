@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Plugin\views\argument\Taxonomy.
+ */
+
 namespace Drupal\taxonomy\Plugin\views\argument;
 
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -45,7 +50,7 @@ class Taxonomy extends NumericArgument implements ContainerFactoryPluginInterfac
   /**
    * Override the behavior of title(). Get the title of the node.
    */
-  public function title() {
+  function title() {
     // There might be no valid argument.
     if ($this->argument) {
       $term = $this->termStorage->load($this->argument);

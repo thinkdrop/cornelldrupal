@@ -11,9 +11,6 @@
    * Attach the machine-readable name form element behavior.
    *
    * @type {Drupal~behavior}
-   *
-   * @prop {Drupal~behaviorAttach} attach
-   *   Attaches machine-name behaviors.
    */
   Drupal.behaviors.machineName = {
 
@@ -21,9 +18,7 @@
      * Attaches the behavior.
      *
      * @param {Element} context
-     *   The context for attaching the behavior.
      * @param {object} settings
-     *   Settings object.
      * @param {object} settings.machineName
      *   A list of elements to process, keyed by the HTML ID of the form
      *   element containing the human-readable value. Each element is an object
@@ -71,22 +66,22 @@
           xhr = null;
         }
 
-        // Wait 300 milliseconds for Ajax request since the last event to update
-        // the machine name i.e., after the user has stopped typing.
+        // Wait 300 milliseconds since the last event to update the machine name
+        // i.e., after the user has stopped typing.
         if (timeout) {
           clearTimeout(timeout);
           timeout = null;
         }
-        if (baseValue.toLowerCase() !== expected) {
-          timeout = setTimeout(function () {
+        timeout = setTimeout(function () {
+          if (baseValue.toLowerCase() !== expected) {
             xhr = self.transliterate(baseValue, options).done(function (machine) {
               self.showMachineName(machine.substr(0, options.maxlength), data);
             });
-          }, 300);
-        }
-        else {
-          self.showMachineName(expected, data);
-        }
+          }
+          else {
+            self.showMachineName(expected, data);
+          }
+        }, 300);
       }
 
       Object.keys(settings.machineName).forEach(function (source_id) {
@@ -186,8 +181,6 @@
      * @param {string} settings.replace_pattern
      *   A regular expression (without modifiers) matching disallowed characters
      *   in the machine name; e.g., '[^a-z0-9]+'.
-     * @param {string} settings.replace_token
-     *   A token to validate the regular expression.
      * @param {string} settings.replace
      *   A character to replace disallowed characters with; e.g., '_' or '-'.
      * @param {number} settings.maxlength
@@ -201,7 +194,6 @@
         text: source,
         langcode: drupalSettings.langcode,
         replace_pattern: settings.replace_pattern,
-        replace_token: settings.replace_token,
         replace: settings.replace,
         lowercase: true
       });

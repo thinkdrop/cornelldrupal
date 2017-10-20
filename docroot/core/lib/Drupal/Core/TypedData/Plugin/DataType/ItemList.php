@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\Plugin\DataType\ItemList.
+ */
+
 namespace Drupal\Core\TypedData\Plugin\DataType;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
@@ -30,13 +35,13 @@ class ItemList extends TypedData implements \IteratorAggregate, ListInterface {
    *
    * @var \Drupal\Core\TypedData\TypedDataInterface[]
    */
-  protected $list = [];
+  protected $list = array();
 
   /**
    * {@inheritdoc}
    */
   public function getValue() {
-    $values = [];
+    $values = array();
     foreach ($this->list as $delta => $item) {
       $values[$delta] = $item->getValue();
     }
@@ -50,8 +55,8 @@ class ItemList extends TypedData implements \IteratorAggregate, ListInterface {
    *   An array of values of the field items, or NULL to unset the field.
    */
   public function setValue($values, $notify = TRUE) {
-    if (!isset($values) || $values === []) {
-      $this->list = [];
+    if (!isset($values) || $values === array()) {
+      $this->list = array();
     }
     else {
       // Only arrays with numeric keys are supported.
@@ -82,7 +87,7 @@ class ItemList extends TypedData implements \IteratorAggregate, ListInterface {
    * {@inheritdoc}
    */
   public function getString() {
-    $strings = [];
+    $strings = array();
     foreach ($this->list as $item) {
       $strings[] = $item->getString();
     }

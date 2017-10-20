@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\entity_test\Entity\EntityTestConstraints.
+ */
+
 namespace Drupal\entity_test\Entity;
 
 use Drupal\Core\Entity\EntityChangedTrait;
@@ -41,5 +46,4 @@ class EntityTestConstraints extends EntityTest implements EntityChangedInterface
 
     return $fields;
   }
-
 }

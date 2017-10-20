@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\Plugin\DataType\StringData.
+ */
+
 namespace Drupal\Core\TypedData\Plugin\DataType;
 
 use Drupal\Core\TypedData\PrimitiveBase;
@@ -24,5 +29,4 @@ class StringData extends PrimitiveBase implements StringInterface {
   public function getCastedValue() {
     return $this->getString();
   }
-
 }

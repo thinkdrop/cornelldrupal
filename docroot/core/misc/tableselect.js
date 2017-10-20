@@ -11,9 +11,6 @@
    * Initialize tableSelects.
    *
    * @type {Drupal~behavior}
-   *
-   * @prop {Drupal~behaviorAttach} attach
-   *   Attaches tableSelect functionality.
    */
   Drupal.behaviors.tableSelect = {
     attach: function (context, settings) {
@@ -45,17 +42,12 @@
     var updateSelectAll = function (state) {
       // Update table's select-all checkbox (and sticky header's if available).
       $table.prev('table.sticky-header').addBack().find('th.select-all input[type="checkbox"]').each(function () {
-        var $checkbox = $(this);
-        var stateChanged = $checkbox.prop('checked') !== state;
-
-        $checkbox.attr('title', state ? strings.selectNone : strings.selectAll);
+        $(this).attr('title', state ? strings.selectNone : strings.selectAll);
 
         /**
-         * @checkbox {HTMLElement}
+         * @this {HTMLElement}
          */
-        if (stateChanged) {
-          $checkbox.prop('checked', state).trigger('change');
-        }
+        this.checked = state;
       });
     };
 
@@ -65,22 +57,18 @@
         // Loop through all checkboxes and set their state to the select all
         // checkbox' state.
         checkboxes.each(function () {
-          var $checkbox = $(this);
-          var stateChanged = $checkbox.prop('checked') !== event.target.checked;
 
           /**
-           * @checkbox {HTMLElement}
+           * @this {HTMLElement}
            */
-          if (stateChanged) {
-            $checkbox.prop('checked', event.target.checked).trigger('change');
-          }
+          this.checked = event.target.checked;
           // Either add or remove the selected class based on the state of the
           // check all checkbox.
 
           /**
-           * @checkbox {HTMLElement}
+           * @this {HTMLElement}
            */
-          $checkbox.closest('tr').toggleClass('selected', this.checked);
+          $(this).closest('tr').toggleClass('selected', this.checked);
         });
         // Update the title and the state of the check all box.
         updateSelectAll(event.target.checked);
@@ -101,7 +89,7 @@
       // range. Also make sure that we are actually checking checkboxes
       // over a range and that a checkbox has been checked or unchecked before.
       if (e.shiftKey && lastChecked && lastChecked !== e.target) {
-        // We use the checkbox's parent <tr> to do our range searching.
+        // We use the checkbox's parent TR to do our range searching.
         Drupal.tableSelectRange($(e.target).closest('tr')[0], $(lastChecked).closest('tr')[0], e.target.checked);
       }
 
@@ -120,11 +108,8 @@
 
   /**
    * @param {HTMLElement} from
-   *   The HTML element representing the "from" part of the range.
    * @param {HTMLElement} to
-   *   The HTML element representing the "to" part of the range.
    * @param {bool} state
-   *   The state to set on the range.
    */
   Drupal.tableSelectRange = function (from, to, state) {
     // We determine the looping mode based on the order of from and to.

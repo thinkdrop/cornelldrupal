@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\locale\PoDatabaseReader.
+ */
+
 namespace Drupal\locale;
 
 use Drupal\Component\Gettext\PoHeader;
@@ -45,7 +50,7 @@ class PoDatabaseReader implements PoReaderInterface {
    * Constructor, initializes with default options.
    */
   public function __construct() {
-    $this->setOptions([]);
+    $this->setOptions(array());
   }
 
   /**
@@ -73,11 +78,11 @@ class PoDatabaseReader implements PoReaderInterface {
    * Set the options for the current reader.
    */
   public function setOptions(array $options) {
-    $options += [
+    $options += array(
       'customized' => FALSE,
       'not_customized' => FALSE,
       'not_translated' => FALSE,
-    ];
+    );
     $this->options = $options;
   }
 
@@ -104,7 +109,7 @@ class PoDatabaseReader implements PoReaderInterface {
   private function loadStrings() {
     $langcode = $this->langcode;
     $options = $this->options;
-    $conditions = [];
+    $conditions = array();
 
     if (array_sum($options) == 0) {
       // If user asked to not include anything in the translation files,

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\DatabaseBackendFactory.
+ */
+
 namespace Drupal\Core\Cache;
 
 use Drupal\Core\Database\Connection;
@@ -28,7 +33,7 @@ class DatabaseBackendFactory implements CacheFactoryInterface {
    * @param \Drupal\Core\Cache\CacheTagsChecksumInterface $checksum_provider
    *   The cache tags checksum provider.
    */
-  public function __construct(Connection $connection, CacheTagsChecksumInterface $checksum_provider) {
+  function __construct(Connection $connection, CacheTagsChecksumInterface $checksum_provider) {
     $this->connection = $connection;
     $this->checksumProvider = $checksum_provider;
   }
@@ -42,7 +47,7 @@ class DatabaseBackendFactory implements CacheFactoryInterface {
    * @return \Drupal\Core\Cache\DatabaseBackend
    *   The cache backend object for the specified cache bin.
    */
-  public function get($bin) {
+  function get($bin) {
     return new DatabaseBackend($this->connection, $this->checksumProvider, $bin);
   }
 

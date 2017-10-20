@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\aggregator\Form\FeedDeleteForm.
+ */
+
 namespace Drupal\aggregator\Form;
 
 use Drupal\Core\Entity\ContentEntityDeleteForm;
@@ -28,9 +33,9 @@ class FeedDeleteForm extends ContentEntityDeleteForm {
    * {@inheritdoc}
    */
   protected function getDeletionMessage() {
-    return $this->t('The feed %label has been deleted.', [
+    return $this->t('The feed %label has been deleted.', array(
       '%label' => $this->entity->label(),
-    ]);
+    ));
   }
 
 }

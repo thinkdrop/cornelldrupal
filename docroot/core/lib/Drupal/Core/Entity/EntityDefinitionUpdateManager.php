@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityDefinitionUpdateManager.
+ */
+
 namespace Drupal\Core\Entity;
 
 use Drupal\Core\Entity\Schema\DynamicallyFieldableEntityStorageSchemaInterface;
@@ -42,20 +47,21 @@ class EntityDefinitionUpdateManager implements EntityDefinitionUpdateManagerInte
    * {@inheritdoc}
    */
   public function getChangeSummary() {
-    $summary = [];
+    $summary = array();
 
     foreach ($this->getChangeList() as $entity_type_id => $change_list) {
       // Process entity type definition changes.
       if (!empty($change_list['entity_type'])) {
         $entity_type = $this->entityManager->getDefinition($entity_type_id);
+        $t_args = array('%entity_type' => $entity_type->getLabel());
 
         switch ($change_list['entity_type']) {
           case static::DEFINITION_CREATED:
-            $summary[$entity_type_id][] = $this->t('The %entity_type entity type needs to be installed.', ['%entity_type' => $entity_type->getLabel()]);
+            $summary[$entity_type_id][] = $this->t('Create the %entity_type entity type.', $t_args);
             break;
 
           case static::DEFINITION_UPDATED:
-            $summary[$entity_type_id][] = $this->t('The %entity_type entity type needs to be updated.', ['%entity_type' => $entity_type->getLabel()]);
+            $summary[$entity_type_id][] = $this->t('Update the %entity_type entity type.', $t_args);
             break;
         }
       }
@@ -68,15 +74,15 @@ class EntityDefinitionUpdateManager implements EntityDefinitionUpdateManagerInte
         foreach ($change_list['field_storage_definitions'] as $field_name => $change) {
           switch ($change) {
             case static::DEFINITION_CREATED:
-              $summary[$entity_type_id][] = $this->t('The %field_name field needs to be installed.', ['%field_name' => $storage_definitions[$field_name]->getLabel()]);
+              $summary[$entity_type_id][] = $this->t('Create the %field_name field.', array('%field_name' => $storage_definitions[$field_name]->getLabel()));
               break;
 
             case static::DEFINITION_UPDATED:
-              $summary[$entity_type_id][] = $this->t('The %field_name field needs to be updated.', ['%field_name' => $storage_definitions[$field_name]->getLabel()]);
+              $summary[$entity_type_id][] = $this->t('Update the %field_name field.', array('%field_name' => $storage_definitions[$field_name]->getLabel()));
               break;
 
             case static::DEFINITION_DELETED:
-              $summary[$entity_type_id][] = $this->t('The %field_name field needs to be uninstalled.', ['%field_name' => $original_storage_definitions[$field_name]->getLabel()]);
+              $summary[$entity_type_id][] = $this->t('Delete the %field_name field.', array('%field_name' => $original_storage_definitions[$field_name]->getLabel()));
               break;
           }
         }
@@ -259,7 +265,7 @@ class EntityDefinitionUpdateManager implements EntityDefinitionUpdateManagerInte
    */
   protected function getChangeList() {
     $this->entityManager->useCaches(FALSE);
-    $change_list = [];
+    $change_list = array();
 
     foreach ($this->entityManager->getDefinitions() as $entity_type_id => $entity_type) {
       $original = $this->entityManager->getLastInstalledDefinition($entity_type_id);
@@ -275,7 +281,7 @@ class EntityDefinitionUpdateManager implements EntityDefinitionUpdateManagerInte
         }
 
         if ($this->entityManager->getStorage($entity_type_id) instanceof DynamicallyFieldableEntityStorageInterface) {
-          $field_changes = [];
+          $field_changes = array();
           $storage_definitions = $this->entityManager->getFieldStorageDefinitions($entity_type_id);
           $original_storage_definitions = $this->entityManager->getLastInstalledFieldStorageDefinitions($entity_type_id);
 

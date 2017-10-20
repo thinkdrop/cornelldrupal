@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Plugin\Discovery\StaticDiscovery.
+ */
+
 namespace Drupal\Component\Plugin\Discovery;
 
 /**
@@ -15,7 +20,7 @@ class StaticDiscovery implements DiscoveryInterface {
    */
   public function getDefinitions() {
     if (!$this->definitions) {
-      $this->definitions = [];
+      $this->definitions = array();
     }
     return $this->definitions;
   }
@@ -33,5 +38,4 @@ class StaticDiscovery implements DiscoveryInterface {
   public function deleteDefinition($plugin) {
     unset($this->definitions[$plugin]);
   }
-
 }

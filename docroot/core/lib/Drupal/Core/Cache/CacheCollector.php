@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\CacheCollector.
+ */
+
 namespace Drupal\Core\Cache;
 
 use Drupal\Component\Utility\Crypt;
@@ -56,21 +61,21 @@ abstract class CacheCollector implements CacheCollectorInterface, DestructableIn
    *
    * @var array
    */
-  protected $keysToPersist = [];
+  protected $keysToPersist = array();
 
   /**
    * An array of keys to remove from the cache on service termination.
    *
    * @var array
    */
-  protected $keysToRemove = [];
+  protected $keysToRemove = array();
 
   /**
    * Storage for the data itself.
    *
    * @var array
    */
-  protected $storage = [];
+  protected $storage = array();
 
   /**
    * Stores the cache creation time.
@@ -110,7 +115,7 @@ abstract class CacheCollector implements CacheCollectorInterface, DestructableIn
    * @param array $tags
    *   (optional) The tags to specify for the cache item.
    */
-  public function __construct($cid, CacheBackendInterface $cache, LockBackendInterface $lock, array $tags = []) {
+  public function __construct($cid, CacheBackendInterface $cache, LockBackendInterface $lock, array $tags = array()) {
     assert('\Drupal\Component\Assertion\Inspector::assertAllStrings($tags)', 'Cache tags must be strings.');
     $this->cid = $cid;
     $this->cache = $cache;
@@ -216,7 +221,7 @@ abstract class CacheCollector implements CacheCollectorInterface, DestructableIn
    *   TRUE.
    */
   protected function updateCache($lock = TRUE) {
-    $data = [];
+    $data = array();
     foreach ($this->keysToPersist as $offset => $persist) {
       if ($persist) {
         $data[$offset] = $this->storage[$offset];
@@ -246,18 +251,6 @@ abstract class CacheCollector implements CacheCollectorInterface, DestructableIn
         }
         $data = array_merge($cache->data, $data);
       }
-      elseif ($this->cacheCreated) {
-        // Getting here indicates that there was a cache entry at the
-        // beginning of the request, but now it's gone (some other process
-        // must have cleared it). We back out to prevent corrupting the cache
-        // with incomplete data, since we won't be able to properly merge
-        // the existing cache data from earlier with the new data.
-        // A future request will properly hydrate the cache from scratch.
-        if ($lock) {
-          $this->lock->release($lock_name);
-        }
-        return;
-      }
       // Remove keys marked for deletion.
       foreach ($this->keysToRemove as $delete_key) {
         unset($data[$delete_key]);
@@ -268,8 +261,8 @@ abstract class CacheCollector implements CacheCollectorInterface, DestructableIn
       }
     }
 
-    $this->keysToPersist = [];
-    $this->keysToRemove = [];
+    $this->keysToPersist = array();
+    $this->keysToRemove = array();
   }
 
   /**
@@ -300,9 +293,9 @@ abstract class CacheCollector implements CacheCollectorInterface, DestructableIn
    * {@inheritdoc}
    */
   public function reset() {
-    $this->storage = [];
-    $this->keysToPersist = [];
-    $this->keysToRemove = [];
+    $this->storage = array();
+    $this->keysToPersist = array();
+    $this->keysToRemove = array();
     $this->cacheLoaded = FALSE;
   }
 

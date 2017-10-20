@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\StringTranslation\Translator\TranslatorInterface.
+ */
+
 namespace Drupal\Core\StringTranslation\Translator;
 
 /**
@@ -17,7 +22,7 @@ interface TranslatorInterface {
    * @param string $context
    *   The string context.
    *
-   * @return string|false
+   * @return string|FALSE
    *   Translated string if there is a translation, FALSE if not.
    */
   public function getStringTranslation($langcode, $string, $context);

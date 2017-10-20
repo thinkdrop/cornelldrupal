@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Ajax\AjaxTestBase.
+ */
+
 namespace Drupal\system\Tests\Ajax;
 
 use Drupal\simpletest\WebTestBase;
@@ -14,7 +19,7 @@ abstract class AjaxTestBase extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'ajax_test', 'ajax_forms_test'];
+  public static $modules = array('node', 'ajax_test', 'ajax_forms_test');
 
   /**
    * Asserts the array of Ajax commands contains the searched command.
@@ -51,7 +56,7 @@ abstract class AjaxTestBase extends WebTestBase {
       // If the command has additional data that we're not testing for, do not
       // consider that a failure. Also, == instead of ===, because we don't
       // require the key/value pairs to be in any particular order
-      // (http://php.net/manual/language.operators.array.php).
+      // (http://www.php.net/manual/language.operators.array.php).
       if (array_intersect_key($command, $needle) == $needle) {
         $found = TRUE;
         break;
@@ -59,5 +64,4 @@ abstract class AjaxTestBase extends WebTestBase {
     }
     $this->assertTrue($found, $message);
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\File\MimeType\MimeTypeGuesser.
+ */
+
 namespace Drupal\Core\File\MimeType;
 
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
@@ -17,7 +22,7 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface {
    *
    * @var array
    */
-  protected $guessers = [];
+  protected $guessers = array();
 
   /**
    * Holds the array of guessers sorted by priority.
@@ -31,7 +36,7 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface {
    */
   protected $sortedGuessers = NULL;
 
-  /**
+   /**
    * The stream wrapper manager.
    *
    * @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface
@@ -41,7 +46,7 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface {
   /**
    * Constructs a MimeTypeGuesser object.
    *
-   * @param StreamWrapperManagerInterface $stream_wrapper_manager
+   * @param StreamWrapperManagerInterface $streamWrapperManager
    *   The stream wrapper manager.
    */
   public function __construct(StreamWrapperManagerInterface $stream_wrapper_manager) {
@@ -53,12 +58,8 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface {
    */
   public function guess($path) {
     if ($wrapper = $this->streamWrapperManager->getViaUri($path)) {
-      // Get the real path from the stream wrapper, if available. Files stored
-      // in remote file systems will not have one.
-      $real_path = $wrapper->realpath();
-      if ($real_path !== FALSE) {
-        $path = $real_path;
-      }
+      // Get the real path from the stream wrapper.
+      $path = $wrapper->realpath();
     }
 
     if ($this->sortedGuessers === NULL) {
@@ -98,7 +99,7 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface {
    *   A sorted array of MIME type guesser objects.
    */
   protected function sortGuessers() {
-    $sorted = [];
+    $sorted = array();
     krsort($this->guessers);
 
     foreach ($this->guessers as $guesser) {
@@ -108,7 +109,7 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface {
   }
 
   /**
-   * A helper function to register with Symfony's singleton MIME type guesser.
+   * A helper function to register with Symfony's singleton mime type guesser.
    *
    * Symfony's default mimetype guessers have dependencies on PHP's fileinfo
    * extension or being able to run the system command file. Drupal's guesser

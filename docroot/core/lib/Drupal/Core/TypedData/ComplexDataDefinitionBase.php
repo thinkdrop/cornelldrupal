@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\ComplexDataDefinitionBase.
+ */
+
 namespace Drupal\Core\TypedData;
 
 /**
@@ -23,9 +28,11 @@ abstract class ComplexDataDefinitionBase extends DataDefinition implements Compl
    * {@inheritdoc}
    */
   public function getPropertyDefinition($name) {
-    $definitions = $this->getPropertyDefinitions();
-    if (isset($definitions[$name])) {
-      return $definitions[$name];
+    if (!isset($this->propertyDefinitions)) {
+      $this->getPropertyDefinitions();
+    }
+    if (isset($this->propertyDefinitions[$name])) {
+      return $this->propertyDefinitions[$name];
     }
   }
 

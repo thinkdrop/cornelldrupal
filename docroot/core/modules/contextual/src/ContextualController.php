@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\contextual\ContextualController.
+ */
+
 namespace Drupal\contextual;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -32,12 +37,12 @@ class ContextualController implements ContainerAwareInterface {
       throw new BadRequestHttpException(t('No contextual ids specified.'));
     }
 
-    $rendered = [];
+    $rendered = array();
     foreach ($ids as $id) {
-      $element = [
+      $element = array(
         '#type' => 'contextual_links',
         '#contextual_links' => _contextual_id_to_links($id),
-      ];
+      );
       $rendered[$id] = $this->container->get('renderer')->renderRoot($element);
     }
 

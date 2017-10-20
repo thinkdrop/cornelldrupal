@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\StorageComparerInterface.
+ */
+
 namespace Drupal\Core\Config;
 
 /**
@@ -67,10 +72,10 @@ interface StorageComparerInterface {
    *
    * Until the changelist has been calculated this will always be FALSE.
    *
+   * @see \Drupal\Core\Config\StorageComparerInterface::createChangelist().
+   *
    * @return bool
    *   TRUE if there are changes to process and FALSE if not.
-   *
-   * @see \Drupal\Core\Config\StorageComparerInterface::createChangelist()
    */
   public function hasChanges();
 

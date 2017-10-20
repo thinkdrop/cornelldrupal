@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Field\FieldItemListTest.
+ */
+
 namespace Drupal\Tests\Core\Field;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -208,5 +213,4 @@ class FieldItemListTest extends UnitTestCase {
 
     $this->assertNull($field_list->defaultValuesFormSubmit([], $form, $form_state));
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Dropbutton.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 /**
@@ -46,12 +51,12 @@ class Dropbutton extends RenderElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
-      '#pre_render' => [
-        [$class, 'preRenderDropbutton'],
-      ],
+    return array(
+      '#pre_render' => array(
+        array($class, 'preRenderDropbutton'),
+      ),
       '#theme' => 'links__dropbutton',
-    ];
+    );
   }
 
   /**
@@ -61,7 +66,7 @@ class Dropbutton extends RenderElement {
     $element['#attached']['library'][] = 'core/drupal.dropbutton';
     $element['#attributes']['class'][] = 'dropbutton';
     if (!isset($element['#theme_wrappers'])) {
-      $element['#theme_wrappers'] = [];
+      $element['#theme_wrappers'] = array();
     }
     array_unshift($element['#theme_wrappers'], 'dropbutton_wrapper');
 

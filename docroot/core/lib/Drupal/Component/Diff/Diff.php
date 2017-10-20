@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Diff\Diff.
+ */
+
 namespace Drupal\Component\Diff;
 
 use Drupal\Component\Diff\Engine\DiffEngine;
@@ -49,7 +54,7 @@ class Diff {
    */
   public function reverse() {
     $rev = $this;
-    $rev->edits = [];
+    $rev->edits = array();
     foreach ($this->edits as $edit) {
       $rev->edits[] = $edit->reverse();
     }
@@ -96,7 +101,7 @@ class Diff {
    * @return array The original sequence of strings.
    */
   public function orig() {
-    $lines = [];
+    $lines = array();
 
     foreach ($this->edits as $edit) {
       if ($edit->orig) {
@@ -115,7 +120,7 @@ class Diff {
    * @return array The sequence of strings.
    */
   public function closing() {
-    $lines = [];
+    $lines = array();
 
     foreach ($this->edits as $edit) {
       if ($edit->closing) {
@@ -168,5 +173,5 @@ class Diff {
   public function getEdits() {
     return $this->edits;
   }
-
 }
+

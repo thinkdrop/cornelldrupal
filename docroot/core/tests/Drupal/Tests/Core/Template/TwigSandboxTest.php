@@ -7,7 +7,6 @@
 
 namespace Drupal\Tests\Core\Template;
 
-use Drupal\Core\Template\Attribute;
 use Drupal\Core\Template\TwigSandboxPolicy;
 use Drupal\Core\Template\Loader\StringLoader;
 use Drupal\Tests\UnitTestCase;
@@ -45,10 +44,10 @@ class TwigSandboxTest extends UnitTestCase {
    * Tests that dangerous methods cannot be called in entity objects.
    *
    * @dataProvider getTwigEntityDangerousMethods
+   * @expectedException \Twig_Sandbox_SecurityError
    */
   public function testEntityDangerousMethods($template) {
     $entity = $this->getMock('Drupal\Core\Entity\EntityInterface');
-    $this->setExpectedException(\Twig_Sandbox_SecurityError::class);
     $this->twig->render($template, ['entity' => $entity]);
   }
 
@@ -63,13 +62,6 @@ class TwigSandboxTest extends UnitTestCase {
       ['{{ entity.save }}'],
       ['{{ entity.create }}'],
     ];
-  }
-
-  /**
-   * Tests that white listed classes can be extended.
-   */
-  public function testExtendedClass() {
-    $this->assertEquals(' class=&quot;kitten&quot;', $this->twig->render('{{ attribute.addClass("kitten") }}', ['attribute' => new TestAttribute()]));
   }
 
   /**
@@ -140,20 +132,4 @@ class TwigSandboxTest extends UnitTestCase {
     $this->assertEquals($result, 'testing', 'Sandbox policy allows get() to be called.');
   }
 
-  /**
-   * Tests that safe methods inside Url objects can be called.
-   */
-  public function testUrlSafeMethods() {
-    $url = $this->getMockBuilder('Drupal\Core\Url')
-      ->disableOriginalConstructor()
-      ->getMock();
-    $url->expects($this->once())
-      ->method('toString')
-      ->willReturn('http://kittens.cat/are/cute');
-    $result = $this->twig->render('{{ url.toString }}', ['url' => $url]);
-    $this->assertEquals($result, 'http://kittens.cat/are/cute', 'Sandbox policy allows toString() to be called.');
-  }
-
 }
-
-class TestAttribute extends Attribute {}

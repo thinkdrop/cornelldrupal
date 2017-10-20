@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\field\Plugin\migrate\process\d6\FieldInstanceSettings.
+ */
+
 namespace Drupal\field\Plugin\migrate\process\d6;
 
 use Drupal\migrate\MigrateExecutableInterface;
@@ -20,7 +25,7 @@ class FieldInstanceSettings extends ProcessPluginBase {
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     list($widget_type, $widget_settings, $field_settings) = $value;
-    $settings = [];
+    $settings = array();
     switch ($widget_type) {
       case 'number':
         $settings['min'] = $field_settings['min'];
@@ -33,7 +38,7 @@ class FieldInstanceSettings extends ProcessPluginBase {
         // $settings['url'] = $widget_settings['default_value'][0]['url'];
         // D6 has optional, required, value and none. D8 only has disabled (0)
         // optional (1) and required (2).
-        $map = ['disabled' => 0, 'optional' => 1, 'required' => 2];
+        $map = array('disabled' => 0, 'optional' => 1, 'required' => 2);
         $settings['title'] = $map[$field_settings['title']];
         break;
 
@@ -46,16 +51,14 @@ class FieldInstanceSettings extends ProcessPluginBase {
 
       case 'imagefield_widget':
         $settings['file_extensions'] = $widget_settings['file_extensions'];
-        $settings['file_directory'] = $widget_settings['file_path'];
+        $settings['file_directory'] = 'public://';
         $settings['max_filesize'] = $this->convertSizeUnit($widget_settings['max_filesize_per_file']);
         $settings['alt_field'] = $widget_settings['alt'];
         $settings['alt_field_required'] = $widget_settings['custom_alt'];
         $settings['title_field'] = $widget_settings['title'];
         $settings['title_field_required'] = $widget_settings['custom_title'];
-        // With nothing entered for min or max resolution in Drupal 6, zero is
-        // stored. For Drupal 8 this should be an empty string.
-        $settings['max_resolution'] = !empty($widget_settings['max_resolution']) ? $widget_settings['max_resolution'] : '';
-        $settings['min_resolution'] = !empty($widget_settings['min_resolution']) ? $widget_settings['min_resolution'] : '';
+        $settings['max_resolution'] = $widget_settings['max_resolution'];
+        $settings['min_resolution'] = $widget_settings['min_resolution'];
         break;
 
     }

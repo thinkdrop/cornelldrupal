@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Hidden.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 use Drupal\Core\Render\Element;
@@ -31,16 +36,16 @@ class Hidden extends FormElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
+    return array(
       '#input' => TRUE,
-      '#process' => [
-        [$class, 'processAjaxForm'],
-      ],
-      '#pre_render' => [
-        [$class, 'preRenderHidden'],
-      ],
+      '#process' => array(
+        array($class, 'processAjaxForm'),
+      ),
+      '#pre_render' => array(
+        array($class, 'preRenderHidden'),
+      ),
       '#theme' => 'input__hidden',
-    ];
+    );
   }
 
   /**
@@ -55,7 +60,7 @@ class Hidden extends FormElement {
    */
   public static function preRenderHidden($element) {
     $element['#attributes']['type'] = 'hidden';
-    Element::setAttributes($element, ['name', 'value']);
+    Element::setAttributes($element, array('name', 'value'));
 
     return $element;
   }

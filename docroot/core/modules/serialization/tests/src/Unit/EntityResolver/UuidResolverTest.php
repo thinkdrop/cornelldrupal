@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\serialization\Unit\EntityResolver\UuidResolverTest.
+ */
+
 namespace Drupal\Tests\serialization\Unit\EntityResolver;
 
 use Drupal\Tests\UnitTestCase;
@@ -44,7 +49,7 @@ class UuidResolverTest extends UnitTestCase {
       ->method('loadEntityByUuid');
 
     $normalizer = $this->getMock('Symfony\Component\Serializer\Normalizer\NormalizerInterface');
-    $this->assertNull($this->resolver->resolve($normalizer, [], 'test_type'));
+    $this->assertNull($this->resolver->resolve($normalizer, array(), 'test_type'));
   }
 
   /**
@@ -57,9 +62,9 @@ class UuidResolverTest extends UnitTestCase {
     $normalizer = $this->getMock('Drupal\serialization\EntityResolver\UuidReferenceInterface');
     $normalizer->expects($this->once())
       ->method('getUuid')
-      ->with([])
+      ->with(array())
       ->will($this->returnValue(NULL));
-    $this->assertNull($this->resolver->resolve($normalizer, [], 'test_type'));
+    $this->assertNull($this->resolver->resolve($normalizer, array(), 'test_type'));
   }
 
   /**
@@ -76,10 +81,10 @@ class UuidResolverTest extends UnitTestCase {
     $normalizer = $this->getMock('Drupal\serialization\EntityResolver\UuidReferenceInterface');
     $normalizer->expects($this->once())
       ->method('getUuid')
-      ->with([])
+      ->with(array())
       ->will($this->returnValue($uuid));
 
-    $this->assertNull($this->resolver->resolve($normalizer, [], 'test_type'));
+    $this->assertNull($this->resolver->resolve($normalizer, array(), 'test_type'));
   }
 
   /**
@@ -101,9 +106,9 @@ class UuidResolverTest extends UnitTestCase {
     $normalizer = $this->getMock('Drupal\serialization\EntityResolver\UuidReferenceInterface');
     $normalizer->expects($this->once())
       ->method('getUuid')
-      ->with([])
+      ->with(array())
       ->will($this->returnValue($uuid));
-    $this->assertSame(1, $this->resolver->resolve($normalizer, [], 'test_type'));
+    $this->assertSame(1, $this->resolver->resolve($normalizer, array(), 'test_type'));
   }
 
 }

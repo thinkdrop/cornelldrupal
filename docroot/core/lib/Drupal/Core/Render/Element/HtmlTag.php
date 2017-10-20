@@ -1,33 +1,20 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\HtmlTag.
+ */
+
 namespace Drupal\Core\Render\Element;
 
-use Drupal\Component\Render\MarkupInterface;
 use Drupal\Component\Utility\Html as HtmlUtility;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Render\Markup;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Template\Attribute;
 
 /**
  * Provides a render element for any HTML tag, with properties and value.
- *
- * Properties:
- * - #tag: The tag name to output.
- * - #attributes: (array, optional) HTML attributes to apply to the tag. The
- *   attributes are escaped, see \Drupal\Core\Template\Attribute.
- * - #value: (string, optional) A string containing the textual contents of
- *   the tag.
- * - #noscript: (bool, optional) When set to TRUE, the markup
- *   (including any prefix or suffix) will be wrapped in a <noscript> element.
- *
- * Usage example:
- * @code
- * $build['hello'] = [
- *   '#type' => 'html_tag',
- *   '#tag' => 'p',
- *   '#value' => $this->t('Hello World'),
- * ];
- * @endcode
  *
  * @RenderElement("html_tag")
  */
@@ -38,24 +25,24 @@ class HtmlTag extends RenderElement {
    * @see http://www.w3.org/TR/html5/syntax.html#syntax-start-tag
    * @see http://www.w3.org/TR/html5/syntax.html#void-elements
    */
-  static protected $voidElements = [
+  static protected $voidElements = array(
     'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
     'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr',
-  ];
+  );
 
   /**
    * {@inheritdoc}
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
-      '#pre_render' => [
-        [$class, 'preRenderConditionalComments'],
-        [$class, 'preRenderHtmlTag'],
-      ],
-      '#attributes' => [],
+    return array(
+      '#pre_render' => array(
+        array($class, 'preRenderConditionalComments'),
+        array($class, 'preRenderHtmlTag'),
+      ),
+      '#attributes' => array(),
       '#value' => NULL,
-    ];
+    );
   }
 
   /**
@@ -92,7 +79,7 @@ class HtmlTag extends RenderElement {
     // Construct all other elements.
     else {
       $markup .= '>';
-      $markup .= $element['#value'] instanceof MarkupInterface ? $element['#value'] : Xss::filterAdmin($element['#value']);
+      $markup .= SafeMarkup::isSafe($element['#value']) ? $element['#value'] : Xss::filterAdmin($element['#value']);
       $markup .= '</' . $escaped_tag . ">\n";
     }
     if (!empty($element['#noscript'])) {
@@ -132,11 +119,11 @@ class HtmlTag extends RenderElement {
    *   added to '#prefix' and '#suffix'.
    */
   public static function preRenderConditionalComments($element) {
-    $browsers = isset($element['#browsers']) ? $element['#browsers'] : [];
-    $browsers += [
+    $browsers = isset($element['#browsers']) ? $element['#browsers'] : array();
+    $browsers += array(
       'IE' => TRUE,
       '!IE' => TRUE,
-    ];
+    );
 
     // If rendering in all browsers, no need for conditional comments.
     if ($browsers['IE'] === TRUE && $browsers['!IE']) {
@@ -160,17 +147,17 @@ class HtmlTag extends RenderElement {
     // conditional comment markup. The conditional comment expression is
     // evaluated by Internet Explorer only. To control the rendering by other
     // browsers, use either the "downlevel-hidden" or "downlevel-revealed"
-    // technique. See http://wikipedia.org/wiki/Conditional_comment
+    // technique. See http://en.wikipedia.org/wiki/Conditional_comment
     // for details.
 
     // Ensure what we are dealing with is safe.
     // This would be done later anyway in drupal_render().
     $prefix = isset($element['#prefix']) ? $element['#prefix'] : '';
-    if ($prefix && !($prefix instanceof MarkupInterface)) {
+    if ($prefix && !SafeMarkup::isSafe($prefix)) {
       $prefix = Xss::filterAdmin($prefix);
     }
     $suffix = isset($element['#suffix']) ? $element['#suffix'] : '';
-    if ($suffix && !($suffix instanceof MarkupInterface)) {
+    if ($suffix && !SafeMarkup::isSafe($suffix)) {
       $suffix = Xss::filterAdmin($suffix);
     }
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Authentication\Provider\Cookie.
+ */
+
 namespace Drupal\user\Authentication\Provider;
 
 use Drupal\Core\Authentication\AuthenticationProviderInterface;
@@ -62,7 +67,7 @@ class Cookie implements AuthenticationProviderInterface {
    * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
    *   The session.
    *
-   * @return \Drupal\Core\Session\AccountInterface|null
+   * @return \Drupal\Core\Session\AccountInterface|NULL
    *   The UserSession object for the current user, or NULL if this is an
    *   anonymous session.
    */

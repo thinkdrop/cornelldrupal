@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Validation\Plugin\Validation\Constraint\PrimitiveTypeConstraintValidator.
+ */
+
 namespace Drupal\Core\Validation\Plugin\Validation\Constraint;
 
 use Drupal\Core\TypedData\Type\BinaryInterface;
@@ -72,10 +77,9 @@ class PrimitiveTypeConstraintValidator extends ConstraintValidator {
 
     if (!$valid) {
       // @todo: Provide a good violation message for each problem.
-      $this->context->addViolation($constraint->message, [
+      $this->context->addViolation($constraint->message, array(
         '%value' => is_object($value) ? get_class($value) : (is_array($value) ? 'Array' : (string) $value)
-      ]);
+      ));
     }
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\NullBackend.
+ */
+
 namespace Drupal\Core\Cache;
 
 /**
@@ -36,18 +41,18 @@ class NullBackend implements CacheBackendInterface {
    * {@inheritdoc}
    */
   public function getMultiple(&$cids, $allow_invalid = FALSE) {
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function set($cid, $data, $expire = Cache::PERMANENT, array $tags = []) {}
+  public function set($cid, $data, $expire = Cache::PERMANENT, array $tags = array()) {}
 
   /**
    * {@inheritdoc}
    */
-  public function setMultiple(array $items = []) {}
+  public function setMultiple(array $items = array()) {}
 
   /**
    * {@inheritdoc}
@@ -88,5 +93,4 @@ class NullBackend implements CacheBackendInterface {
    * {@inheritdoc}
    */
   public function removeBin() {}
-
 }

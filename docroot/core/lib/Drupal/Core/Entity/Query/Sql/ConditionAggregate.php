@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Query\Sql\ConditionAggregate.
+ */
+
 namespace Drupal\Core\Entity\Query\Sql;
 
 use Drupal\Core\Database\Query\SelectInterface;
@@ -39,7 +44,7 @@ class ConditionAggregate extends ConditionAggregateBase {
         $condition_class::translateCondition($condition, $sql_query, $tables->isFieldCaseSensitive($condition['field']));
         $function = $condition['function'];
         $placeholder = ':db_placeholder_' . $conditionContainer->nextPlaceholder();
-        $conditionContainer->having("$function($field) {$condition['operator']} $placeholder", [$placeholder => $condition['value']]);
+        $conditionContainer->having("$function($field) {$condition['operator']} $placeholder", array($placeholder => $condition['value']));
       }
     }
   }

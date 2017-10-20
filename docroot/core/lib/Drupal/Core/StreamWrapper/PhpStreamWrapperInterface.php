@@ -1,11 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\StreamWrapper\PhpStreamWrapperInterface.
+ */
+
 namespace Drupal\Core\StreamWrapper;
 
 /**
  * Defines a generic PHP stream wrapper interface.
  *
- * @see http://php.net/manual/class.streamwrapper.php
+ * @see http://www.php.net/manual/class.streamwrapper.php
  */
 interface PhpStreamWrapperInterface {
 
@@ -64,7 +69,7 @@ interface PhpStreamWrapperInterface {
   public function stream_cast($cast_as);
 
   /**
-   * Closes stream.
+   * @return void
    */
   public function stream_close();
 
@@ -111,7 +116,7 @@ interface PhpStreamWrapperInterface {
    *   Returns TRUE on success or FALSE on failure. If $option is not
    *   implemented, FALSE should be returned.
    *
-   * @see http://php.net/manual/streamwrapper.stream-metadata.php
+   * @see http://www.php.net/manual/streamwrapper.stream-metadata.php
    */
   public function stream_metadata($path, $option, $value);
 

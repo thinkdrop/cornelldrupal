@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\aggregator\Unit\Menu\AggregatorLocalTasksTest.
+ */
+
 namespace Drupal\Tests\aggregator\Unit\Menu;
 
 use Drupal\Tests\Core\Menu\LocalTaskIntegrationTestBase;
@@ -15,7 +20,7 @@ class AggregatorLocalTasksTest extends LocalTaskIntegrationTestBase {
    * {@inheritdoc}
    */
   protected function setUp() {
-    $this->directoryList = ['aggregator' => 'core/modules/aggregator'];
+    $this->directoryList = array('aggregator' => 'core/modules/aggregator');
     parent::setUp();
   }
 
@@ -25,19 +30,19 @@ class AggregatorLocalTasksTest extends LocalTaskIntegrationTestBase {
    * @dataProvider getAggregatorAdminRoutes
    */
   public function testAggregatorAdminLocalTasks($route) {
-    $this->assertLocalTasks($route, [
-      0 => ['aggregator.admin_overview', 'aggregator.admin_settings'],
-    ]);
+    $this->assertLocalTasks($route, array(
+      0 => array('aggregator.admin_overview', 'aggregator.admin_settings'),
+    ));
   }
 
   /**
    * Provides a list of routes to test.
    */
   public function getAggregatorAdminRoutes() {
-    return [
-      ['aggregator.admin_overview'],
-      ['aggregator.admin_settings'],
-    ];
+    return array(
+      array('aggregator.admin_overview'),
+      array('aggregator.admin_settings'),
+    );
   }
 
   /**
@@ -46,9 +51,9 @@ class AggregatorLocalTasksTest extends LocalTaskIntegrationTestBase {
    * @dataProvider getAggregatorSourceRoutes
    */
   public function testAggregatorSourceLocalTasks($route) {
-    $this->assertLocalTasks($route, [
-      0 => ['entity.aggregator_feed.canonical', 'entity.aggregator_feed.edit_form', 'entity.aggregator_feed.delete_form'],
-    ]);
+    $this->assertLocalTasks($route, array(
+      0 => array('entity.aggregator_feed.canonical', 'entity.aggregator_feed.edit_form', 'entity.aggregator_feed.delete_form'),
+    ));
     ;
   }
 
@@ -56,10 +61,10 @@ class AggregatorLocalTasksTest extends LocalTaskIntegrationTestBase {
    * Provides a list of source routes to test.
    */
   public function getAggregatorSourceRoutes() {
-    return [
-      ['entity.aggregator_feed.canonical'],
-      ['entity.aggregator_feed.edit_form'],
-    ];
+    return array(
+      array('entity.aggregator_feed.canonical'),
+      array('entity.aggregator_feed.edit_form'),
+    );
   }
 
 }

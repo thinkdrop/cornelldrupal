@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\migrate_drupal\Unit\source\VariableTest.
+ */
+
 namespace Drupal\Tests\migrate_drupal\Unit\source;
 
 use Drupal\Tests\migrate\Unit\MigrateSqlSourceTestCase;
@@ -13,31 +18,31 @@ class VariableTest extends MigrateSqlSourceTestCase {
 
   const PLUGIN_CLASS = 'Drupal\migrate_drupal\Plugin\migrate\source\Variable';
 
-  protected $migrationConfiguration = [
+  protected $migrationConfiguration = array(
     'id' => 'test',
-    'highWaterProperty' => ['field' => 'test'],
-    'source' => [
+    'highWaterProperty' => array('field' => 'test'),
+    'source' => array(
       'plugin' => 'd6_variable',
-      'variables' => [
+      'variables' => array(
         'foo',
         'bar',
-      ],
-    ],
-  ];
+      ),
+    ),
+  );
 
-  protected $expectedResults = [
-    [
+  protected $expectedResults = array(
+    array(
       'id' => 'foo',
       'foo' => 1,
       'bar' => FALSE,
-    ],
-  ];
+    ),
+  );
 
-  protected $databaseContents = [
-    'variable' => [
-      ['name' => 'foo', 'value' => 'i:1;'],
-      ['name' => 'bar', 'value' => 'b:0;'],
-    ],
-  ];
+  protected $databaseContents = array(
+    'variable' => array(
+      array('name' => 'foo', 'value' => 'i:1;'),
+      array('name' => 'bar', 'value' => 'b:0;'),
+    ),
+  );
 
 }

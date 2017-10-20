@@ -1,11 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Theme\ThemeManager.
+ */
+
 namespace Drupal\Core\Theme;
 
 use Drupal\Component\Render\MarkupInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Routing\StackedRouteMatchInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Template\Attribute;
 
@@ -43,11 +49,9 @@ class ThemeManager implements ThemeManagerInterface {
   protected $themeInitialization;
 
   /**
-   * The module handler.
-   *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  protected $moduleHandler;
+  protected $requestStack;
 
   /**
    * The app root.
@@ -65,13 +69,15 @@ class ThemeManager implements ThemeManagerInterface {
    *   The theme negotiator.
    * @param \Drupal\Core\Theme\ThemeInitializationInterface $theme_initialization
    *   The theme initialization.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler.
    */
-  public function __construct($root, ThemeNegotiatorInterface $theme_negotiator, ThemeInitializationInterface $theme_initialization, ModuleHandlerInterface $module_handler) {
+  public function __construct($root, ThemeNegotiatorInterface $theme_negotiator, ThemeInitializationInterface $theme_initialization, RequestStack $request_stack, ModuleHandlerInterface $module_handler) {
     $this->root = $root;
     $this->themeNegotiator = $theme_negotiator;
     $this->themeInitialization = $theme_initialization;
+    $this->requestStack = $request_stack;
     $this->moduleHandler = $module_handler;
   }
 
@@ -132,11 +138,11 @@ class ThemeManager implements ThemeManagerInterface {
 
     $active_theme = $this->getActiveTheme();
 
-    // If called before all modules are loaded, we do not necessarily have a
-    // full theme registry to work with, and therefore cannot process the theme
+    // If called before all modules are loaded, we do not necessarily have a full
+    // theme registry to work with, and therefore cannot process the theme
     // request properly. See also \Drupal\Core\Theme\Registry::get().
     if (!$this->moduleHandler->isLoaded() && !defined('MAINTENANCE_MODE')) {
-      throw new \Exception('The theme implementations may not be rendered until all modules are loaded.');
+      throw new \Exception(t('_theme() may not be called until all modules are loaded.'));
     }
 
     $theme_registry = $this->themeRegistry->getRuntime();
@@ -171,13 +177,12 @@ class ThemeManager implements ThemeManagerInterface {
         // Only log a message when not trying theme suggestions ($hook being an
         // array).
         if (!isset($candidate)) {
-          \Drupal::logger('theme')->warning('Theme hook %hook not found.', ['%hook' => $hook]);
+          \Drupal::logger('theme')->warning('Theme hook %hook not found.', array('%hook' => $hook));
         }
         // There is no theme implementation for the hook passed. Return FALSE so
-        // the function calling
-        // \Drupal\Core\Theme\ThemeManagerInterface::render() can differentiate
-        // between a hook that exists and renders an empty string, and a hook
-        // that is not implemented.
+        // the function calling _theme() can differentiate between a hook that
+        // exists and renders an empty string and a hook that is not
+        // implemented.
         return FALSE;
       }
     }
@@ -188,7 +193,7 @@ class ThemeManager implements ThemeManagerInterface {
     // the arguments expected by the theme function.
     if (isset($variables['#theme']) || isset($variables['#theme_wrappers'])) {
       $element = $variables;
-      $variables = [];
+      $variables = array();
       if (isset($info['variables'])) {
         foreach (array_keys($info['variables']) as $name) {
           if (isset($element["#$name"]) || array_key_exists("#$name", $element)) {
@@ -208,12 +213,12 @@ class ThemeManager implements ThemeManagerInterface {
       $variables += $info['variables'];
     }
     elseif (!empty($info['render element'])) {
-      $variables += [$info['render element'] => []];
+      $variables += array($info['render element'] => array());
     }
     // Supply original caller info.
-    $variables += [
+    $variables += array(
       'theme_hook_original' => $original_hook,
-    ];
+    );
 
     // Set base hook for later use. For example if '#theme' => 'node__article'
     // is called, we run hook_theme_suggestions_node_alter() rather than
@@ -227,9 +232,9 @@ class ThemeManager implements ThemeManagerInterface {
     }
 
     // Invoke hook_theme_suggestions_HOOK().
-    $suggestions = $this->moduleHandler->invokeAll('theme_suggestions_' . $base_theme_hook, [$variables]);
-    // If the theme implementation was invoked with a direct theme suggestion
-    // like '#theme' => 'node__article', add it to the suggestions array before
+    $suggestions = $this->moduleHandler->invokeAll('theme_suggestions_' . $base_theme_hook, array($variables));
+    // If _theme() was invoked with a direct theme suggestion like
+    // '#theme' => 'node__article', add it to the suggestions array before
     // invoking suggestion alter hooks.
     if (isset($info['base hook'])) {
       $suggestions[] = $hook;
@@ -237,18 +242,18 @@ class ThemeManager implements ThemeManagerInterface {
 
     // Invoke hook_theme_suggestions_alter() and
     // hook_theme_suggestions_HOOK_alter().
-    $hooks = [
+    $hooks = array(
       'theme_suggestions',
       'theme_suggestions_' . $base_theme_hook,
-    ];
+    );
     $this->moduleHandler->alter($hooks, $suggestions, $variables, $base_theme_hook);
     $this->alter($hooks, $suggestions, $variables, $base_theme_hook);
 
     // Check if each suggestion exists in the theme registry, and if so,
-    // use it instead of the base hook. For example, a function may use
-    // '#theme' => 'node', but a module can add 'node__article' as a suggestion
-    // via hook_theme_suggestions_HOOK_alter(), enabling a theme to have
-    // an alternate template file for article nodes.
+    // use it instead of the hook that _theme() was called with. For example, a
+    // function may call _theme('node', ...), but a module can add
+    // 'node__article' as a suggestion via hook_theme_suggestions_HOOK_alter(),
+    // enabling a theme to have an alternate template file for article nodes.
     foreach (array_reverse($suggestions) as $suggestion) {
       if ($theme_registry->has($suggestion)) {
         $info = $theme_registry->get($suggestion);
@@ -347,14 +352,14 @@ class ThemeManager implements ThemeManagerInterface {
       // intuitive, is reasonably safe, and allows us to save on the overhead of
       // adding some new variable to track that.
       if (!isset($variables['directory'])) {
-        $default_template_variables = [];
+        $default_template_variables = array();
         template_preprocess($default_template_variables, $hook, $info);
         $variables += $default_template_variables;
       }
       if (!isset($default_attributes)) {
         $default_attributes = new Attribute();
       }
-      foreach (['attributes', 'title_attributes', 'content_attributes'] as $key) {
+      foreach (array('attributes', 'title_attributes', 'content_attributes') as $key) {
         if (isset($variables[$key]) && !($variables[$key] instanceof Attribute)) {
           if ($variables[$key]) {
             $variables[$key] = new Attribute($variables[$key]);
@@ -427,13 +432,13 @@ class ThemeManager implements ThemeManagerInterface {
       }
     }
 
-    $theme_keys = [];
+    $theme_keys = array();
     foreach ($theme->getBaseThemes() as $base) {
       $theme_keys[] = $base->getName();
     }
 
     $theme_keys[] = $theme->getName();
-    $functions = [];
+    $functions = array();
     foreach ($theme_keys as $theme_key) {
       $function = $theme_key . '_' . $type . '_alter';
       if (function_exists($function)) {

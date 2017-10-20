@@ -1,12 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\router_test\TestControllers.
+ */
+
 namespace Drupal\router_test;
 
 use Drupal\Core\Cache\CacheableResponse;
 use Drupal\Core\ParamConverter\ParamNotConvertedException;
 use Drupal\user\UserInterface;
 use Symfony\Cmf\Component\Routing\RouteObjectInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -100,21 +104,6 @@ class TestControllers {
   public function test24() {
     $this->removeExceptionLogger();
     throw new \Exception('Escaped content: <p> <br> <h3>');
-  }
-
-  public function test25() {
-    return [
-      '#cache' => [
-        'url',
-      ],
-      '#markup' => \Drupal::requestStack()->getCurrentRequest()->getUri(),
-    ];
-  }
-
-  public function testRouteName(Request $request) {
-    return [
-      '#markup' => $request->attributes->get(RouteObjectInterface::ROUTE_NAME),
-    ];
   }
 
   /**

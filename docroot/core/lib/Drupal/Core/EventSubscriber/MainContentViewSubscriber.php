@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\MainContentViewSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Core\Cache\CacheableMetadata;
@@ -101,7 +106,7 @@ class MainContentViewSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  static function getSubscribedEvents() {
     $events[KernelEvents::VIEW][] = ['onViewRenderArray'];
 
     return $events;

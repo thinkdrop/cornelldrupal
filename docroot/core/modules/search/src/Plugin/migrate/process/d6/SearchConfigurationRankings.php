@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\Plugin\migrate\process\d6\SearchConfigurationRankings.
+ */
+
 namespace Drupal\search\Plugin\migrate\process\d6;
 
 use Drupal\migrate\ProcessPluginBase;
@@ -21,7 +26,7 @@ class SearchConfigurationRankings extends ProcessPluginBase {
    * Generate the configuration rankings.
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    $return = [];
+    $return = array();
     foreach ($row->getSource() as $name => $rank) {
       if (substr($name, 0, 10) == 'node_rank_' && $rank) {
         $return[substr($name, 10)] = $rank;

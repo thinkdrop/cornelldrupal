@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Plugin\Discovery\DiscoveryTrait.
+ */
+
 namespace Drupal\Component\Plugin\Discovery;
 
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -30,8 +35,8 @@ trait DiscoveryTrait {
    * @param string $plugin_id
    *   A plugin id.
    * @param bool $exception_on_invalid
-   *   If TRUE, an invalid plugin ID will cause an exception to be thrown; if
-   *   FALSE, NULL will be returned.
+   *   (optional) If TRUE, an invalid plugin ID will throw an exception.
+   *   Defaults to FALSE.
    *
    * @return array|null
    *   A plugin definition, or NULL if the plugin ID is invalid and

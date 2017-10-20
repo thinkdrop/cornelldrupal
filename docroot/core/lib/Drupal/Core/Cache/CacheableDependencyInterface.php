@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\CacheableDependencyInterface.
+ */
 
 namespace Drupal\Core\Cache;
 
@@ -37,7 +41,7 @@ interface CacheableDependencyInterface {
    * When this object is modified, these cache tags will be invalidated.
    *
    * @return string[]
-   *   A set of cache tags.
+   *  A set of cache tags.
    */
   public function getCacheTags();
 

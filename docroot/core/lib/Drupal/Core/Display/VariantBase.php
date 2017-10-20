@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Display\VariantBase.
+ */
+
 namespace Drupal\Core\Display;
 
 use Drupal\Core\Cache\RefinableCacheableDependencyTrait;
@@ -69,9 +74,9 @@ abstract class VariantBase extends PluginBase implements VariantInterface {
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    return [
+    return array(
       'id' => $this->getPluginId(),
-    ] + $this->configuration;
+    ) + $this->configuration;
   }
 
   /**
@@ -86,11 +91,11 @@ abstract class VariantBase extends PluginBase implements VariantInterface {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [
+    return array(
       'label' => '',
       'uuid' => '',
       'weight' => 0,
-    ];
+    );
   }
 
   /**
@@ -104,13 +109,13 @@ abstract class VariantBase extends PluginBase implements VariantInterface {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['label'] = [
+    $form['label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#description' => $this->t('The label for this display variant.'),
       '#default_value' => $this->label(),
       '#maxlength' => '255',
-    ];
+    );
     return $form;
   }
 

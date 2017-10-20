@@ -1,7 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Common\EarlyRenderingControllerTest.
+ */
+
 namespace Drupal\system\Tests\Common;
 
+use Drupal\Core\Render\Element;
 use Drupal\Core\Url;
 use Drupal\simpletest\WebTestBase;
 
@@ -25,7 +31,7 @@ class EarlyRenderingControllerTest extends WebTestBase {
   /**
    * Tests theme preprocess functions being able to attach assets.
    */
-  public function testEarlyRendering() {
+  function testEarlyRendering() {
     // Render array: non-early & early.
     $this->drupalGet(Url::fromRoute('early_rendering_controller_test.render_array'));
     $this->assertResponse(200);

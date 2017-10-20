@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\help\Plugin\Block\HelpBlock.
+ */
+
 namespace Drupal\help\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
@@ -80,36 +85,43 @@ class HelpBlock extends BlockBase implements ContainerFactoryPluginInterface {
   }
 
   /**
+   * Returns the help associated with the active menu item.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request.
+   */
+  protected function getActiveHelp(Request $request) {
+    // Do not show on a 403 or 404 page.
+    if ($request->attributes->has('exception')) {
+      return '';
+    }
+
+    $help = $this->moduleHandler->invokeAll('help', array($this->routeMatch->getRouteName(), $this->routeMatch));
+    return $help ? implode("\n", $help) : '';
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function build() {
-    // Do not show on a 403 or 404 page.
-    if ($this->request->attributes->has('exception')) {
+    $help = $this->getActiveHelp($this->request);
+    if (!$help) {
       return [];
     }
-
-    $implementations = $this->moduleHandler->getImplementations('help');
-    $build = [];
-    $args = [
-      $this->routeMatch->getRouteName(),
-      $this->routeMatch,
-    ];
-    foreach ($implementations as $module) {
-      // Don't add empty strings to $build array.
-      if ($help = $this->moduleHandler->invoke($module, 'help', $args)) {
-        // Convert strings to #markup render arrays so that they will XSS admin
-        // filtered.
-        $build[] = is_array($help) ? $help : ['#markup' => $help];
-      }
+    else {
+      return [
+        '#children' => $help,
+      ];
     }
-    return $build;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCacheContexts() {
-    return Cache::mergeContexts(parent::getCacheContexts(), ['route']);
+    // The "Help" block must be cached per URL: help is defined for a
+    // given path, and does not come with any access restrictions.
+    return Cache::mergeContexts(parent::getCacheContexts(), ['url']);
   }
 
 }

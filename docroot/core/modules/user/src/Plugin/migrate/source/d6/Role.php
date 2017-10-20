@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Plugin\migrate\source\d6\Role.
+ */
+
 namespace Drupal\user\Plugin\migrate\source\d6;
 
 use Drupal\migrate\Row;
@@ -19,15 +24,15 @@ class Role extends DrupalSqlBase {
    *
    * @var array
    */
-  protected $filterPermissions = [];
+  protected $filterPermissions = array();
 
   /**
    * {@inheritdoc}
    */
   public function query() {
     $query = $this->select('role', 'r')
-      ->fields('r', ['rid', 'name'])
-      ->orderBy('r.rid');
+      ->fields('r', array('rid', 'name'))
+      ->orderBy('rid');
     return $query;
   }
 
@@ -35,10 +40,10 @@ class Role extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'rid' => $this->t('Role ID.'),
       'name' => $this->t('The name of the user role.'),
-    ];
+    );
   }
 
   /**
@@ -46,7 +51,7 @@ class Role extends DrupalSqlBase {
    */
   protected function initializeIterator() {
     $filter_roles = $this->select('filter_formats', 'f')
-      ->fields('f', ['format', 'roles'])
+      ->fields('f', array('format', 'roles'))
       ->execute()
       ->fetchAllKeyed();
     foreach ($filter_roles as $format => $roles) {
@@ -65,19 +70,11 @@ class Role extends DrupalSqlBase {
   public function prepareRow(Row $row) {
     $rid = $row->getSourceProperty('rid');
     $permissions = $this->select('permission', 'p')
-      ->fields('p', ['perm'])
+      ->fields('p', array('perm'))
       ->condition('rid', $rid)
       ->execute()
       ->fetchField();
-
-    // If a role has no permissions then set to an empty array. The role will
-    // be migrated and given the default D8 permissions.
-    if ($permissions) {
-      $row->setSourceProperty('permissions', explode(', ', $permissions));
-    }
-    else {
-      $row->setSourceProperty('permissions', []);
-    }
+    $row->setSourceProperty('permissions', explode(', ', $permissions));
     if (isset($this->filterPermissions[$rid])) {
       $row->setSourceProperty("filter_permissions:$rid", $this->filterPermissions[$rid]);
     }

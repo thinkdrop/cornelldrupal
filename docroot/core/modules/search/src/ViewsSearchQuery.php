@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\ViewsSearchQuery.
+ */
+
 namespace Drupal\search;
 
 use Drupal\Core\Database\Query\Condition;
@@ -69,7 +74,7 @@ class ViewsSearchQuery extends SearchQuery {
    *   item from a \Drupal\Core\Database\Query\Condition::conditions array,
    *   which must have a 'field' element.
    */
-  public function conditionReplaceString($search, $replace, &$condition) {
+  function conditionReplaceString($search, $replace, &$condition) {
     if ($condition['field'] instanceof Condition) {
       $conditions =& $condition['field']->conditions();
       foreach ($conditions as $key => &$subcondition) {

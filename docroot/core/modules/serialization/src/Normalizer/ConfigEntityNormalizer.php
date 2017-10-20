@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\serialization\Normalizer\ConfigEntityNormalizer.
+ */
+
 namespace Drupal\serialization\Normalizer;
 
 /**
@@ -12,12 +17,12 @@ class ConfigEntityNormalizer extends EntityNormalizer {
    *
    * @var array
    */
-  protected $supportedInterfaceOrClass = ['Drupal\Core\Config\Entity\ConfigEntityInterface'];
+  protected $supportedInterfaceOrClass = array('Drupal\Core\Config\Entity\ConfigEntityInterface');
 
   /**
    * {@inheritdoc}
    */
-  public function normalize($object, $format = NULL, array $context = []) {
+  public function normalize($object, $format = NULL, array $context = array()) {
     return $object->toArray();
   }
 

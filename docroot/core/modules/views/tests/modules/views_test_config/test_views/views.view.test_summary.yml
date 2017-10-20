@@ -75,7 +75,6 @@ display:
           specify_validation: true
           plugin_id: string
           entity_type: entity_test
-          admin_label: type
       fields:
         id:
           id: id
@@ -96,6 +95,7 @@ display:
       footer: {  }
       empty: {  }
       relationships: {  }
+      fields: {  }
       display_extenders: {  }
     cache_metadata:
       contexts:

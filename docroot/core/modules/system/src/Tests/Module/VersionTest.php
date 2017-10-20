@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Module\VersionTest.
+ */
+
 namespace Drupal\system\Tests\Module;
 
 /**
@@ -12,8 +17,8 @@ class VersionTest extends ModuleTestBase {
   /**
    * Test version dependencies.
    */
-  public function testModuleVersions() {
-    $dependencies = [
+  function testModuleVersions() {
+    $dependencies = array(
       // Alternating between being compatible and incompatible with 8.x-2.4-beta3.
       // The first is always a compatible.
       'common_test',
@@ -43,14 +48,13 @@ class VersionTest extends ModuleTestBase {
       'common_test (>2.4-beta2)',
       // Testing extra version. Incompatible.
       'common_test (>2.4-rc0)',
-    ];
+    );
     \Drupal::state()->set('system_test.dependencies', $dependencies);
     $n = count($dependencies);
     for ($i = 0; $i < $n; $i++) {
       $this->drupalGet('admin/modules');
-      $checkbox = $this->xpath('//input[@id="edit-modules-module-test-enable"]');
+      $checkbox = $this->xpath('//input[@id="edit-modules-testing-module-test-enable"]');
       $this->assertEqual(!empty($checkbox[0]['disabled']), $i % 2, $dependencies[$i]);
     }
   }
-
 }

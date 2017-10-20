@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block\EventSubscriber\BlockPageDisplayVariantSubscriber.
+ */
+
 namespace Drupal\block\EventSubscriber;
 
 use Drupal\Core\Render\PageDisplayVariantSelectionEvent;
@@ -26,8 +31,8 @@ class BlockPageDisplayVariantSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
-    $events[RenderEvents::SELECT_PAGE_DISPLAY_VARIANT][] = ['onSelectPageDisplayVariant'];
+  static function getSubscribedEvents() {
+    $events[RenderEvents::SELECT_PAGE_DISPLAY_VARIANT][] = array('onSelectPageDisplayVariant');
     return $events;
   }
 

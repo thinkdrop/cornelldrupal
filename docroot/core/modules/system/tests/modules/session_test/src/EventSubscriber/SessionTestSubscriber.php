@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\session_test\EventSubscriber\SessionTestSubscriber.
+ */
+
 namespace Drupal\session_test\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -49,8 +54,8 @@ class SessionTestSubscriber implements EventSubscriberInterface {
    *   An array of event listener definitions.
    */
   public static function getSubscribedEvents() {
-    $events[KernelEvents::RESPONSE][] = ['onKernelResponseSessionTest'];
-    $events[KernelEvents::REQUEST][] = ['onKernelRequestSessionTest'];
+    $events[KernelEvents::RESPONSE][] = array('onKernelResponseSessionTest');
+    $events[KernelEvents::REQUEST][] = array('onKernelRequestSessionTest');
     return $events;
   }
 

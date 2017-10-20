@@ -1,13 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\image\Tests\Views\RelationshipUserImageDataTest.
+ */
+
 namespace Drupal\image\Tests\Views;
 
-use Drupal\field\Entity\FieldConfig;
-use Drupal\file\Entity\File;
 use Drupal\views\Tests\ViewTestBase;
 use Drupal\views\Views;
 use Drupal\views\Tests\ViewTestData;
-use Drupal\field\Entity\FieldStorageConfig;
 
 /**
  * Tests image on user relationship handler.
@@ -21,42 +23,42 @@ class RelationshipUserImageDataTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['image', 'image_test_views', 'user'];
+  public static $modules = array('image', 'image_test_views', 'user');
 
   /**
    * Views used by this test.
    *
    * @var array
    */
-  public static $testViews = ['test_image_user_image_data'];
+  public static $testViews = array('test_image_user_image_data');
 
   protected function setUp() {
     parent::setUp();
 
     // Create the user profile field and instance.
-    FieldStorageConfig::create([
+    entity_create('field_storage_config', array(
       'entity_type' => 'user',
       'field_name' => 'user_picture',
       'type' => 'image',
       'translatable' => '0',
-    ])->save();
-    FieldConfig::create([
+    ))->save();
+    entity_create('field_config', array(
       'label' => 'User Picture',
       'description' => '',
       'field_name' => 'user_picture',
       'entity_type' => 'user',
       'bundle' => 'user',
       'required' => 0,
-    ])->save();
+    ))->save();
 
-    ViewTestData::createTestViews(get_class($this), ['image_test_views']);
+    ViewTestData::createTestViews(get_class($this), array('image_test_views'));
   }
 
   /**
    * Tests using the views image relationship.
    */
   public function testViewsHandlerRelationshipUserImageData() {
-    $file = File::create([
+    $file = entity_create('file', array(
       'fid' => 2,
       'uid' => 2,
       'filename' => 'image-test.jpg',
@@ -65,7 +67,7 @@ class RelationshipUserImageDataTest extends ViewTestBase {
       'created' => 1,
       'changed' => 1,
       'status' => FILE_STATUS_PERMANENT,
-    ]);
+    ));
     $file->enforceIsNew();
     file_put_contents($file->getFileUri(), file_get_contents('core/modules/simpletest/files/image-1.png'));
     $file->save();
@@ -84,12 +86,12 @@ class RelationshipUserImageDataTest extends ViewTestBase {
     ];
     $this->assertIdentical($expected, $view->getDependencies());
     $this->executeView($view);
-    $expected_result = [
-      [
+    $expected_result = array(
+      array(
         'file_managed_user__user_picture_fid' => '2',
-      ],
-    ];
-    $column_map = ['file_managed_user__user_picture_fid' => 'file_managed_user__user_picture_fid'];
+      ),
+    );
+    $column_map = array('file_managed_user__user_picture_fid' => 'file_managed_user__user_picture_fid');
     $this->assertIdenticalResultset($view, $expected_result, $column_map);
   }
 

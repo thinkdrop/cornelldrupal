@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\content_translation\FieldTranslationSynchronizer.
+ */
+
 namespace Drupal\content_translation;
 
 use Drupal\Core\Config\Entity\ThirdPartySettingsInterface;
@@ -61,26 +66,15 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
         // Retrieve all the untranslatable column groups and merge them into
         // single list.
         $groups = array_keys(array_diff($translation_sync, array_filter($translation_sync)));
-
-        // If a group was selected has the require_all_groups_for_translation
-        // flag set, there are no untranslatable columns. This is done because
-        // the UI adds Javascript that disables the other checkboxes, so their
-        // values are not saved.
-        foreach (array_filter($translation_sync) as $group) {
-          if (!empty($column_groups[$group]['require_all_groups_for_translation'])) {
-            $groups = [];
-            break;
-          }
-        }
         if (!empty($groups)) {
-          $columns = [];
+          $columns = array();
           foreach ($groups as $group) {
             $info = $column_groups[$group];
             // A missing 'columns' key indicates we have a single-column group.
-            $columns = array_merge($columns, isset($info['columns']) ? $info['columns'] : [$group]);
+            $columns = array_merge($columns, isset($info['columns']) ? $info['columns'] : array($group));
           }
           if (!empty($columns)) {
-            $values = [];
+            $values = array();
             foreach ($translations as $langcode => $language) {
               $values[$langcode] = $entity->getTranslation($langcode)->get($field_name)->getValue();
             }
@@ -108,18 +102,18 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
     $source_items = $values[$sync_langcode];
 
     // Make sure we can detect any change in the source items.
-    $change_map = [];
+    $change_map = array();
 
     // By picking the maximum size between updated and unchanged items, we make
     // sure to process also removed items.
-    $total = max([count($source_items), count($unchanged_items)]);
+    $total = max(array(count($source_items), count($unchanged_items)));
 
     // As a first step we build a map of the deltas corresponding to the column
     // values to be synchronized. Recording both the old values and the new
     // values will allow us to detect any change in the order of the new items
     // for each column.
     for ($delta = 0; $delta < $total; $delta++) {
-      foreach (['old' => $unchanged_items, 'new' => $source_items] as $key => $items) {
+      foreach (array('old' => $unchanged_items, 'new' => $source_items) as $key => $items) {
         if ($item_id = $this->itemHash($items, $delta, $columns)) {
           $change_map[$item_id][$key][] = $delta;
         }
@@ -132,7 +126,7 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
 
     // Reset field values so that no spurious one is stored. Source values must
     // be preserved in any case.
-    $values = [$sync_langcode => $source_items];
+    $values = array($sync_langcode => $source_items);
 
     // Update field translations.
     foreach ($translations as $langcode) {
@@ -169,16 +163,7 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
             continue;
           }
           // If a synchronized column has changed or has been created from
-          // scratch we need to replace the values for this language as a
-          // combination of the values that need to be synced from the source
-          // items and the other columns from the existing values. This only
-          // works if the delta exists in the language.
-          elseif ($created && !empty($original_field_values[$langcode][$delta])) {
-            $item_columns_to_sync = array_intersect_key($source_items[$delta], array_flip($columns));
-            $item_columns_to_keep = array_diff_key($original_field_values[$langcode][$delta], array_flip($columns));
-            $values[$langcode][$delta] = $item_columns_to_sync + $item_columns_to_keep;
-          }
-          // If the delta doesn't exist, copy from the source language.
+          // scratch we need to override the full items array for all languages.
           elseif ($created) {
             $values[$langcode][$delta] = $source_items[$delta];
           }
@@ -202,7 +187,7 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
    *
    * @param array $items
    *   An array of field items.
-   * @param int $delta
+   * @param integer $delta
    *   The delta identifying the item to be processed.
    * @param array $columns
    *   An array of column names to be synchronized.
@@ -211,7 +196,7 @@ class FieldTranslationSynchronizer implements FieldTranslationSynchronizerInterf
    *   A hash code that can be used to identify the item.
    */
   protected function itemHash(array $items, $delta, array $columns) {
-    $values = [];
+    $values = array();
 
     if (isset($items[$delta])) {
       foreach ($columns as $column) {

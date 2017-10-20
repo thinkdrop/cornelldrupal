@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Plugin\Field\FieldType\LanguageItem.
+ */
+
 namespace Drupal\Core\Field\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -65,14 +70,14 @@ class LanguageItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return [
-      'columns' => [
-        'value' => [
+    return array(
+      'columns' => array(
+        'value' => array(
           'type' => 'varchar_ascii',
           'length' => 12,
-        ],
-      ],
-    ];
+        ),
+      ),
+    );
   }
 
   /**
@@ -99,7 +104,7 @@ class LanguageItem extends FieldItemBase {
   public function applyDefaultValue($notify = TRUE) {
     // Default to the site's default language. When language module is enabled,
     // this behavior is configurable, see language_field_info_alter().
-    $this->setValue(['value' => \Drupal::languageManager()->getDefaultLanguage()->getId()], $notify);
+    $this->setValue(array('value' => \Drupal::languageManager()->getDefaultLanguage()->getId()), $notify);
     return $this;
   }
 

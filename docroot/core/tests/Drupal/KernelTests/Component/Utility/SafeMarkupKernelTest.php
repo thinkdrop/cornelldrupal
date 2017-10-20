@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\KernelTests\Component\Utility\SafeMarkupKernelTest.
+ */
+
 namespace Drupal\KernelTests\Component\Utility;
 
 use Drupal\Component\Utility\SafeMarkup;
@@ -24,6 +29,7 @@ class SafeMarkupKernelTest extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
 
+    $this->installSchema('system', 'router');
     $this->container->get('router.builder')->rebuild();
   }
 
@@ -32,6 +38,7 @@ class SafeMarkupKernelTest extends KernelTestBase {
    *
    * @param string $uri
    *   The URI of the resource.
+   *
    * @param array $options
    *   The options to pass to Url::fromUri().
    *
@@ -107,10 +114,10 @@ class SafeMarkupKernelTest extends KernelTestBase {
 
   /**
    * @dataProvider providerTestSafeMarkupUriWithException
+   * @expectedException \InvalidArgumentException
    */
   public function testSafeMarkupUriWithExceptionUri($string, $uri) {
     // Should throw an \InvalidArgumentException, due to Uri::toString().
-    $this->setExpectedException(\InvalidArgumentException::class);
     $args = self::getSafeMarkupUriArgs($uri);
 
     SafeMarkup::format($string, $args);

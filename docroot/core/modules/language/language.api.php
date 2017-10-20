@@ -13,7 +13,7 @@
 /**
  * Define language types.
  *
- * @return array
+ * @return
  *   An associative array of language type definitions. The keys are the
  *   identifiers, which are also used as names for global variables representing
  *   the types in the bootstrap phase. The values are associative arrays that
@@ -35,23 +35,23 @@
  * @ingroup language_negotiation
  */
 function hook_language_types_info() {
-  return [
-    'custom_language_type' => [
+  return array(
+    'custom_language_type' => array(
       'name' => t('Custom language'),
       'description' => t('A custom language type.'),
       'locked' => FALSE,
-    ],
-    'fixed_custom_language_type' => [
+    ),
+    'fixed_custom_language_type' => array(
       'locked' => TRUE,
-      'fixed' => ['custom_language_negotiation_method'],
-    ],
-  ];
+      'fixed' => array('custom_language_negotiation_method'),
+    ),
+  );
 }
 
 /**
  * Perform alterations on language types.
  *
- * @param array $language_types
+ * @param $language_types
  *   Array of language type definitions.
  *
  * @see hook_language_types_info()
@@ -66,7 +66,7 @@ function hook_language_types_info_alter(array &$language_types) {
 /**
  * Perform alterations on language negotiation methods.
  *
- * @param array $negotiation_info
+ * @param $negotiation_info
  *   Array of language negotiation method definitions.
  *
  * @ingroup language_negotiation

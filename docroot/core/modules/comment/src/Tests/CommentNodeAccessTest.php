@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Tests\CommentNodeAccessTest.
+ */
+
 namespace Drupal\comment\Tests;
 
 use Drupal\comment\CommentManagerInterface;
@@ -19,7 +24,7 @@ class CommentNodeAccessTest extends CommentTestBase {
    *
    * @var array
    */
-  public static $modules = ['node_access_test'];
+  public static $modules = array('node_access_test');
 
   protected function setUp() {
     parent::setUp();
@@ -27,14 +32,14 @@ class CommentNodeAccessTest extends CommentTestBase {
     node_access_rebuild();
 
     // Re-create user.
-    $this->webUser = $this->drupalCreateUser([
+    $this->webUser = $this->drupalCreateUser(array(
       'access comments',
       'post comments',
       'create article content',
       'edit own comments',
       'node test view',
       'skip comment approval',
-    ]);
+    ));
 
     // Set the author of the created node to the web_user uid.
     $this->node->setOwnerId($this->webUser->id())->save();
@@ -43,7 +48,7 @@ class CommentNodeAccessTest extends CommentTestBase {
   /**
    * Test that threaded comments can be viewed.
    */
-  public function testThreadedCommentView() {
+  function testThreadedCommentView() {
     // Set comments to have subject required and preview disabled.
     $this->drupalLogin($this->adminUser);
     $this->setCommentPreview(DRUPAL_DISABLED);
@@ -78,5 +83,4 @@ class CommentNodeAccessTest extends CommentTestBase {
     $this->assertText($reply_text);
     $this->assertText($reply_subject);
   }
-
 }

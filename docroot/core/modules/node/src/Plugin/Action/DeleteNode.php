@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\Action\DeleteNode.
+ */
+
 namespace Drupal\node\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;
@@ -85,7 +90,7 @@ class DeleteNode extends ActionBase implements ContainerFactoryPluginInterface {
    * {@inheritdoc}
    */
   public function execute($object = NULL) {
-    $this->executeMultiple([$object]);
+    $this->executeMultiple(array($object));
   }
 
   /**

@@ -1,15 +1,18 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\Element\ManagedFile.
+ */
+
 namespace Drupal\file\Element;
 
-use Drupal\Component\Utility\Crypt;
-use Drupal\Component\Utility\Html;
 use Drupal\Component\Utility\NestedArray;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element\FormElement;
-use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +52,6 @@ class ManagedFile extends FormElement {
       '#attached' => [
         'library' => ['file/drupal.file'],
       ],
-      '#accept' => NULL,
     ];
   }
 
@@ -62,7 +64,6 @@ class ManagedFile extends FormElement {
     foreach ($fids as $key => $fid) {
       $fids[$key] = (int) $fid;
     }
-    $force_default = FALSE;
 
     // Process any input and save new uploads.
     if ($input !== FALSE) {
@@ -95,38 +96,14 @@ class ManagedFile extends FormElement {
           foreach ($input['fids'] as $fid) {
             if ($file = File::load($fid)) {
               $fids[] = $file->id();
-              // Temporary files that belong to other users should never be
-              // allowed.
-              if ($file->isTemporary()) {
-                if ($file->getOwnerId() != \Drupal::currentUser()->id()) {
-                  $force_default = TRUE;
-                  break;
-                }
-                // Since file ownership can't be determined for anonymous users,
-                // they are not allowed to reuse temporary files at all. But
-                // they do need to be able to reuse their own files from earlier
-                // submissions of the same form, so to allow that, check for the
-                // token added by $this->processManagedFile().
-                elseif (\Drupal::currentUser()->isAnonymous()) {
-                  $token = NestedArray::getValue($form_state->getUserInput(), array_merge($element['#parents'], ['file_' . $file->id(), 'fid_token']));
-                  if ($token !== Crypt::hmacBase64('file-' . $file->id(), \Drupal::service('private_key')->get() . Settings::getHashSalt())) {
-                    $force_default = TRUE;
-                    break;
-                  }
-                }
-              }
             }
-          }
-          if ($force_default) {
-            $fids = [];
           }
         }
       }
     }
 
-    // If there is no input or if the default value was requested above, use the
-    // default value.
-    if ($input === FALSE || $force_default) {
+    // If there is no input, set the default value.
+    else {
       if ($element['#extended']) {
         $default_fids = isset($element['#default_value']['fids']) ? $element['#default_value']['fids'] : [];
         $return = isset($element['#default_value']) ? $element['#default_value'] : ['fids' => []];
@@ -294,7 +271,7 @@ class ManagedFile extends FormElement {
       }
 
       // Add the upload progress callback.
-      $element['upload_button']['#ajax']['progress']['url'] = Url::fromRoute('file.ajax_progress', ['key' => $upload_progress_key]);
+      $element['upload_button']['#ajax']['progress']['url'] = Url::fromRoute('file.ajax_progress');
     }
 
     // The file upload field itself.
@@ -309,9 +286,6 @@ class ManagedFile extends FormElement {
       '#weight' => -10,
       '#error_no_message' => TRUE,
     ];
-    if (!empty($element['#accept'])) {
-      $element['upload']['#attributes'] = ['accept' => $element['#accept']];
-    }
 
     if (!empty($fids) && $element['#files']) {
       foreach ($element['#files'] as $delta => $file) {
@@ -327,17 +301,6 @@ class ManagedFile extends FormElement {
         }
         else {
           $element['file_' . $delta]['filename'] = $file_link + ['#weight' => -10];
-        }
-        // Anonymous users who have uploaded a temporary file need a
-        // non-session-based token added so $this->valueCallback() can check
-        // that they have permission to use this file on subsequent submissions
-        // of the same form (for example, after an Ajax upload or form
-        // validation error).
-        if ($file->isTemporary() && \Drupal::currentUser()->isAnonymous()) {
-          $element['file_' . $delta]['fid_token'] = [
-            '#type' => 'hidden',
-            '#value' => Crypt::hmacBase64('file-' . $delta, \Drupal::service('private_key')->get() . Settings::getHashSalt()),
-          ];
         }
       }
     }

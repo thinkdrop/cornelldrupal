@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\Plugin\views\filter\Status.
+ */
+
 namespace Drupal\file\Plugin\views\filter;
 
 use Drupal\views\Plugin\views\filter\InOperator;
@@ -17,7 +22,6 @@ class Status extends InOperator {
     if (!isset($this->valueOptions)) {
       $this->valueOptions = _views_file_status();
     }
-    return $this->valueOptions;
   }
 
 }

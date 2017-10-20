@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block_content\Plugin\migrate\source\d7\BlockCustom.
+ */
+
 namespace Drupal\block_content\Plugin\migrate\source\d7;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -24,12 +29,12 @@ class BlockCustom extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'bid' => $this->t('The numeric identifier of the block/box'),
       'body' => $this->t('The block/box content'),
       'info' => $this->t('Admin title of the block/box.'),
       'format' => $this->t('Input format of the custom block/box content.'),
-    ];
+    );
   }
 
   /**

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Plugin\Context\Context.
+ */
+
 namespace Drupal\Core\Plugin\Context;
 
 use Drupal\Component\Plugin\Context\Context as ComponentContext;
@@ -42,7 +47,7 @@ class Context extends ComponentContext implements ContextInterface {
    *
    * @param \Drupal\Core\Plugin\Context\ContextDefinitionInterface $context_definition
    *   The context definition.
-   * @param mixed $context_value|null
+   * @param mixed $context_value|NULL
    *   The context value object.
    */
   public function __construct(ContextDefinitionInterface $context_definition, $context_value = NULL) {

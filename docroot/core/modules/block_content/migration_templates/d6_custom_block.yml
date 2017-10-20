@@ -4,17 +4,19 @@ migration_tags:
   - Drupal 6
 source:
   plugin: d6_box
+  constants:
+    type: basic
 process:
   id: bid
+  type: 'constants/type'
   info: info
   'body/format':
-    plugin: migration_lookup
+    plugin: migration
     migration: d6_filter_format
     source: format
   'body/value': body
 destination:
   plugin: entity:block_content
-  default_bundle: basic
   no_stub: true
 migration_dependencies:
   required:

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\DependencyInjection\Compiler\RegisterAccessChecksPass.
+ */
+
 namespace Drupal\Core\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,16 +16,17 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 class RegisterAccessChecksPass implements CompilerPassInterface {
 
   /**
-   * {@inheritdoc}
+   * Implements CompilerPassInterface::process().
+   *
+   * Adds services tagged 'access_check' to the access_manager service.
    */
   public function process(ContainerBuilder $container) {
     if (!$container->hasDefinition('access_manager')) {
       return;
     }
-    // Add services tagged 'access_check' to the access_manager service.
     $access_manager = $container->getDefinition('access_manager.check_provider');
     foreach ($container->findTaggedServiceIds('access_check') as $id => $attributes) {
-      $applies = [];
+      $applies = array();
       $method = 'access';
       $needs_incoming_request = FALSE;
       foreach ($attributes as $attribute) {
@@ -34,8 +40,7 @@ class RegisterAccessChecksPass implements CompilerPassInterface {
           $needs_incoming_request = TRUE;
         }
       }
-      $access_manager->addMethodCall('addCheckService', [$id, $method, $applies, $needs_incoming_request]);
+      $access_manager->addMethodCall('addCheckService', array($id, $method, $applies, $needs_incoming_request));
     }
   }
-
 }

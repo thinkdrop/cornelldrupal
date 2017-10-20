@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\Plugin\Field\FieldFormatter\TableFormatter.
+ */
+
 namespace Drupal\file\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
@@ -21,33 +26,33 @@ class TableFormatter extends FileFormatterBase {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $elements = [];
+    $elements = array();
 
     if ($files = $this->getEntitiesToView($items, $langcode)) {
-      $header = [t('Attachment'), t('Size')];
-      $rows = [];
+      $header = array(t('Attachment'), t('Size'));
+      $rows = array();
       foreach ($files as $delta => $file) {
-        $rows[] = [
-          [
-            'data' => [
+        $rows[] = array(
+          array(
+            'data' => array(
               '#theme' => 'file_link',
               '#file' => $file,
-              '#cache' => [
+              '#cache' => array(
                 'tags' => $file->getCacheTags(),
-              ],
-            ],
-          ],
-          ['data' => format_size($file->getSize())],
-        ];
+              ),
+            ),
+          ),
+          array('data' => format_size($file->getSize())),
+        );
       }
 
-      $elements[0] = [];
+      $elements[0] = array();
       if (!empty($rows)) {
-        $elements[0] = [
+        $elements[0] = array(
           '#theme' => 'table__file_formatter_table',
           '#header' => $header,
           '#rows' => $rows,
-        ];
+        );
       }
     }
 

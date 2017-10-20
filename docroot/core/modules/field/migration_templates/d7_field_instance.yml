@@ -2,8 +2,6 @@ id: d7_field_instance
 label: Field instance configuration
 migration_tags:
   - Drupal 7
-class: Drupal\migrate_drupal\Plugin\migrate\CckMigration
-cck_plugin_method: processFieldInstance
 source:
   plugin: d7_field_instance
   constants:
@@ -21,14 +19,12 @@ process:
     source:
       - instance_settings
       - widget_settings
-      - field_settings
   default_value_function: ''
   default_value:
     plugin: d7_field_instance_defaults
     source:
       - default_value
       - widget_settings
-  translatable: translatable
 destination:
   plugin: entity:field_config
 migration_dependencies:
@@ -37,4 +33,3 @@ migration_dependencies:
   optional:
     - d7_node_type
     - d7_comment_type
-    - d7_taxonomy_vocabulary

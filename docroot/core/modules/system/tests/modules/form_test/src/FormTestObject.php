@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\form_test\FormTestObject.
+ */
+
 namespace Drupal\form_test;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -28,23 +33,18 @@ class FormTestObject extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['element'] = ['#markup' => 'The FormTestObject::buildForm() method was used for this form.'];
+    $form['element'] = array('#markup' => 'The FormTestObject::buildForm() method was used for this form.');
 
-    $form['bananas'] = [
+    $form['bananas'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Bananas'),
-    ];
-    $form['strawberry'] = [
-      '#type' => 'hidden',
-      '#value' => 'red',
-      '#attributes' => ['id' => 'redstrawberryhiddenfield'],
-    ];
+    );
 
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = [
+    $form['actions']['submit'] = array(
       '#type' => 'submit',
       '#value' => $this->t('Save'),
-    ];
+    );
 
     $form['#title'] = 'Test dynamic title';
 

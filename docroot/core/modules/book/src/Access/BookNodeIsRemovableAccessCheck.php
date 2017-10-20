@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\book\Access\BookNodeIsRemovableAccessCheck.
+ */
+
 namespace Drupal\book\Access;
 
 use Drupal\book\BookManagerInterface;
@@ -10,7 +15,7 @@ use Drupal\node\NodeInterface;
 /**
  * Determines whether the requested node can be removed from its book.
  */
-class BookNodeIsRemovableAccessCheck implements AccessInterface {
+class BookNodeIsRemovableAccessCheck implements AccessInterface{
 
   /**
    * Book Manager Service.
@@ -39,7 +44,7 @@ class BookNodeIsRemovableAccessCheck implements AccessInterface {
    *   The access result.
    */
   public function access(NodeInterface $node) {
-    return AccessResult::allowedIf($this->bookManager->checkNodeIsRemovable($node))->addCacheableDependency($node);
+    return AccessResult::allowedIf($this->bookManager->checkNodeIsRemovable($node))->cacheUntilEntityChanges($node);
   }
 
 }

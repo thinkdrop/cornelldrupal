@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Range.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -18,8 +23,8 @@ use Drupal\Core\Render\Element;
  * Usage example:
  * @code
  * $form['quantity'] = array(
- *   '#type' => 'range',
- *   '#title' => $this->t('Quantity'),
+ *   '#type' => 'number',
+ *   '#title' => t('Quantity'),
  * );
  * @endcode
  *
@@ -35,14 +40,14 @@ class Range extends Number {
   public function getInfo() {
     $info = parent::getInfo();
     $class = get_class($this);
-    return [
+    return array(
       '#min' => 0,
       '#max' => 100,
-      '#pre_render' => [
-        [$class, 'preRenderRange'],
-      ],
+      '#pre_render' => array(
+        array($class, 'preRenderRange'),
+      ),
       '#theme' => 'input__range',
-    ] + $info;
+    ) + $info;
   }
 
   /**
@@ -58,8 +63,8 @@ class Range extends Number {
    */
   public static function preRenderRange($element) {
     $element['#attributes']['type'] = 'range';
-    Element::setAttributes($element, ['id', 'name', 'value', 'step', 'min', 'max']);
-    static::setAttributes($element, ['form-range']);
+    Element::setAttributes($element, array('id', 'name', 'value', 'step', 'min', 'max'));
+    static::setAttributes($element, array('form-range'));
 
     return $element;
   }

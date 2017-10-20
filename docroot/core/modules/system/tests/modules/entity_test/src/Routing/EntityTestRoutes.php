@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\entity_test\Routing\EntityTestRoutes.
+ */
+
 namespace Drupal\entity_test\Routing;
 
 use Symfony\Component\Routing\Route;
@@ -17,14 +22,22 @@ class EntityTestRoutes {
    */
   public function routes() {
     $types = entity_test_entity_types(ENTITY_TEST_TYPES_ROUTING);
+    $types[] = 'entity_test_string_id';
+    $types[] = 'entity_test_no_id';
 
-    $routes = [];
+    $routes = array();
     foreach ($types as $entity_type_id) {
+      $routes["entity.$entity_type_id.add_form"] = new Route(
+        "$entity_type_id/add",
+        array('_controller' => '\Drupal\entity_test\Controller\EntityTestController::testAdd', 'entity_type_id' => $entity_type_id),
+        array('_permission' => 'administer entity_test content')
+      );
+
       $routes["entity.$entity_type_id.admin_form"] = new Route(
         "$entity_type_id/structure/{bundle}",
-        ['_controller' => '\Drupal\entity_test\Controller\EntityTestController::testAdmin'],
-        ['_permission' => 'administer entity_test content'],
-        ['_admin_route' => TRUE]
+        array('_controller' => '\Drupal\entity_test\Controller\EntityTestController::testAdmin'),
+        array('_permission' => 'administer entity_test content'),
+        array('_admin_route' => TRUE)
       );
     }
     return $routes;

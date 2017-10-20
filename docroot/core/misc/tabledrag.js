@@ -167,10 +167,9 @@
     this.windowHeight = 0;
 
     /**
-     * Check this table's settings for parent relationships.
-     *
-     * For efficiency, large sections of code can be skipped if we don't need to
-     * track horizontal movement and indentations.
+     * Check this table's settings to see if there are parent relationships in
+     * this table. For efficiency, large sections of code can be skipped if we
+     * don't need to track horizontal movement and indentations.
      *
      * @type {bool}
      */
@@ -300,10 +299,8 @@
    * In order to adjust the colspan instead of hiding them altogether.
    *
    * @param {number} columnIndex
-   *   The column index to add colspan class to.
    *
    * @return {function}
-   *   Function to add colspan class.
    */
   Drupal.tableDrag.prototype.addColspanClass = function (columnIndex) {
     return function () {
@@ -412,12 +409,9 @@
    * Find the target used within a particular row and group.
    *
    * @param {string} group
-   *   Group selector.
    * @param {HTMLElement} row
-   *   The row HTML element.
    *
    * @return {object}
-   *   The table row settings.
    */
   Drupal.tableDrag.prototype.rowSettings = function (group, row) {
     var field = $(row).find('.' + group);
@@ -443,12 +437,11 @@
    * Take an item and add event handlers to make it become draggable.
    *
    * @param {HTMLElement} item
-   *   The item to add event handlers to.
    */
   Drupal.tableDrag.prototype.makeDraggable = function (item) {
     var self = this;
     var $item = $(item);
-    // Add a class to the title link.
+    // Add a class to the title link
     $item.find('td:first-of-type').find('a').addClass('menu-item__link');
     // Create the handle.
     var handle = $('<a href="#" class="tabledrag-handle"><div class="handle">&nbsp;</div></a>').attr('title', Drupal.t('Drag to re-order'));
@@ -498,9 +491,6 @@
 
       var keyChange = false;
       var groupHeight;
-
-      /* eslint-disable no-fallthrough */
-
       switch (event.keyCode) {
         // Left arrow.
         case 37:
@@ -604,8 +594,6 @@
           break;
       }
 
-      /* eslint-enable no-fallthrough */
-
       if (self.rowObject && self.rowObject.changed === true) {
         $(item).addClass('drag');
         if (self.oldRowElement) {
@@ -629,9 +617,6 @@
     // other browsers need to return false on keypress.
     // http://www.quirksmode.org/js/keys.html
     handle.on('keypress', function (event) {
-
-      /* eslint-disable no-fallthrough */
-
       switch (event.keyCode) {
         // Left arrow.
         case 37:
@@ -643,9 +628,6 @@
         case 40:
           return false;
       }
-
-      /* eslint-enable no-fallthrough */
-
     });
   };
 
@@ -694,12 +676,9 @@
    * Pointer movement handler, bound to document.
    *
    * @param {jQuery.Event} event
-   *   The pointer event.
    * @param {Drupal.tableDrag} self
-   *   The tableDrag instance.
    *
    * @return {bool|undefined}
-   *   Undefined if no dragObject is defined, false otherwise.
    */
   Drupal.tableDrag.prototype.dragRow = function (event, self) {
     if (self.dragObject) {
@@ -758,9 +737,7 @@
    * Pointerup behavior.
    *
    * @param {jQuery.Event} event
-   *   The pointer event.
    * @param {Drupal.tableDrag} self
-   *   The tableDrag instance.
    */
   Drupal.tableDrag.prototype.dropRow = function (event, self) {
     var droppedRow;
@@ -821,10 +798,8 @@
    * Get the coordinates from the event (allowing for browser differences).
    *
    * @param {jQuery.Event} event
-   *   The pointer event.
    *
-   * @return {object}
-   *   An object with `x` and `y` keys indicating the position.
+   * @return {{x: number, y: number}}
    */
   Drupal.tableDrag.prototype.pointerCoords = function (event) {
     if (event.pageX || event.pageY) {
@@ -843,12 +818,9 @@
    * element. To do this we need the element's position and the target position.
    *
    * @param {HTMLElement} target
-   *   The target HTML element.
    * @param {jQuery.Event} event
-   *   The pointer event.
    *
-   * @return {object}
-   *   An object with `x` and `y` keys indicating the position.
+   * @return {{x: number, y: number}}
    */
   Drupal.tableDrag.prototype.getPointerOffset = function (target, event) {
     var docPos = $(target).offset();
@@ -867,7 +839,6 @@
    *   The y coordinate of the mouse on the page (not the screen).
    *
    * @return {*}
-   *   The drop target row, if found.
    */
   Drupal.tableDrag.prototype.findDropTargetRow = function (x, y) {
     var rows = $(this.table.tBodies[0].rows).not(':hidden');
@@ -1084,11 +1055,8 @@
    * may have had.
    *
    * @param {HTMLElement} sourceRow
-   *   The element for the source row.
    * @param {HTMLElement} targetRow
-   *   The element for the target row.
    * @param {string} group
-   *   The group selector.
    */
   Drupal.tableDrag.prototype.copyDragClasses = function (sourceRow, targetRow, group) {
     var sourceElement = $(sourceRow).find('.' + group);
@@ -1099,13 +1067,8 @@
   };
 
   /**
-   * Check the suggested scroll of the table.
-   *
    * @param {number} cursorY
-   *   The Y position of the cursor.
-   *
    * @return {number}
-   *   The suggested scroll.
    */
   Drupal.tableDrag.prototype.checkScroll = function (cursorY) {
     var de = document.documentElement;
@@ -1136,10 +1099,7 @@
   };
 
   /**
-   * Set the scroll for the table.
-   *
    * @param {number} scrollAmount
-   *   The amount of scroll to apply to the window.
    */
   Drupal.tableDrag.prototype.setScroll = function (scrollAmount) {
     var self = this;
@@ -1162,17 +1122,16 @@
     // :even and :odd are reversed because jQuery counts from 0 and
     // we count from 1, so we're out of sync.
     // Match immediate children of the parent element to allow nesting.
-    $(this.table).find('> tbody > tr.draggable, > tr.draggable')
-      .filter(':visible')
-      .filter(':odd').removeClass('odd').addClass('even').end()
-      .filter(':even').removeClass('even').addClass('odd');
+    $(this.table).find('> tbody > tr.draggable:visible, > tr.draggable:visible')
+      .removeClass('odd even')
+      .filter(':odd').addClass('even').end()
+      .filter(':even').addClass('odd');
   };
 
   /**
    * Stub function. Allows a custom handler when a row begins dragging.
    *
-   * @return {null}
-   *   Returns null when the stub function is used.
+   * @return {?bool}
    */
   Drupal.tableDrag.prototype.onDrag = function () {
     return null;
@@ -1181,8 +1140,7 @@
   /**
    * Stub function. Allows a custom handler when a row is dropped.
    *
-   * @return {null}
-   *   Returns null when the stub function is used.
+   * @return {?bool}
    */
   Drupal.tableDrag.prototype.onDrop = function () {
     return null;
@@ -1236,7 +1194,6 @@
    *   relationships.
    *
    * @return {Array}
-   *   An array of children of the row.
    */
   Drupal.tableDrag.prototype.row.prototype.findChildren = function (addClasses) {
     var parentIndentation = this.indents;
@@ -1284,7 +1241,6 @@
    *   DOM object for the row being considered for swapping.
    *
    * @return {bool}
-   *   Whether the swap is a valid swap or not.
    */
   Drupal.tableDrag.prototype.row.prototype.isValidSwap = function (row) {
     var $row = $(row);
@@ -1347,9 +1303,7 @@
    *   DOM object for the row after the tested position
    *   (or null for last position in the table).
    *
-   * @return {object}
-   *   An object with the keys `min` and `max` to indicate the valid indent
-   *   interval.
+   * @return {{min: number, max: number}}
    */
   Drupal.tableDrag.prototype.row.prototype.validIndentInterval = function (prevRow, nextRow) {
     var $prevRow = $(prevRow);
@@ -1389,7 +1343,6 @@
    *   indentation level for the row.
    *
    * @return {number}
-   *   The number of indentations applied.
    */
   Drupal.tableDrag.prototype.row.prototype.indent = function (indentDiff) {
     var $group = $(this.group);
@@ -1437,7 +1390,6 @@
    *   The field settings we're using to identify what constitutes a sibling.
    *
    * @return {Array}
-   *   An array of siblings.
    */
   Drupal.tableDrag.prototype.row.prototype.findSiblings = function (rowSettings) {
     var siblings = [];
@@ -1507,8 +1459,7 @@
   /**
    * Stub function. Allows a custom handler when a row is indented.
    *
-   * @return {null}
-   *   Returns null when the stub function is used.
+   * @return {?bool}
    */
   Drupal.tableDrag.prototype.row.prototype.onIndent = function () {
     return null;
@@ -1518,10 +1469,8 @@
    * Stub function. Allows a custom handler when a row is swapped.
    *
    * @param {HTMLElement} swappedRow
-   *   The element for the swapped row.
    *
-   * @return {null}
-   *   Returns null when the stub function is used.
+   * @return {?bool}
    */
   Drupal.tableDrag.prototype.row.prototype.onSwap = function (swappedRow) {
     return null;
@@ -1531,7 +1480,6 @@
 
     /**
      * @return {string}
-     *  Markup for the marker.
      */
     tableDragChangedMarker: function () {
       return '<abbr class="warning tabledrag-changed" title="' + Drupal.t('Changed') + '">*</abbr>';
@@ -1539,7 +1487,6 @@
 
     /**
      * @return {string}
-     *   Markup for the indentation.
      */
     tableDragIndentation: function () {
       return '<div class="js-indentation indentation">&nbsp;</div>';
@@ -1547,7 +1494,6 @@
 
     /**
      * @return {string}
-     *   Markup for the warning.
      */
     tableDragChangedWarning: function () {
       return '<div class="tabledrag-changed-warning messages messages--warning" role="alert">' + Drupal.theme('tableDragChangedMarker') + ' ' + Drupal.t('You have unsaved changes.') + '</div>';

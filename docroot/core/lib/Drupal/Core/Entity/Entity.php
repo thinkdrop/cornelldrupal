@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Entity.
+ */
+
 namespace Drupal\Core\Entity;
 
 use Drupal\Core\Cache\Cache;
@@ -190,7 +195,7 @@ abstract class Entity implements EntityInterface {
 
     if (isset($link_templates[$rel])) {
       $route_parameters = $this->urlRouteParameters($rel);
-      $route_name = "entity.{$this->entityTypeId}." . str_replace(['-', 'drupal:'], ['_', ''], $rel);
+      $route_name = "entity.{$this->entityTypeId}." . str_replace(array('-', 'drupal:'), array('_', ''), $rel);
       $uri = new Url($route_name, $route_parameters);
     }
     else {
@@ -222,9 +227,7 @@ abstract class Entity implements EntityInterface {
       ->setOption('entity', $this);
 
     // Display links by default based on the current language.
-    // Link relations that do not require an existing entity should not be
-    // affected by this entity's language, however.
-    if (!in_array($rel, ['collection', 'add-page', 'add-form'], TRUE)) {
+    if ($rel !== 'collection') {
       $options += ['language' => $this->language()];
     }
 
@@ -275,7 +278,7 @@ abstract class Entity implements EntityInterface {
   /**
    * {@inheritdoc}
    */
-  public function url($rel = 'canonical', $options = []) {
+  public function url($rel = 'canonical', $options = array()) {
     // While self::toUrl() will throw an exception if the entity has no id,
     // the expected result for a URL is always a string.
     if ($this->id() === NULL || !$this->hasLinkTemplate($rel)) {
@@ -304,15 +307,11 @@ abstract class Entity implements EntityInterface {
   protected function urlRouteParameters($rel) {
     $uri_route_parameters = [];
 
-    if (!in_array($rel, ['collection', 'add-page', 'add-form'], TRUE)) {
+    if ($rel != 'collection') {
       // The entity ID is needed as a route parameter.
       $uri_route_parameters[$this->getEntityTypeId()] = $this->id();
     }
-    if ($rel === 'add-form' && ($this->getEntityType()->hasKey('bundle'))) {
-      $parameter_name = $this->getEntityType()->getBundleEntityType() ?: $this->getEntityType()->getKey('bundle');
-      $uri_route_parameters[$parameter_name] = $this->bundle();
-    }
-    if ($rel === 'revision' && $this instanceof RevisionableInterface) {
+    if ($rel === 'revision') {
       $uri_route_parameters[$this->getEntityTypeId() . '_revision'] = $this->getRevisionId();
     }
 
@@ -321,6 +320,11 @@ abstract class Entity implements EntityInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * Returns a list of URI relationships supported by this entity.
+   *
+   * @return array
+   *   An array of link relationships supported by this entity.
    */
   public function uriRelationships() {
     return array_keys($this->linkTemplates());
@@ -353,7 +357,7 @@ abstract class Entity implements EntityInterface {
     }
     // Make sure we return a proper language object.
     $langcode = !empty($this->langcode) ? $this->langcode : LanguageInterface::LANGCODE_NOT_SPECIFIED;
-    $language = new Language(['id' => $langcode]);
+    $language = new Language(array('id' => $langcode));
     return $language;
   }
 
@@ -369,7 +373,7 @@ abstract class Entity implements EntityInterface {
    */
   public function delete() {
     if (!$this->isNew()) {
-      $this->entityManager()->getStorage($this->entityTypeId)->delete([$this->id() => $this]);
+      $this->entityManager()->getStorage($this->entityTypeId)->delete(array($this->id() => $this));
     }
   }
 
@@ -452,7 +456,7 @@ abstract class Entity implements EntityInterface {
    * {@inheritdoc}
    */
   public function referencedEntities() {
-    return [];
+    return array();
   }
 
   /**
@@ -493,6 +497,9 @@ abstract class Entity implements EntityInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * @return static|null
+   *   The entity object or NULL if there is no entity with the given ID.
    */
   public static function load($id) {
     $entity_manager = \Drupal::entityManager();
@@ -501,6 +508,10 @@ abstract class Entity implements EntityInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * @return static[]
+   *   An array of entity objects indexed by their IDs. Returns an empty array
+   *   if no matching entities are found.
    */
   public static function loadMultiple(array $ids = NULL) {
     $entity_manager = \Drupal::entityManager();
@@ -509,8 +520,11 @@ abstract class Entity implements EntityInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * @return static
+   *   The entity object.
    */
-  public static function create(array $values = []) {
+  public static function create(array $values = array()) {
     $entity_manager = \Drupal::entityManager();
     return $entity_manager->getStorage($entity_manager->getEntityTypeFromClass(get_called_class()))->create($values);
   }
@@ -585,7 +599,7 @@ abstract class Entity implements EntityInterface {
    * {@inheritdoc}
    */
   public function toArray() {
-    return [];
+    return array();
   }
 
   /**

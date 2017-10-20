@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Database\Query\Delete.
+ */
+
 namespace Drupal\Core\Database\Query;
 
 use Drupal\Core\Database\Database;
@@ -31,7 +36,7 @@ class Delete extends Query implements ConditionInterface {
    * @param array $options
    *   Array of database options.
    */
-  public function __construct(Connection $connection, $table, array $options = []) {
+  public function __construct(Connection $connection, $table, array $options = array()) {
     $options['return'] = Database::RETURN_AFFECTED;
     parent::__construct($connection, $options);
     $this->table = $table;
@@ -46,7 +51,7 @@ class Delete extends Query implements ConditionInterface {
    *   The number of rows affected by the delete query.
    */
   public function execute() {
-    $values = [];
+    $values = array();
     if (count($this->condition)) {
       $this->condition->compile($this->connection, $this);
       $values = $this->condition->arguments();
@@ -75,5 +80,4 @@ class Delete extends Query implements ConditionInterface {
 
     return $query;
   }
-
 }

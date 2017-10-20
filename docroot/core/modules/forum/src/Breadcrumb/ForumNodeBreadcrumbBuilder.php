@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\forum\Breadcrumb\ForumNodeBreadcrumbBuilder.
+ */
+
 namespace Drupal\forum\Breadcrumb;
 
 use Drupal\Core\Link;
@@ -32,9 +37,9 @@ class ForumNodeBreadcrumbBuilder extends ForumBreadcrumbBuilderBase {
       foreach ($parents as $parent) {
         $breadcrumb->addCacheableDependency($parent);
         $breadcrumb->addLink(Link::createFromRoute($parent->label(), 'forum.page',
-          [
+          array(
             'taxonomy_term' => $parent->id(),
-          ]
+          )
         ));
       }
     }

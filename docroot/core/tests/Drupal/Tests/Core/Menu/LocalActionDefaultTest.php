@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Menu\LocalActionDefaultTest.
+ */
+
 namespace Drupal\Tests\Core\Menu;
 
 use Drupal\Core\Menu\LocalActionDefault;
@@ -25,7 +30,7 @@ class LocalActionDefaultTest extends UnitTestCase {
    *
    * @var array
    */
-  protected $config = [];
+  protected $config = array();
 
   /**
    * The used plugin ID.
@@ -39,9 +44,9 @@ class LocalActionDefaultTest extends UnitTestCase {
    *
    * @var array
    */
-  protected $pluginDefinition = [
+  protected $pluginDefinition = array(
     'id' => 'local_action_default',
-  ];
+  );
 
   /**
    * The mocked translator.
@@ -93,7 +98,7 @@ class LocalActionDefaultTest extends UnitTestCase {
    * @see \Drupal\Core\Menu\LocalTaskDefault::getTitle()
    */
   public function testGetTitleWithContext() {
-    $this->pluginDefinition['title'] = (new TranslatableMarkup('Example', [], ['context' => 'context'], $this->stringTranslation));
+    $this->pluginDefinition['title'] = (new TranslatableMarkup('Example', array(), array('context' => 'context'), $this->stringTranslation));
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])
@@ -107,7 +112,7 @@ class LocalActionDefaultTest extends UnitTestCase {
    * Tests the getTitle method with title arguments.
    */
   public function testGetTitleWithTitleArguments() {
-    $this->pluginDefinition['title'] = (new TranslatableMarkup('Example @test', ['@test' => 'value'], [], $this->stringTranslation));
+    $this->pluginDefinition['title'] = (new TranslatableMarkup('Example @test', array('@test' => 'value'), [], $this->stringTranslation));
     $this->stringTranslation->expects($this->once())
       ->method('translateString')
       ->with($this->pluginDefinition['title'])

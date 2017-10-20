@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Config\ConfigFactoryTest.
+ */
+
 namespace Drupal\Tests\Core\Config;
 
 use Drupal\Core\Config\Config;
@@ -51,7 +56,7 @@ class ConfigFactoryTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  public function setUp() {
     $this->storage = $this->getMock('Drupal\Core\Config\StorageInterface');
     $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
     $this->typedConfig = $this->getMock('\Drupal\Core\Config\TypedConfigManagerInterface');

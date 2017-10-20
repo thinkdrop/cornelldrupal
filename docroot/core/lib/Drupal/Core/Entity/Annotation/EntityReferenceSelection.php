@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Annotation\EntityReferenceSelection.
+ */
+
 namespace Drupal\Core\Entity\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
@@ -60,7 +65,7 @@ class EntityReferenceSelection extends Plugin {
    *
    * @var array (optional)
    */
-  public $entity_types = [];
+  public $entity_types = array();
 
   /**
    * The weight of the plugin in it's group.

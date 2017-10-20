@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Asset\CssCollectionGrouper.
+ */
+
 namespace Drupal\Core\Asset;
 
 /**
@@ -12,15 +17,15 @@ class CssCollectionGrouper implements AssetCollectionGrouperInterface {
    *
    * Puts multiple items into the same group if they are groupable and if they
    * are for the same 'media' and 'browsers'. Items of the 'file' type are
-   * groupable if their 'preprocess' flag is TRUE, and items of the 'external'
-   * type are never groupable.
+   * groupable if their 'preprocess' flag is TRUE, items of the 'inline' type
+   * are always groupable, and items of the 'external' type are never groupable.
    *
    * Also ensures that the process of grouping items does not change their
    * relative order. This requirement may result in multiple groups for the same
    * type, media, and browsers, if needed to accommodate other items in between.
    */
   public function group(array $css_assets) {
-    $groups = [];
+    $groups = array();
     // If a group can contain multiple items, we track the information that must
     // be the same for each item in the group, so that when we iterate the next
     // item, we can determine if it can be put into the current group, or if a
@@ -52,7 +57,12 @@ class CssCollectionGrouper implements AssetCollectionGrouperInterface {
           // Group file items if their 'preprocess' flag is TRUE.
           // Help ensure maximum reuse of aggregate files by only grouping
           // together items that share the same 'group' value.
-          $group_keys = $item['preprocess'] ? [$item['type'], $item['group'], $item['media'], $item['browsers']] : FALSE;
+          $group_keys = $item['preprocess'] ? array($item['type'], $item['group'], $item['media'], $item['browsers']) : FALSE;
+          break;
+
+        case 'inline':
+          // Always group inline items.
+          $group_keys = array($item['type'], $item['media'], $item['browsers']);
           break;
 
         case 'external':
@@ -71,7 +81,7 @@ class CssCollectionGrouper implements AssetCollectionGrouperInterface {
         // the group.
         $groups[$i] = $item;
         unset($groups[$i]['data'], $groups[$i]['weight'], $groups[$i]['basename']);
-        $groups[$i]['items'] = [];
+        $groups[$i]['items'] = array();
         $current_group_keys = $group_keys ? $group_keys : NULL;
       }
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\PrimitiveInterface.
+ */
+
 namespace Drupal\Core\TypedData;
 
 /**
@@ -31,5 +36,4 @@ interface PrimitiveInterface {
    * @return mixed
    */
   public function getCastedValue();
-
 }

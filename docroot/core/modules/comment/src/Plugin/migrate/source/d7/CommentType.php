@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Plugin\migrate\source\d7\CommentType.
+ */
+
 namespace Drupal\comment\Plugin\migrate\source\d7;
 
 use Drupal\comment\Plugin\Field\FieldType\CommentItemInterface;
@@ -21,7 +26,7 @@ class CommentType extends DrupalSqlBase {
    *
    * @var string[]
    */
-  protected $nodeTypes = [];
+  protected $nodeTypes = array();
 
   /**
    * {@inheritdoc}
@@ -29,8 +34,8 @@ class CommentType extends DrupalSqlBase {
   public function query() {
     return $this->select('field_config_instance', 'fci')
       ->distinct()
-      ->fields('fci', ['bundle'])
-      ->condition('fci.entity_type', 'comment');
+      ->fields('fci', array('bundle'))
+      ->condition('entity_type', 'comment');
   }
 
   /**
@@ -38,7 +43,7 @@ class CommentType extends DrupalSqlBase {
    */
   protected function initializeIterator() {
     $this->nodeTypes = $this->select('node_type', 'nt')
-      ->fields('nt', ['type', 'name'])
+      ->fields('nt', array('type', 'name'))
       ->execute()
       ->fetchAllKeyed();
 
@@ -71,7 +76,7 @@ class CommentType extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'label' => $this->t('The label of the comment type.'),
       'bundle' => $this->t('Bundle ID of the comment type.'),
       'node_type' => $this->t('The node type to which this comment type is attached.'),
@@ -81,18 +86,18 @@ class CommentType extends DrupalSqlBase {
       'form_location' => $this->t('Location of the comment form.'),
       'preview' => $this->t('Whether previews are enabled for the comment type.'),
       'subject' => $this->t('Whether a subject field is enabled for the comment type.'),
-    ];
+    );
   }
 
   /**
    * {@inheritdoc}
    */
   public function getIds() {
-    return [
-      'bundle' => [
+    return array(
+      'bundle' => array(
         'type' => 'string',
-      ],
-    ];
+      ),
+    );
   }
 
 }

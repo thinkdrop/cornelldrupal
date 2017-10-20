@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\filter\Tests\FilterHtmlImageSecureTest.
+ */
+
 namespace Drupal\filter\Tests;
 
 use Drupal\comment\Tests\CommentTestTrait;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Drupal\simpletest\WebTestBase;
-use Drupal\filter\Entity\FilterFormat;
 
 /**
  * Tests restriction of IMG tags in HTML input.
@@ -21,7 +25,7 @@ class FilterHtmlImageSecureTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['filter', 'node', 'comment'];
+  public static $modules = array('filter', 'node', 'comment');
 
   /**
    * An authenticated user.
@@ -34,38 +38,38 @@ class FilterHtmlImageSecureTest extends WebTestBase {
     parent::setUp();
 
     // Setup Filtered HTML text format.
-    $filtered_html_format = FilterFormat::create([
+    $filtered_html_format = entity_create('filter_format', array(
       'format' => 'filtered_html',
       'name' => 'Filtered HTML',
-      'filters' => [
-        'filter_html' => [
+      'filters' => array(
+        'filter_html' => array(
           'status' => 1,
-          'settings' => [
+          'settings' => array(
             'allowed_html' => '<img src testattribute> <a>',
-          ],
-        ],
-        'filter_autop' => [
+          ),
+        ),
+        'filter_autop' => array(
           'status' => 1,
-        ],
-        'filter_html_image_secure' => [
+        ),
+        'filter_html_image_secure' => array(
           'status' => 1,
-        ],
-      ],
-    ]);
+        ),
+      ),
+    ));
     $filtered_html_format->save();
 
     // Setup users.
-    $this->webUser = $this->drupalCreateUser([
+    $this->webUser = $this->drupalCreateUser(array(
       'access content',
       'access comments',
       'post comments',
       'skip comment approval',
       $filtered_html_format->getPermissionName(),
-    ]);
+    ));
     $this->drupalLogin($this->webUser);
 
     // Setup a node to comment and test on.
-    $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
+    $this->drupalCreateContentType(array('type' => 'page', 'name' => 'Basic page'));
     // Add a comment field.
     $this->addDefaultCommentField('node', 'page');
     $this->node = $this->drupalCreateNode();
@@ -74,7 +78,7 @@ class FilterHtmlImageSecureTest extends WebTestBase {
   /**
    * Tests removal of images having a non-local source.
    */
-  public function testImageSource() {
+  function testImageSource() {
     global $base_url;
 
     $public_files_path = PublicStream::basePath();
@@ -104,7 +108,7 @@ class FilterHtmlImageSecureTest extends WebTestBase {
     // expected filter conversions.
     $host = \Drupal::request()->getHost();
     $host_pattern = '|^http\://' . $host . '(\:[0-9]{0,5})|';
-    $images = [
+    $images = array(
       $http_base_url . '/' . $druplicon => base_path() . $druplicon,
       $https_base_url . '/' . $druplicon => base_path() . $druplicon,
       // Test a url that includes a port.
@@ -123,8 +127,8 @@ class FilterHtmlImageSecureTest extends WebTestBase {
       'https://example.com/' . $druplicon => $red_x_image,
       'javascript:druplicon.png' => $red_x_image,
       $csrf_path . '/logout' => $red_x_image,
-    ];
-    $comment = [];
+    );
+    $comment = array();
     foreach ($images as $image => $converted) {
       // Output the image source as plain text for debugging.
       $comment[] = $image . ':';
@@ -132,9 +136,9 @@ class FilterHtmlImageSecureTest extends WebTestBase {
       // contain characters that confuse XPath.
       $comment[] = '<img src="' . $image . '" testattribute="' . hash('sha256', $image) . '" />';
     }
-    $edit = [
+    $edit = array(
       'comment_body[0][value]' => implode("\n", $comment),
-    ];
+    );
     $this->drupalPostForm('node/' . $this->node->id(), $edit, t('Save'));
     foreach ($images as $image => $converted) {
       $found = FALSE;
@@ -151,8 +155,7 @@ class FilterHtmlImageSecureTest extends WebTestBase {
           $this->assertEqual((string) $element['src'], $converted);
         }
       }
-      $this->assertTrue($found, format_string('@image was found.', ['@image' => $image]));
+      $this->assertTrue($found, format_string('@image was found.', array('@image' => $image)));
     }
   }
-
 }

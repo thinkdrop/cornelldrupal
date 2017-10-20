@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Plugin\ImageToolkit\Operation\gd\CreateNew.
+ */
+
 namespace Drupal\system\Plugin\ImageToolkit\Operation\gd;
 
 use Drupal\Component\Utility\Color;
@@ -21,29 +26,29 @@ class CreateNew extends GDImageToolkitOperationBase {
    * {@inheritdoc}
    */
   protected function arguments() {
-    return [
-      'width' => [
+    return array(
+      'width' => array(
         'description' => 'The width of the image, in pixels',
-      ],
-      'height' => [
+      ),
+      'height' => array(
         'description' => 'The height of the image, in pixels',
-      ],
-      'extension' => [
+      ),
+      'extension' => array(
         'description' => 'The extension of the image file (e.g. png, gif, etc.)',
         'required' => FALSE,
         'default' => 'png',
-      ],
-      'transparent_color' => [
+      ),
+      'transparent_color' => array(
         'description' => 'The RGB hex color for GIF transparency',
         'required' => FALSE,
         'default' => '#ffffff',
-      ],
-      'is_temp' => [
+      ),
+      'is_temp' => array(
         'description' => 'If TRUE, this operation is being used to create a temporary image by another GD operation. After performing its function, the caller is responsible for destroying the original GD resource.',
         'required' => FALSE,
         'default' => FALSE,
-      ],
-    ];
+      ),
+    );
   }
 
   /**
@@ -102,12 +107,12 @@ class CreateNew extends GDImageToolkitOperationBase {
 
       case IMAGETYPE_GIF:
         if (empty($arguments['transparent_color'])) {
-          // No transparency color specified, fill white transparent.
-          $fill_color = imagecolorallocatealpha($res, 255, 255, 255, 127);
+          // No transparency color specified, fill white.
+          $fill_color = imagecolorallocate($res, 255, 255, 255);
         }
         else {
           $fill_rgb = Color::hexToRgb($arguments['transparent_color']);
-          $fill_color = imagecolorallocatealpha($res, $fill_rgb['red'], $fill_rgb['green'], $fill_rgb['blue'], 127);
+          $fill_color = imagecolorallocate($res, $fill_rgb['red'], $fill_rgb['green'], $fill_rgb['blue']);
           imagecolortransparent($res, $fill_color);
         }
         imagefill($res, 0, 0, $fill_color);

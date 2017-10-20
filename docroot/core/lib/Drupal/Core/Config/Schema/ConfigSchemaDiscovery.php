@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\Schema\ConfigSchemaDiscovery.
+ */
+
 namespace Drupal\Core\Config\Schema;
 
 use Drupal\Component\Plugin\Discovery\DiscoveryInterface;
@@ -26,7 +31,7 @@ class ConfigSchemaDiscovery implements DiscoveryInterface {
    * @param $schema_storage
    *   The storage object to use for reading schema data.
    */
-  public function __construct(StorageInterface $schema_storage) {
+  function __construct(StorageInterface $schema_storage) {
     $this->schemaStorage = $schema_storage;
   }
 
@@ -34,7 +39,7 @@ class ConfigSchemaDiscovery implements DiscoveryInterface {
    * {@inheritdoc}
    */
   public function getDefinitions() {
-    $definitions = [];
+    $definitions = array();
     foreach ($this->schemaStorage->readMultiple($this->schemaStorage->listAll()) as $schema) {
       foreach ($schema as $type => $definition) {
         $definitions[$type] = $definition;
@@ -42,5 +47,4 @@ class ConfigSchemaDiscovery implements DiscoveryInterface {
     }
     return $definitions;
   }
-
 }

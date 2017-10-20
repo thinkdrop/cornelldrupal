@@ -1,15 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Plugin\Context\ContextInterface.
+ */
+
 namespace Drupal\Core\Plugin\Context;
 
 use Drupal\Component\Plugin\Context\ContextInterface as ComponentContextInterface;
 use Drupal\Core\Cache\CacheableDependencyInterface;
 
 /**
- * Context data and definitions for plugins supporting caching and return docs.
- *
- * @see \Drupal\Component\Plugin\Context\ContextInterface
- * @see \Drupal\Core\Plugin\Context\ContextDefinitionInterface
+ * Interface for context.
  */
 interface ContextInterface extends ComponentContextInterface, CacheableDependencyInterface {
 
@@ -30,9 +32,9 @@ interface ContextInterface extends ComponentContextInterface, CacheableDependenc
   /**
    * Adds a dependency on an object: merges its cacheability metadata.
    *
-   * For example, when a context depends on some configuration, an entity, or an
-   * access result, we must make sure their cacheability metadata is present on
-   * the response. This method makes doing that simple.
+   * E.g. when a context depends on some configuration, an entity, or an access
+   * result, we must make sure their cacheability metadata is present on the
+   * response. This method makes doing that simple.
    *
    * @param \Drupal\Core\Cache\CacheableDependencyInterface|mixed $dependency
    *   The dependency. If the object implements CacheableDependencyInterface,

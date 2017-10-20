@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\book\BookExport.
+ */
+
 namespace Drupal\book;
 
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -53,9 +58,9 @@ class BookExport {
    * The given node is embedded to its absolute depth in a top level section. For
    * example, a child node with depth 2 in the hierarchy is contained in
    * (otherwise empty) <div> elements corresponding to depth 0 and depth 1.
-   * This is intended to support WYSIWYG output; for instance, level 3 sections
-   * always look like level 3 sections, no matter their depth relative to the
-   * node selected to be exported as printer-friendly HTML.
+   * This is intended to support WYSIWYG output - e.g., level 3 sections always
+   * look like level 3 sections, no matter their depth relative to the node
+   * selected to be exported as printer-friendly HTML.
    *
    * @param \Drupal\node\NodeInterface $node
    *   The node to export.
@@ -73,8 +78,8 @@ class BookExport {
     }
 
     $tree = $this->bookManager->bookSubtreeData($node->book);
-    $contents = $this->exportTraverse($tree, [$this, 'bookNodeExport']);
-    return [
+    $contents = $this->exportTraverse($tree, array($this, 'bookNodeExport'));
+    return array(
       '#theme' => 'book_export_html',
       '#title' => $node->label(),
       '#contents' => $contents,
@@ -82,7 +87,7 @@ class BookExport {
       '#cache' => [
         'tags' => $node->getEntityType()->getListCacheTags(),
       ],
-    ];
+    );
   }
 
   /**
@@ -101,9 +106,9 @@ class BookExport {
    */
   protected function exportTraverse(array $tree, $callable) {
     // If there is no valid callable, use the default callback.
-    $callable = !empty($callable) ? $callable : [$this, 'bookNodeExport'];
+    $callable = !empty($callable) ? $callable : array($this, 'bookNodeExport');
 
-    $build = [];
+    $build = array();
     foreach ($tree as $data) {
       // Note- access checking is already performed when building the tree.
       if ($node = $this->nodeStorage->load($data['link']['nid'])) {
@@ -133,12 +138,12 @@ class BookExport {
     $build = $this->viewBuilder->view($node, 'print', NULL);
     unset($build['#theme']);
 
-    return [
+    return array(
       '#theme' => 'book_node_export_html',
       '#content' => $build,
       '#node' => $node,
       '#children' => $children,
-    ];
+    );
   }
 
 }

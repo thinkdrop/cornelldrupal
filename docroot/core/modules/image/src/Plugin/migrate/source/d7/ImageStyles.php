@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\image\Plugin\migrate\source\d7\ImageStyles.
+ */
+
 namespace Drupal\image\Plugin\migrate\source\d7;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -47,7 +52,7 @@ class ImageStyles extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function prepareRow(Row $row) {
-    $effects = [];
+    $effects = array();
 
     $results = $this->select('image_effects', 'ie')
       ->fields('ie')

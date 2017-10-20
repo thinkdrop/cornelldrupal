@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\field_ui\EntityDisplayModeListBuilder.
+ */
+
 namespace Drupal\field_ui;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
@@ -71,7 +76,7 @@ class EntityDisplayModeListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function load() {
-    $entities = [];
+    $entities = array();
     foreach (parent::load() as $entity) {
       $entities[$entity->getTargetType()][] = $entity;
     }
@@ -82,7 +87,7 @@ class EntityDisplayModeListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function render() {
-    $build = [];
+    $build = array();
     foreach ($this->load() as $entity_type => $entities) {
       if (!isset($this->entityTypes[$entity_type])) {
         continue;
@@ -93,12 +98,12 @@ class EntityDisplayModeListBuilder extends ConfigEntityListBuilder {
         continue;
       }
 
-      $table = [
+      $table = array(
         '#prefix' => '<h2>' . $this->entityTypes[$entity_type]->getLabel() . '</h2>',
         '#type' => 'table',
         '#header' => $this->buildHeader(),
-        '#rows' => [],
-      ];
+        '#rows' => array(),
+      );
       foreach ($entities as $entity) {
         if ($row = $this->buildRow($entity)) {
           $table['#rows'][$entity->id()] = $row;
@@ -110,29 +115,29 @@ class EntityDisplayModeListBuilder extends ConfigEntityListBuilder {
         $table['#weight'] = -10;
       }
 
-      $short_type = str_replace(['entity_', '_mode'], '', $this->entityTypeId);
-      $table['#rows']['_add_new'][] = [
-        'data' => [
+      $short_type = str_replace(array('entity_', '_mode'), '', $this->entityTypeId);
+      $table['#rows']['_add_new'][] = array(
+        'data' => array(
           '#type' => 'link',
           '#url' => Url::fromRoute($short_type == 'view' ? 'entity.entity_view_mode.add_form' : 'entity.entity_form_mode.add_form', ['entity_type_id' => $entity_type]),
-          '#title' => $this->t('Add new %label @entity-type', ['%label' => $this->entityTypes[$entity_type]->getLabel(), '@entity-type' => $this->entityType->getLowercaseLabel()]),
-        ],
+          '#title' => $this->t('Add new %label @entity-type', array('%label' => $this->entityTypes[$entity_type]->getLabel(), '@entity-type' => $this->entityType->getLowercaseLabel())),
+        ),
         'colspan' => count($table['#header']),
-      ];
+      );
       $build[$entity_type] = $table;
     }
     return $build;
   }
 
   /**
-   * Filters entities based on their view builder handlers.
+   * Filters entities based on their controllers.
    *
    * @param $entity_type
    *   The entity type of the entity that needs to be validated.
    *
    * @return bool
-   *   TRUE if the entity has the correct view builder handler, FALSE if the
-   *   entity doesn't have the correct view builder handler.
+   *   TRUE if the entity has the correct controller, FALSE if the entity
+   *   doesn't has the correct controller.
    */
   protected function isValidEntity($entity_type) {
     return $this->entityTypes[$entity_type]->get('field_ui_base_route') && $this->entityTypes[$entity_type]->hasViewBuilderClass();

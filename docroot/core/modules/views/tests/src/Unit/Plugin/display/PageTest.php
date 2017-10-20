@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\views\Unit\Plugin\display\PageTest.
+ */
+
 namespace Drupal\Tests\views\Unit\Plugin\display;
 
 use Drupal\Tests\UnitTestCase;
@@ -30,9 +35,9 @@ class PageTest extends UnitTestCase {
 
   /**
    * @covers ::buildBasicRenderable
+   * @expectedException \BadFunctionCallException
    */
   public function testBuildBasicRenderableWithMissingRoute() {
-    $this->setExpectedException(\BadFunctionCallException::class);
     Page::buildBasicRenderable('test_view', 'page_1', []);
   }
 

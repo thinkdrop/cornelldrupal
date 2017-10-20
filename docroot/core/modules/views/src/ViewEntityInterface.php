@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\ViewEntityInterface.
+ */
+
 namespace Drupal\views;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
@@ -65,5 +70,6 @@ interface ViewEntityInterface extends ConfigEntityInterface {
    *   provided.
    */
   public function addDisplay($plugin_id = 'page', $title = NULL, $id = NULL);
+
 
 }

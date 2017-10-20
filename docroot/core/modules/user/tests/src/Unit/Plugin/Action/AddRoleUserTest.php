@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\user\Unit\Plugin\Action\AddRoleUserTest.
+ */
+
 namespace Drupal\Tests\user\Unit\Plugin\Action;
 
 use Drupal\user\Plugin\Action\AddRoleUser;
@@ -22,10 +27,10 @@ class AddRoleUserTest extends RoleUserTestBase {
       ->with($this->equalTo('test_role_1'))
       ->will($this->returnValue(TRUE));
 
-    $config = ['rid' => 'test_role_1'];
-    $add_role_plugin = new AddRoleUser($config, 'user_add_role_action', ['type' => 'user'], $this->userRoleEntityType);
+    $config = array('rid' => 'test_role_1');
+    $remove_role_plugin = new AddRoleUser($config, 'user_add_role_action', array('type' => 'user'), $this->userRoleEntityType);
 
-    $add_role_plugin->execute($this->account);
+    $remove_role_plugin->execute($this->account);
   }
 
   /**
@@ -40,10 +45,10 @@ class AddRoleUserTest extends RoleUserTestBase {
       ->with($this->equalTo('test_role_1'))
       ->will($this->returnValue(FALSE));
 
-    $config = ['rid' => 'test_role_1'];
-    $add_role_plugin = new AddRoleUser($config, 'user_add_role_action', ['type' => 'user'], $this->userRoleEntityType);
+    $config = array('rid' => 'test_role_1');
+    $remove_role_plugin = new AddRoleUser($config, 'user_remove_role_action', array('type' => 'user'), $this->userRoleEntityType);
 
-    $add_role_plugin->execute($this->account);
+    $remove_role_plugin->execute($this->account);
   }
 
 }

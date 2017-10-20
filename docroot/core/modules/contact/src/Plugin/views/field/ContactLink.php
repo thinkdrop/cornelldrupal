@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\contact\Plugin\views\field\ContactLink.
+ */
+
 namespace Drupal\contact\Plugin\views\field;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -42,8 +47,8 @@ class ContactLink extends LinkBase {
     $this->options['alter']['make_link'] = TRUE;
     $this->options['alter']['url'] = $this->getUrlInfo($row);
 
-    $title = $this->t('Contact %user', ['%user' => $entity->label()]);
-    $this->options['alter']['attributes'] = ['title' => $title];
+    $title = $this->t('Contact %user', array('%user' => $entity->label()));
+    $this->options['alter']['attributes'] = array('title' => $title);
 
     if (!empty($this->options['text'])) {
       return $this->options['text'];

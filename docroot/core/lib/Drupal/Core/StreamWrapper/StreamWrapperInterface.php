@@ -1,13 +1,11 @@
 <?php
 
-namespace Drupal\Core\StreamWrapper;
-
 /**
- * Defines a Drupal stream wrapper extension.
+ * @file
+ * Contains \Drupal\Core\StreamWrapper\StreamWrapperInterface.
  *
  * Provides a Drupal interface and classes to implement PHP stream wrappers for
- * public, private, and temporary files. Extends the StreamWrapperInterface
- * with methods expected by Drupal stream wrapper classes.
+ * public, private, and temporary files.
  *
  * A stream wrapper is an abstraction of a file system that allows Drupal to
  * use the same set of methods to access both local files and remote resources.
@@ -19,6 +17,15 @@ namespace Drupal\Core\StreamWrapper;
  *
  * @see http://www.faqs.org/rfcs/rfc3986.html
  * @see http://bugs.php.net/bug.php?id=47070
+ */
+
+namespace Drupal\Core\StreamWrapper;
+
+/**
+ * Defines a Drupal stream wrapper extension.
+ *
+ * Extends the StreamWrapperInterface with methods expected by Drupal stream
+ * wrapper classes.
  */
 interface StreamWrapperInterface extends PhpStreamWrapperInterface {
 
@@ -59,10 +66,8 @@ interface StreamWrapperInterface extends PhpStreamWrapperInterface {
    */
 
   /**
-   * Defines the stream wrapper bit flag for a hidden file.
-   *
-   * This is not visible in the UI or accessible via web, but readable and
-   * writable; for instance, the temporary directory for file uploads.
+   * Not visible in the UI or accessible via web, but readable and writable.
+   * E.g. the temporary directory for uploads.
    */
   const HIDDEN = 0x000C;
 

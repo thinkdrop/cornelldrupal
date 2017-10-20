@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate\Plugin\migrate\destination\EntityRevision.
+ */
+
 namespace Drupal\migrate\Plugin\migrate\destination;
 
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -7,8 +12,6 @@ use Drupal\migrate\MigrateException;
 use Drupal\migrate\Row;
 
 /**
- * Provides entity revision destination plugin.
- *
  * @MigrateDestination(
  *   id = "entity_revision",
  *   deriver = "Drupal\migrate\Plugin\Derivative\MigrateEntityRevision"
@@ -25,12 +28,12 @@ class EntityRevision extends EntityContentBase {
   }
 
   /**
-   * Gets the entity.
+   * Get the entity.
    *
    * @param \Drupal\migrate\Row $row
    *   The row object.
    * @param array $old_destination_id_values
-   *   The old destination IDs.
+   *   The old destination ids.
    *
    * @return \Drupal\Core\Entity\EntityInterface|false
    *   The entity or false if it can not be created.
@@ -63,9 +66,9 @@ class EntityRevision extends EntityContentBase {
   /**
    * {@inheritdoc}
    */
-  protected function save(ContentEntityInterface $entity, array $old_destination_id_values = []) {
+  protected function save(ContentEntityInterface $entity, array $old_destination_id_values = array()) {
     $entity->save();
-    return [$entity->getRevisionId()];
+    return array($entity->getRevisionId());
   }
 
   /**
@@ -73,7 +76,8 @@ class EntityRevision extends EntityContentBase {
    */
   public function getIds() {
     if ($key = $this->getKey('revision')) {
-      return [$key => $this->getDefinitionFromEntity($key)];
+      $ids[$key]['type'] = 'integer';
+      return $ids;
     }
     throw new MigrateException('This entity type does not support revisions.');
   }

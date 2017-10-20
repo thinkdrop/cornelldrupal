@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Component\Plugin\StubFallbackPluginManager.
+ */
+
 namespace Drupal\Tests\Component\Plugin;
 
 use Drupal\Component\Plugin\FallbackPluginManagerInterface;
@@ -20,7 +25,7 @@ class StubFallbackPluginManager extends PluginManagerBase implements FallbackPlu
   /**
    * {@inheritdoc}
    */
-  public function getFallbackPluginId($plugin_id, array $configuration = []) {
+  public function getFallbackPluginId($plugin_id, array $configuration = array()) {
     // Minimally implement getFallbackPluginId so that we can test it.
     return $plugin_id . '_fallback';
   }

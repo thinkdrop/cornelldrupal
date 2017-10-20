@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\StringTranslation\Translator\FileTranslation.
+ */
+
 namespace Drupal\Core\StringTranslation\Translator;
 
 use Drupal\Component\Gettext\PoStreamReader;
@@ -47,7 +52,7 @@ class FileTranslation extends StaticTranslation {
       return $this->filesToArray($langcode, $files);
     }
     else {
-      return [];
+      return array();
     }
   }
 
@@ -70,7 +75,7 @@ class FileTranslation extends StaticTranslation {
    * @see file_scan_directory()
    */
   public function findTranslationFiles($langcode = NULL) {
-    $files = file_scan_directory($this->directory, $this->getTranslationFilesPattern($langcode), ['recurse' => FALSE]);
+    $files = file_scan_directory($this->directory, $this->getTranslationFilesPattern($langcode), array('recurse' => FALSE));
     return $files;
   }
 
@@ -82,7 +87,7 @@ class FileTranslation extends StaticTranslation {
    *   want to find translation files.
    *
    * @return string
-   *   String file pattern.
+   *  String file pattern.
    */
   protected function getTranslationFilesPattern($langcode = NULL) {
     // The file name matches: drupal-[release version].[language code].po
@@ -116,5 +121,4 @@ class FileTranslation extends StaticTranslation {
     }
     return $writer->getData();
   }
-
 }

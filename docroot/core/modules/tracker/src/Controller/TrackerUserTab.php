@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\tracker\Controller\TrackerUserTab.
+ */
+
 namespace Drupal\tracker\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -24,5 +29,4 @@ class TrackerUserTab extends ControllerBase {
   public function getTitle(UserInterface $user) {
     return $user->getUsername();
   }
-
 }

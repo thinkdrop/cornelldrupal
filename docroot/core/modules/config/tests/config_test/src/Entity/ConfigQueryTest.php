@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\config_test\Entity\ConfigQueryTest.
+ */
+
 namespace Drupal\config_test\Entity;
 
 /**
@@ -38,6 +43,6 @@ class ConfigQueryTest extends ConfigTest {
    *
    * @var array
    */
-  public $array = [];
+  public $array = array();
 
 }

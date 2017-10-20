@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\MenuRouterRebuildSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Core\Cache\Cache;
@@ -47,7 +52,7 @@ class MenuRouterRebuildSubscriber implements EventSubscriberInterface {
    */
   public function onRouterRebuild(Event $event) {
     $this->menuLinksRebuild();
-    Cache::invalidateTags(['local_task']);
+    Cache::invalidateTags(array('local_task'));
   }
 
   /**
@@ -63,7 +68,7 @@ class MenuRouterRebuildSubscriber implements EventSubscriberInterface {
         db_ignore_replica();
       }
       catch (\Exception $e) {
-        $transaction->rollBack();
+        $transaction->rollback();
         watchdog_exception('menu', $e);
       }
 
@@ -80,9 +85,9 @@ class MenuRouterRebuildSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  static function getSubscribedEvents() {
     // Run after CachedRouteRebuildSubscriber.
-    $events[RoutingEvents::FINISHED][] = ['onRouterRebuild', 100];
+    $events[RoutingEvents::FINISHED][] = array('onRouterRebuild', 100);
     return $events;
   }
 

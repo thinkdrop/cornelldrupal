@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Plugin\Field\FieldType\StringLongItem.
+ */
+
 namespace Drupal\Core\Field\Plugin\Field\FieldType;
 
 use Drupal\Component\Utility\Random;
@@ -24,14 +29,14 @@ class StringLongItem extends StringItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return [
-      'columns' => [
-        'value' => [
+    return array(
+      'columns' => array(
+        'value' => array(
           'type' => $field_definition->getSetting('case_sensitive') ? 'blob' : 'text',
           'size' => 'big',
-        ],
-      ],
-    ];
+        ),
+      ),
+    );
   }
 
   /**

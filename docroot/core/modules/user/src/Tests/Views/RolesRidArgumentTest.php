@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Tests\Views\RolesRidArgumentTest.
+ */
+
 namespace Drupal\user\Tests\Views;
 
 /**
@@ -15,7 +20,7 @@ class RolesRidArgumentTest extends UserTestBase {
    *
    * @var array
    */
-  public static $testViews = ['test_user_roles_rid'];
+  public static $testViews = array('test_user_roles_rid');
 
   /**
    * Tests the generated title of a user: roles argument.

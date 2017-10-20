@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\migrate\source\d6\ViewMode.
+ */
+
 namespace Drupal\node\Plugin\migrate\source\d6;
 
 /**
@@ -16,15 +21,12 @@ class ViewMode extends ViewModeBase {
    * {@inheritdoc}
    */
   protected function initializeIterator() {
-    $rows = [];
+    $rows = array();
     $result = $this->prepareQuery()->execute();
     while ($field_row = $result->fetchAssoc()) {
       $field_row['display_settings'] = unserialize($field_row['display_settings']);
       foreach ($this->getViewModes() as $view_mode) {
-        // Append to the return value if the row has display settings for this
-        // view mode and the view mode is neither hidden nor excluded.
-        // @see \Drupal\field\Plugin\migrate\source\d6\FieldInstancePerViewMode::initializeIterator()
-        if (isset($field_row['display_settings'][$view_mode]) && $field_row['display_settings'][$view_mode]['format'] != 'hidden' && empty($field_row['display_settings'][$view_mode]['exclude'])) {
+        if (isset($field_row['display_settings'][$view_mode]) && empty($field_row['display_settings'][$view_mode]['exclude'])) {
           if (!isset($rows[$view_mode])) {
             $rows[$view_mode]['entity_type'] = 'node';
             $rows[$view_mode]['view_mode'] = $view_mode;
@@ -41,9 +43,9 @@ class ViewMode extends ViewModeBase {
    */
   public function query() {
     $query = $this->select('content_node_field_instance', 'cnfi')
-      ->fields('cnfi', [
+      ->fields('cnfi', array(
         'display_settings',
-      ]);
+      ));
 
     return $query;
   }
@@ -52,9 +54,9 @@ class ViewMode extends ViewModeBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'display_settings' => $this->t('Serialize data with display settings.'),
-    ];
+    );
   }
 
   /**

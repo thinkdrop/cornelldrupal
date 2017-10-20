@@ -1,16 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Plugin\Context\ContextInterface.
+ */
+
 namespace Drupal\Component\Plugin\Context;
 
 /**
- * Provides data and definitions for plugins during runtime and administration.
- *
- * Plugin contexts are satisfied by ContextInterface implementing objects.
- * These objects always contain a definition of what data they will provide
- * during runtime. During run time, ContextInterface implementing objects must
- * also provide the corresponding data value.
- *
- * @see \Drupal\Component\Plugin\Context\ContextDefinitionInterface
+ * A generic context interface for wrapping data a plugin needs to operate.
  */
 interface ContextInterface {
 

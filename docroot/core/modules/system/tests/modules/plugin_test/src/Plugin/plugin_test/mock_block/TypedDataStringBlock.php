@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\plugin_test\Plugin\plugin_test\mock_block\TypedDataStringBlock.
+ */
+
 namespace Drupal\plugin_test\Plugin\plugin_test\mock_block;
 
 use Drupal\Core\Plugin\ContextAwarePluginBase;
@@ -15,5 +20,4 @@ class TypedDataStringBlock extends ContextAwarePluginBase {
   public function getTitle() {
     return $this->getContextValue('string');
   }
-
 }

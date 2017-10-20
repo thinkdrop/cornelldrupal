@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\file\Unit\Plugin\migrate\process\d6\CckFileTest.
+ */
+
 namespace Drupal\Tests\file\Unit\Plugin\migrate\process\d6;
 
 use Drupal\file\Plugin\migrate\process\d6\CckFile;
-use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Entity\MigrationInterface;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Plugin\MigrateProcessInterface;
 use Drupal\migrate\Row;
@@ -25,26 +30,26 @@ class CckFileTest extends UnitTestCase {
     $migration_plugin = $this->prophesize(MigrateProcessInterface::class);
     $migration_plugin->transform(1, $executable, $row, 'foo')->willReturn(1);
 
-    $plugin = new CckFile([], 'd6_cck_file', [], $migration, $migration_plugin->reveal());
+    $plugin = new CckFile(array(), 'd6_cck_file', array(), $migration, $migration_plugin->reveal());
 
-    $options = [
+    $options = array(
       'alt' => 'Foobaz',
       'title' => 'Wambooli',
-    ];
-    $value = [
+    );
+    $value = array(
       'fid' => 1,
       'list' => TRUE,
       'data' => serialize($options),
-    ];
+    );
 
     $transformed = $plugin->transform($value, $executable, $row, 'foo');
-    $expected = [
+    $expected = array(
       'target_id' => 1,
       'display' => TRUE,
       'description' => '',
       'alt' => 'Foobaz',
       'title' => 'Wambooli',
-    ];
+    );
     $this->assertSame($expected, $transformed);
   }
 

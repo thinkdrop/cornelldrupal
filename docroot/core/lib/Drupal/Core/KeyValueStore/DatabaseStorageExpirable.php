@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\KeyValueStore\DatabaseStorageExpirable.
+ */
+
 namespace Drupal\Core\KeyValueStore;
 
 use Drupal\Component\Serialization\SerializationInterface;
@@ -34,11 +39,11 @@ class DatabaseStorageExpirable extends DatabaseStorage implements KeyValueStoreE
    * {@inheritdoc}
    */
   public function has($key) {
-    return (bool) $this->connection->query('SELECT 1 FROM {' . $this->connection->escapeTable($this->table) . '} WHERE collection = :collection AND name = :key AND expire > :now', [
+    return (bool) $this->connection->query('SELECT 1 FROM {' . $this->connection->escapeTable($this->table) . '} WHERE collection = :collection AND name = :key AND expire > :now', array(
       ':collection' => $this->collection,
       ':key' => $key,
       ':now' => REQUEST_TIME,
-    ])->fetchField();
+    ))->fetchField();
   }
 
   /**
@@ -47,12 +52,12 @@ class DatabaseStorageExpirable extends DatabaseStorage implements KeyValueStoreE
   public function getMultiple(array $keys) {
     $values = $this->connection->query(
       'SELECT name, value FROM {' . $this->connection->escapeTable($this->table) . '} WHERE expire > :now AND name IN ( :keys[] ) AND collection = :collection',
-      [
+      array(
         ':now' => REQUEST_TIME,
         ':keys[]' => $keys,
         ':collection' => $this->collection,
-      ])->fetchAllKeyed();
-    return array_map([$this->serializer, 'decode'], $values);
+      ))->fetchAllKeyed();
+    return array_map(array($this->serializer, 'decode'), $values);
   }
 
   /**
@@ -61,40 +66,40 @@ class DatabaseStorageExpirable extends DatabaseStorage implements KeyValueStoreE
   public function getAll() {
     $values = $this->connection->query(
       'SELECT name, value FROM {' . $this->connection->escapeTable($this->table) . '} WHERE collection = :collection AND expire > :now',
-      [
+      array(
         ':collection' => $this->collection,
         ':now' => REQUEST_TIME
-      ])->fetchAllKeyed();
-    return array_map([$this->serializer, 'decode'], $values);
+      ))->fetchAllKeyed();
+    return array_map(array($this->serializer, 'decode'), $values);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setWithExpire($key, $value, $expire) {
+  function setWithExpire($key, $value, $expire) {
     $this->connection->merge($this->table)
-      ->keys([
+      ->keys(array(
         'name' => $key,
         'collection' => $this->collection,
-      ])
-      ->fields([
+      ))
+      ->fields(array(
         'value' => $this->serializer->encode($value),
         'expire' => REQUEST_TIME + $expire,
-      ])
+      ))
       ->execute();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setWithExpireIfNotExists($key, $value, $expire) {
+  function setWithExpireIfNotExists($key, $value, $expire) {
     $result = $this->connection->merge($this->table)
-      ->insertFields([
+      ->insertFields(array(
         'collection' => $this->collection,
         'name' => $key,
         'value' => $this->serializer->encode($value),
         'expire' => REQUEST_TIME + $expire,
-      ])
+      ))
       ->condition('collection', $this->collection)
       ->condition('name', $key)
       ->execute();
@@ -104,7 +109,7 @@ class DatabaseStorageExpirable extends DatabaseStorage implements KeyValueStoreE
   /**
    * {@inheritdoc}
    */
-  public function setMultipleWithExpire(array $data, $expire) {
+  function setMultipleWithExpire(array $data, $expire) {
     foreach ($data as $key => $value) {
       $this->setWithExpire($key, $value, $expire);
     }
@@ -116,5 +121,6 @@ class DatabaseStorageExpirable extends DatabaseStorage implements KeyValueStoreE
   public function deleteMultiple(array $keys) {
     parent::deleteMultiple($keys);
   }
+
 
 }

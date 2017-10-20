@@ -64,6 +64,9 @@
  * @see template_preprocess_comment()
  */
 #}
+{% if threaded %}
+  {{ attach_library('classy/drupal.comment.threaded') }}
+{% endif %}
 {%
   set classes = [
     'comment',
@@ -103,6 +106,9 @@
       <h3{{ title_attributes }}>{{ title }}</h3>
       {{ title_suffix }}
     {% endif %}
-    {{ content }}
+    {{ content|without('links') }}
+    {% if content.links %}
+      <nav>{{ content.links }}</nav>
+    {% endif %}
   </div>
 </article>

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Email.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -10,13 +15,12 @@ use Drupal\Core\Render\Element;
  *
  * Properties:
  * - #default_value: An RFC-compliant email address.
- * - #size: The size of the input element in characters.
  *
  * Example usage:
  * @code
  * $form['email'] = array(
  *   '#type' => 'email',
- *   '#title' => $this->t('Email'),
+ *   '#title' => t('Email'),
  * );
  * @end
  *
@@ -43,25 +47,25 @@ class Email extends FormElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
+    return array(
       '#input' => TRUE,
       '#size' => 60,
       '#maxlength' => self::EMAIL_MAX_LENGTH,
       '#autocomplete_route_name' => FALSE,
-      '#process' => [
-        [$class, 'processAutocomplete'],
-        [$class, 'processAjaxForm'],
-        [$class, 'processPattern'],
-      ],
-      '#element_validate' => [
-        [$class, 'validateEmail'],
-      ],
-      '#pre_render' => [
-        [$class, 'preRenderEmail'],
-      ],
+      '#process' => array(
+        array($class, 'processAutocomplete'),
+        array($class, 'processAjaxForm'),
+        array($class, 'processPattern'),
+      ),
+      '#element_validate' => array(
+        array($class, 'validateEmail'),
+      ),
+      '#pre_render' => array(
+        array($class, 'preRenderEmail'),
+      ),
       '#theme' => 'input__email',
-      '#theme_wrappers' => ['form_element'],
-    ];
+      '#theme_wrappers' => array('form_element'),
+    );
   }
 
   /**
@@ -74,7 +78,7 @@ class Email extends FormElement {
     $form_state->setValueForElement($element, $value);
 
     if ($value !== '' && !\Drupal::service('email.validator')->isValid($value)) {
-      $form_state->setError($element, t('The email address %mail is not valid.', ['%mail' => $value]));
+      $form_state->setError($element, t('The email address %mail is not valid.', array('%mail' => $value)));
     }
   }
 
@@ -91,8 +95,8 @@ class Email extends FormElement {
    */
   public static function preRenderEmail($element) {
     $element['#attributes']['type'] = 'email';
-    Element::setAttributes($element, ['id', 'name', 'value', 'size', 'maxlength', 'placeholder']);
-    static::setAttributes($element, ['form-email']);
+    Element::setAttributes($element, array('id', 'name', 'value', 'size', 'maxlength', 'placeholder'));
+    static::setAttributes($element, array('form-email'));
     return $element;
   }
 

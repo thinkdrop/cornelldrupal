@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\url_alter_test\PathProcessor.
+ */
+
 namespace Drupal\url_alter_test;
 
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
@@ -16,7 +21,7 @@ class PathProcessor implements InboundPathProcessorInterface {
   public function processInbound($path, Request $request) {
     if (preg_match('!^/user/([^/]+)(/.*)?!', $path, $matches)) {
       if ($account = user_load_by_name($matches[1])) {
-        $matches += [2 => ''];
+        $matches += array(2 => '');
         $path = '/user/' . $account->id() . $matches[2];
       }
     }
@@ -29,5 +34,4 @@ class PathProcessor implements InboundPathProcessorInterface {
     }
     return $path;
   }
-
 }

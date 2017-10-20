@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\Cache.
+ */
+
 namespace Drupal\Core\Cache;
 
 use Drupal\Core\Database\Query\SelectInterface;
@@ -76,10 +81,10 @@ class Cache {
    */
   public static function mergeMaxAges($a = Cache::PERMANENT, $b = Cache::PERMANENT) {
     // If one of the values is Cache::PERMANENT, return the other value.
-    if ($a === Cache::PERMANENT) {
+    if ($a === Cache::PERMANENT){
       return $b;
     }
-    if ($b === Cache::PERMANENT) {
+    if ($b === Cache::PERMANENT){
       return $a;
     }
 
@@ -148,11 +153,11 @@ class Cache {
   /**
    * Gets all cache bin services.
    *
-   * @return \Drupal\Core\Cache\CacheBackendInterface[]
-   *   An array of cache backend objects keyed by cache bins.
+   * @return array
+   *  An array of cache backend objects keyed by cache bins.
    */
   public static function getBins() {
-    $bins = [];
+    $bins = array();
     $container = \Drupal::getContainer();
     foreach ($container->getParameter('cache_bins') as $service_id => $bin) {
       $bins[$bin] = $container->get($service_id);
@@ -178,7 +183,7 @@ class Cache {
    */
   public static function keyFromQuery(SelectInterface $query) {
     $query->preExecute();
-    $keys = [(string) $query, $query->getArguments()];
+    $keys = array((string) $query, $query->getArguments());
     return hash('sha256', serialize($keys));
   }
 

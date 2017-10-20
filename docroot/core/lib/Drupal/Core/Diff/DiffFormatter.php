@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Diff\DiffFormatter.
+ */
+
 namespace Drupal\Core\Diff;
 
 use Drupal\Component\Diff\DiffFormatter as DiffFormatterBase;
@@ -17,7 +22,17 @@ class DiffFormatter extends DiffFormatterBase {
    *
    * @var array
    */
-  protected $rows = [];
+  protected $rows = array();
+
+  /**
+   * The line stats.
+   *
+   * @var array
+   */
+  protected $line_stats = array(
+    'counter' => array('x' => 0, 'y' => 0),
+    'offset' => array('x' => 0, 'y' => 0),
+  );
 
   /**
    * Creates a DiffFormatter to render diffs in a table.
@@ -35,7 +50,7 @@ class DiffFormatter extends DiffFormatterBase {
    * {@inheritdoc}
    */
   protected function _start_diff() {
-    $this->rows = [];
+    $this->rows = array();
   }
 
   /**
@@ -49,16 +64,16 @@ class DiffFormatter extends DiffFormatterBase {
    * {@inheritdoc}
    */
   protected function _block_header($xbeg, $xlen, $ybeg, $ylen) {
-    return [
-      [
+    return array(
+      array(
         'data' => $xbeg + $this->line_stats['offset']['x'],
         'colspan' => 2,
-      ],
-      [
+      ),
+      array(
         'data' => $ybeg + $this->line_stats['offset']['y'],
         'colspan' => 2,
-      ]
-    ];
+      )
+    );
   }
 
   /**
@@ -86,16 +101,16 @@ class DiffFormatter extends DiffFormatterBase {
    *   An array representing a table row.
    */
   protected function addedLine($line) {
-    return [
-      [
+    return array(
+      array(
         'data' => '+',
         'class' => 'diff-marker',
-      ],
-      [
+      ),
+      array(
         'data' => ['#markup' => $line],
         'class' => 'diff-context diff-addedline',
-      ]
-    ];
+      )
+    );
   }
 
   /**
@@ -108,16 +123,16 @@ class DiffFormatter extends DiffFormatterBase {
    *   An array representing a table row.
    */
   protected function deletedLine($line) {
-    return [
-      [
+    return array(
+      array(
         'data' => '-',
         'class' => 'diff-marker',
-      ],
-      [
+      ),
+      array(
         'data' => ['#markup' => $line],
         'class' => 'diff-context diff-deletedline',
-      ]
-    ];
+      )
+    );
   }
 
   /**
@@ -130,13 +145,13 @@ class DiffFormatter extends DiffFormatterBase {
    *   An array representing a table row.
    */
   protected function contextLine($line) {
-    return [
+    return array(
       ' ',
-      [
+      array(
         'data' => ['#markup' => $line],
         'class' => 'diff-context',
-      ]
-    ];
+      )
+    );
   }
 
   /**
@@ -146,10 +161,10 @@ class DiffFormatter extends DiffFormatterBase {
    *   An array representing a table row.
    */
   protected function emptyLine() {
-    return [
+    return array(
       ' ',
       ' ',
-    ];
+    );
   }
 
   /**
@@ -201,5 +216,4 @@ class DiffFormatter extends DiffFormatterBase {
       $this->rows[] = array_merge($this->emptyLine(), $this->addedLine($line));
     }
   }
-
 }

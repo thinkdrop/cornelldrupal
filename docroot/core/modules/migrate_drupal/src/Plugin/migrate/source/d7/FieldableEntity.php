@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate_drupal\Plugin\migrate\source\d7\FieldableEntity.
+ */
+
 namespace Drupal\migrate_drupal\Plugin\migrate\source\d7;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -15,7 +20,7 @@ abstract class FieldableEntity extends DrupalSqlBase {
    *
    * @param string $entity_type
    *   The entity type ID.
-   * @param string|null $bundle
+   * @param string|NULL $bundle
    *   (optional) The bundle.
    *
    * @return array[]

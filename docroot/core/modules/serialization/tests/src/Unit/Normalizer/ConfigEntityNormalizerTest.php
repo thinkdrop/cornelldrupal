@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\serialization\Unit\Normalizer\ConfigEntityNormalizerTest.
+ */
+
 namespace Drupal\Tests\serialization\Unit\Normalizer;
 
 use Drupal\serialization\Normalizer\ConfigEntityNormalizer;
@@ -17,7 +22,7 @@ class ConfigEntityNormalizerTest extends UnitTestCase {
    * @covers ::normalize
    */
   public function testNormalize() {
-    $test_export_properties = ['test' => 'test'];
+    $test_export_properties = array('test' => 'test');
 
     $entity_manager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
     $normalizer = new ConfigEntityNormalizer($entity_manager);
@@ -31,3 +36,4 @@ class ConfigEntityNormalizerTest extends UnitTestCase {
   }
 
 }
+

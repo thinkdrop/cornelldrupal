@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Path\AliasManagerInterface.
+ */
+
 namespace Drupal\Core\Path;
 
 /**
@@ -49,5 +54,4 @@ interface AliasManagerInterface {
    *   if entire cache needs to be flushed.
    */
   public function cacheClear($source = NULL);
-
 }

@@ -1,7 +1,11 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\migrate\source\d6\NodeRevision.
+ */
+
 namespace Drupal\node\Plugin\migrate\source\d6;
-use Drupal\Core\Database\Query\SelectInterface;
 
 /**
  * Drupal 6 node revision source from database.
@@ -22,11 +26,11 @@ class NodeRevision extends Node {
    */
   public function fields() {
     // Use all the node fields plus the vid that identifies the version.
-    return parent::fields() + [
+    return parent::fields() + array(
       'vid' => t('The primary identifier for this version.'),
       'log' => $this->t('Revision Log message'),
       'timestamp' => $this->t('Revision timestamp'),
-    ];
+    );
   }
 
   /**
@@ -36,13 +40,6 @@ class NodeRevision extends Node {
     $ids['vid']['type'] = 'integer';
     $ids['vid']['alias'] = 'nr';
     return $ids;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function handleTranslations(SelectInterface $query) {
-    // @todo in https://www.drupal.org/node/2746541
   }
 
 }

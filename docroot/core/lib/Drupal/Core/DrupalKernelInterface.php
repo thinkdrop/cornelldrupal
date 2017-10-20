@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\DrupalKernelInterface.
+ */
+
 namespace Drupal\Core;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -58,7 +63,7 @@ interface DrupalKernelInterface extends HttpKernelInterface, ContainerAwareInter
    *
    * This also allows inspecting a built container for debugging purposes.
    *
-   * @return array|null
+   * @return array|NULL
    *   The cached container definition or NULL if not found in cache.
    */
   public function getCachedContainerDefinition();
@@ -100,7 +105,7 @@ interface DrupalKernelInterface extends HttpKernelInterface, ContainerAwareInter
    * @param array $module_filenames
    *   List of module filenames, keyed by module name.
    */
-  public function updateModules(array $module_list, array $module_filenames = []);
+  public function updateModules(array $module_list, array $module_filenames = array());
 
   /**
    * Force a container rebuild.
@@ -122,8 +127,8 @@ interface DrupalKernelInterface extends HttpKernelInterface, ContainerAwareInter
    *
    * @return $this
    *
-   * @deprecated in Drupal 8.0.x and will be removed before 9.0.0. Only used by
-   *   legacy front-controller scripts.
+   * @deprecated 8.x
+   *   Only used by legacy front-controller scripts.
    */
   public function prepareLegacyRequest(Request $request);
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Controller\EntityListController.
+ */
+
 namespace Drupal\Core\Entity\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -23,3 +28,4 @@ class EntityListController extends ControllerBase {
   }
 
 }
+

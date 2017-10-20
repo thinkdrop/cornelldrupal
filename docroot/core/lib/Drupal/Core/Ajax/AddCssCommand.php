@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Ajax\AddCssCommand.
+ */
+
 namespace Drupal\Core\Ajax;
 
 /**
@@ -39,10 +44,10 @@ class AddCssCommand implements CommandInterface {
    */
   public function render() {
 
-    return [
+    return array(
       'command' => 'add_css',
       'data' => $this->styles,
-    ];
+    );
   }
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\query\QueryPluginBase.
+ */
+
 namespace Drupal\views\Plugin\views\query;
 
 use Drupal\Core\Cache\Cache;
@@ -38,7 +43,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    *
    * @var views_plugin_pager
    */
-  public $pager = NULL;
+  var $pager = NULL;
 
   /**
    * Stores the limit of items that should be requested in the query.
@@ -62,7 +67,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    * @param view $view
    *   The view which is executed.
    */
-  public function alter(ViewExecutable $view) {  }
+  function alter(ViewExecutable $view) {  }
 
   /**
    * Builds the necessary info to execute the query.
@@ -70,7 +75,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    * @param view $view
    *   The view which is executed.
    */
-  public function build(ViewExecutable $view) { }
+  function build(ViewExecutable $view) { }
 
   /**
    * Executes the query and fills the associated view object with according
@@ -85,7 +90,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    * @param view $view
    *   The view which is executed.
    */
-  public function execute(ViewExecutable $view) {  }
+  function execute(ViewExecutable $view) {  }
 
   /**
    * Add a signature to the query, if such a thing is feasible.
@@ -160,7 +165,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    * @param $where
    *   'where' or 'having'.
    *
-   * @return
+   * @return $group
    *   The group ID generated.
    */
   public function setWhereGroup($type = 'AND', $group = NULL, $where = 'where') {
@@ -173,7 +178,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
 
     // Create an empty group
     if (empty($groups[$group])) {
-      $groups[$group] = ['conditions' => [], 'args' => []];
+      $groups[$group] = array('conditions' => array(), 'args' => array());
     }
 
     $groups[$group]['type'] = strtoupper($type);
@@ -199,7 +204,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    *
    * Query plugins that don't support entities can leave the method empty.
    */
-  public function loadEntities(&$results) {}
+  function loadEntities(&$results) {}
 
   /**
    * Returns a Unix timestamp to database native timestamp expression.
@@ -231,7 +236,7 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    *   An appropriate query expression pointing to the date field.
    * @param string $format
    *   A format string for the result, like 'Y-m-d H:i:s'.
-   * @param bool $string_date
+   * @param boolean $string_date
    *   For certain databases, date format functions vary depending on string or
    *   numeric storage.
    *
@@ -261,19 +266,19 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
    */
   public function getEntityTableInfo() {
     // Start with the base table.
-    $entity_tables = [];
+    $entity_tables = array();
     $views_data = Views::viewsData();
     $base_table = $this->view->storage->get('base_table');
     $base_table_data = $views_data->get($base_table);
 
     if (isset($base_table_data['table']['entity type'])) {
-      $entity_tables[$base_table_data['table']['entity type']] = [
+      $entity_tables[$base_table_data['table']['entity type']] = array(
         'base' => $base_table,
         'alias' => $base_table,
         'relationship_id' => 'none',
         'entity_type' => $base_table_data['table']['entity type'],
         'revision' => $base_table_data['table']['entity revision'],
-      ];
+      );
 
       // Include the entity provider.
       if (!empty($base_table_data['table']['provider'])) {
@@ -285,21 +290,13 @@ abstract class QueryPluginBase extends PluginBase implements CacheableDependency
     foreach ((array) $this->view->relationship as $relationship_id => $relationship) {
       $table_data = $views_data->get($relationship->definition['base']);
       if (isset($table_data['table']['entity type'])) {
-
-        // If this is not one of the entity base tables, skip it.
-        $entity_type = \Drupal::entityTypeManager()->getDefinition($table_data['table']['entity type']);
-        $entity_base_tables = [$entity_type->getBaseTable(), $entity_type->getDataTable(), $entity_type->getRevisionTable(), $entity_type->getRevisionDataTable()];
-        if (!in_array($relationship->definition['base'], $entity_base_tables)) {
-          continue;
-        }
-
-        $entity_tables[$relationship_id . '__' . $relationship->tableAlias] = [
+        $entity_tables[$relationship_id . '__' . $relationship->tableAlias] = array(
           'base' => $relationship->definition['base'],
           'relationship_id' => $relationship_id,
           'alias' => $relationship->alias,
           'entity_type' => $table_data['table']['entity type'],
           'revision' => $table_data['table']['entity revision'],
-        ];
+        );
 
         // Include the entity provider.
         if (!empty($table_data['table']['provider'])) {

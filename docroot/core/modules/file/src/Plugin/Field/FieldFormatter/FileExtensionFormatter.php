@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\Plugin\Field\FieldFormatter\FileExtensionFormatter.
+ */
+
 namespace Drupal\file\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -34,12 +39,12 @@ class FileExtensionFormatter extends BaseFieldFileFormatterBase {
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $form = parent::settingsForm($form, $form_state);
-    $form['extension_detect_tar'] = [
+    $form['extension_detect_tar'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Include tar in extension'),
       '#description' => $this->t("If the part of the filename just before the extension is '.tar', include this in the extension output."),
       '#default_value' => $this->getSetting('extension_detect_tar'),
-    ];
+    );
     return $form;
   }
 

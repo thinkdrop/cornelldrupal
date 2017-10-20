@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\Entity\ConfigDependencyDeleteFormTrait.
+ */
+
+
 namespace Drupal\Core\Config\Entity;
 
 use Drupal\Core\Config\ConfigManagerInterface;
@@ -17,7 +23,7 @@ trait ConfigDependencyDeleteFormTrait {
    *
    * Provided by \Drupal\Core\StringTranslation\StringTranslationTrait.
    */
-  abstract protected function t($string, array $args = [], array $options = []);
+  abstract protected function t($string, array $args = array(), array $options = array());
 
   /**
    * Adds form elements to list affected configuration entities.
@@ -41,15 +47,15 @@ trait ConfigDependencyDeleteFormTrait {
   protected function addDependencyListsToForm(array &$form, $type, array $names, ConfigManagerInterface $config_manager, EntityManagerInterface $entity_manager) {
     // Get the dependent entities.
     $dependent_entities = $config_manager->getConfigEntitiesToChangeOnDependencyRemoval($type, $names);
-    $entity_types = [];
+    $entity_types = array();
 
-    $form['entity_updates'] = [
+    $form['entity_updates'] = array(
       '#type' => 'details',
       '#title' => $this->t('Configuration updates'),
       '#description' => $this->t('The listed configuration will be updated.'),
       '#open' => TRUE,
       '#access' => FALSE,
-    ];
+    );
 
     foreach ($dependent_entities['update'] as $entity) {
       /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface  $entity */
@@ -59,11 +65,11 @@ trait ConfigDependencyDeleteFormTrait {
         // Store the ID and label to sort the entity types and entities later.
         $label = $entity_type->getLabel();
         $entity_types[$entity_type_id] = $label;
-        $form['entity_updates'][$entity_type_id] = [
+        $form['entity_updates'][$entity_type_id] = array(
           '#theme' => 'item_list',
           '#title' => $label,
-          '#items' => [],
-        ];
+          '#items' => array(),
+        );
       }
       $form['entity_updates'][$entity_type_id]['#items'][$entity->id()] = $entity->label() ?: $entity->id();
     }
@@ -81,13 +87,13 @@ trait ConfigDependencyDeleteFormTrait {
       }
     }
 
-    $form['entity_deletes'] = [
+    $form['entity_deletes'] = array(
       '#type' => 'details',
       '#title' => $this->t('Configuration deletions'),
       '#description' => $this->t('The listed configuration will be deleted.'),
       '#open' => TRUE,
       '#access' => FALSE,
-    ];
+    );
 
     foreach ($dependent_entities['delete'] as $entity) {
       $entity_type_id = $entity->getEntityTypeId();
@@ -96,11 +102,11 @@ trait ConfigDependencyDeleteFormTrait {
         // Store the ID and label to sort the entity types and entities later.
         $label = $entity_type->getLabel();
         $entity_types[$entity_type_id] = $label;
-        $form['entity_deletes'][$entity_type_id] = [
+        $form['entity_deletes'][$entity_type_id] = array(
           '#theme' => 'item_list',
           '#title' => $label,
-          '#items' => [],
-        ];
+          '#items' => array(),
+        );
       }
       $form['entity_deletes'][$entity_type_id]['#items'][$entity->id()] = $entity->label() ?: $entity->id();
     }
@@ -121,5 +127,4 @@ trait ConfigDependencyDeleteFormTrait {
     }
 
   }
-
 }

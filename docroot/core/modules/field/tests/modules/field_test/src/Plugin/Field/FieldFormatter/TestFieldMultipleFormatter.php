@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\field_test\Plugin\Field\FieldFormatter\TestFieldMultipleFormatter.
+ */
+
 namespace Drupal\field_test\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FormatterBase;
@@ -26,23 +31,23 @@ class TestFieldMultipleFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return [
+    return array(
       'test_formatter_setting_multiple' => 'dummy test string',
       'alter' => FALSE,
-    ] + parent::defaultSettings();
+    ) + parent::defaultSettings();
   }
 
   /**
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $element['test_formatter_setting_multiple'] = [
+    $element['test_formatter_setting_multiple'] = array(
       '#title' => t('Setting'),
       '#type' => 'textfield',
       '#size' => 20,
       '#default_value' => $this->getSetting('test_formatter_setting_multiple'),
       '#required' => TRUE,
-    ];
+    );
     return $element;
   }
 
@@ -50,8 +55,8 @@ class TestFieldMultipleFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function settingsSummary() {
-    $summary = [];
-    $summary[] = t('@setting: @value', ['@setting' => 'test_formatter_setting_multiple', '@value' => $this->getSetting('test_formatter_setting_multiple')]);
+    $summary = array();
+    $summary[] = t('@setting: @value', array('@setting' => 'test_formatter_setting_multiple', '@value' => $this->getSetting('test_formatter_setting_multiple')));
     return $summary;
   }
 
@@ -59,17 +64,16 @@ class TestFieldMultipleFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $elements = [];
+    $elements = array();
 
     if (!empty($items)) {
-      $array = [];
+      $array = array();
       foreach ($items as $delta => $item) {
         $array[] = $delta . ':' . $item->value;
       }
-      $elements[0] = ['#markup' => $this->getSetting('test_formatter_setting_multiple') . '|' . implode('|', $array)];
+      $elements[0] = array('#markup' => $this->getSetting('test_formatter_setting_multiple') . '|' . implode('|', $array));
     }
 
     return $elements;
   }
-
 }

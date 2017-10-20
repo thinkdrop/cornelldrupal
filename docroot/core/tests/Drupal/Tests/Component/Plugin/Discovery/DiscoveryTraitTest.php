@@ -1,13 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Component\Plugin\Discovery\DiscoveryTraitTest.
+ */
+
 namespace Drupal\Tests\Component\Plugin\Discovery;
 
-use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Tests\UnitTestCase;
 
 /**
  * @group Plugin
- * @coversDefaultClass \Drupal\Component\Plugin\Discovery\DiscoveryTrait
+ * @coversDefaultClass Drupal\Component\Plugin\Discovery\DiscoveryTrait
  */
 class DiscoveryTraitTest extends UnitTestCase {
 
@@ -20,10 +24,10 @@ class DiscoveryTraitTest extends UnitTestCase {
    *   - Plugin ID to get, passed to doGetDefinition().
    */
   public function providerDoGetDefinition() {
-    return [
+    return array(
       ['definition', ['plugin_name' => 'definition'], 'plugin_name'],
       [NULL, ['plugin_name' => 'definition'], 'bad_plugin_name'],
-    ];
+    );
   }
 
   /**
@@ -52,15 +56,16 @@ class DiscoveryTraitTest extends UnitTestCase {
    *   - Plugin ID to get, passed to doGetDefinition().
    */
   public function providerDoGetDefinitionException() {
-    return [
+    return array(
       [FALSE, ['plugin_name' => 'definition'], 'bad_plugin_name'],
-    ];
+    );
   }
 
   /**
    * @covers ::doGetDefinition
+   * @expectedException Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @dataProvider providerDoGetDefinitionException
-   * @uses \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @uses Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function testDoGetDefinitionException($expected, $definitions, $plugin_id) {
     // Mock the trait.
@@ -69,8 +74,10 @@ class DiscoveryTraitTest extends UnitTestCase {
     $method_ref = new \ReflectionMethod($trait, 'doGetDefinition');
     $method_ref->setAccessible(TRUE);
     // Call doGetDefinition, with $exception_on_invalid always TRUE.
-    $this->setExpectedException(PluginNotFoundException::class);
-    $method_ref->invoke($trait, $definitions, $plugin_id, TRUE);
+    $this->assertSame(
+      $expected,
+      $method_ref->invoke($trait, $definitions, $plugin_id, TRUE)
+    );
   }
 
   /**
@@ -94,8 +101,9 @@ class DiscoveryTraitTest extends UnitTestCase {
 
   /**
    * @covers ::getDefinition
+   * @expectedException Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @dataProvider providerDoGetDefinitionException
-   * @uses \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @uses Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function testGetDefinitionException($expected, $definitions, $plugin_id) {
     // Since getDefinition is a wrapper around doGetDefinition(), we can re-use
@@ -106,8 +114,10 @@ class DiscoveryTraitTest extends UnitTestCase {
       ->method('getDefinitions')
       ->willReturn($definitions);
     // Call getDefinition(), with $exception_on_invalid always TRUE.
-    $this->setExpectedException(PluginNotFoundException::class);
-    $trait->getDefinition($plugin_id, TRUE);
+    $this->assertSame(
+      $expected,
+      $trait->getDefinition($plugin_id, TRUE)
+    );
   }
 
   /**
@@ -118,10 +128,10 @@ class DiscoveryTraitTest extends UnitTestCase {
    *   - Plugin ID to look for.
    */
   public function providerHasDefinition() {
-    return [
+    return array(
       [TRUE, 'valid'],
       [FALSE, 'not_valid'],
-    ];
+    );
   }
 
   /**
@@ -130,16 +140,16 @@ class DiscoveryTraitTest extends UnitTestCase {
    */
   public function testHasDefinition($expected, $plugin_id) {
     $trait = $this->getMockBuilder('Drupal\Component\Plugin\Discovery\DiscoveryTrait')
-      ->setMethods(['getDefinition'])
+      ->setMethods(array('getDefinition'))
       ->getMockForTrait();
     // Set up our mocked getDefinition() to return TRUE for 'valid' and FALSE
     // for 'not_valid'.
     $trait->expects($this->once())
       ->method('getDefinition')
-      ->will($this->returnValueMap([
+      ->will($this->returnValueMap(array(
         ['valid', FALSE, TRUE],
         ['not_valid', FALSE, FALSE],
-      ]));
+      )));
     // Call hasDefinition().
     $this->assertSame(
       $expected,

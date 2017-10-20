@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Plugin\Field\FieldFormatter\IntegerFormatter.
+ */
+
 namespace Drupal\Core\Field\Plugin\Field\FieldFormatter;
 
 /**
@@ -23,10 +28,10 @@ class IntegerFormatter extends NumericFormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return [
+    return array(
       'thousand_separator' => '',
       'prefix_suffix' => TRUE,
-    ] + parent::defaultSettings();
+    ) + parent::defaultSettings();
   }
 
   /**

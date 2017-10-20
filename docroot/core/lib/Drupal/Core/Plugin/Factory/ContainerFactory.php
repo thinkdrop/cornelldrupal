@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\Core\Plugin\Factory\ContainerFactory.
+ */
 
 namespace Drupal\Core\Plugin\Factory;
 
@@ -12,7 +16,7 @@ class ContainerFactory extends DefaultFactory {
   /**
    * {@inheritdoc}
    */
-  public function createInstance($plugin_id, array $configuration = []) {
+  public function createInstance($plugin_id, array $configuration = array()) {
     $plugin_definition = $this->discovery->getDefinition($plugin_id);
     $plugin_class = static::getPluginClass($plugin_id, $plugin_definition, $this->interface);
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\display\Embed.
+ */
+
 namespace Drupal\views\Plugin\views\display;
 
 /**
@@ -20,13 +25,6 @@ namespace Drupal\views\Plugin\views\display;
  */
 class Embed extends DisplayPluginBase {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function buildRenderable(array $args = [], $cache = TRUE) {
-    $build = parent::buildRenderable($args, $cache);
-    $build['#embed'] = TRUE;
-    return $build;
-  }
+  // This display plugin does nothing apart from exist.
 
 }

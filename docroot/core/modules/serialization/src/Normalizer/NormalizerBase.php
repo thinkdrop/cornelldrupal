@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\serialization\Normalizer\NormalizerBase.
+ */
+
 namespace Drupal\serialization\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -72,6 +77,6 @@ abstract class NormalizerBase extends SerializerAwareNormalizer implements Norma
     }
 
     return in_array($format, (array) $this->format);
-  }
+   }
 
 }

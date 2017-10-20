@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\RedirectLeadingSlashesSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Core\Cache\CacheableRedirectResponse;
@@ -41,7 +46,7 @@ class RedirectLeadingSlashesSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  static function getSubscribedEvents() {
     $events[KernelEvents::REQUEST][] = ['redirect', 1000];
     return $events;
   }

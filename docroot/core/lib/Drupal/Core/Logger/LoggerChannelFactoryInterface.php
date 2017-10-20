@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Logger\LoggerChannelFactoryInterface.
+ */
+
 namespace Drupal\Core\Logger;
 
 use Psr\Log\LoggerInterface;
@@ -18,7 +23,10 @@ interface LoggerChannelFactoryInterface {
   public function get($channel);
 
   /**
-   * Adds a logger to all the channels.
+   * Adds a logger.
+   *
+   * Here is were all services tagged as 'logger' are being retrieved and then
+   * passed to the channels after instantiation.
    *
    * @param \Psr\Log\LoggerInterface $logger
    *   The PSR-3 logger to add.

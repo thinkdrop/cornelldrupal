@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\ImageToolkit\ImageToolkitManager.
+ */
+
 namespace Drupal\Core\ImageToolkit;
 
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -87,7 +92,7 @@ class ImageToolkitManager extends DefaultPluginManager {
     // Use plugin system to get list of available toolkits.
     $toolkits = $this->getDefinitions();
 
-    $output = [];
+    $output = array();
     foreach ($toolkits as $id => $definition) {
       // Only allow modules that aren't marked as unavailable.
       if (call_user_func($definition['class'] . '::isAvailable')) {

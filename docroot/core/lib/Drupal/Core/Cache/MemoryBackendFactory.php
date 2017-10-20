@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\MemoryBackendFactory.
+ */
+
 namespace Drupal\Core\Cache;
 
 class MemoryBackendFactory implements CacheFactoryInterface {
@@ -9,14 +14,14 @@ class MemoryBackendFactory implements CacheFactoryInterface {
    *
    * @var \Drupal\Core\Cache\MemoryBackend[]
    */
-  protected $bins = [];
+  protected $bins = array();
 
   /**
    * {@inheritdoc}
    */
-  public function get($bin) {
+  function get($bin) {
     if (!isset($this->bins[$bin])) {
-      $this->bins[$bin] = new MemoryBackend();
+      $this->bins[$bin] = new MemoryBackend($bin);
     }
     return $this->bins[$bin];
   }

@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\link\Plugin\Field\FieldFormatter\LinkSeparateFormatter.
+ *
+ * @todo
+ * Merge into 'link' formatter once there is a #type like 'item' that
+ * can render a compound label and content outside of a form context.
+ * @see https://www.drupal.org/node/1829202
+ */
+
 namespace Drupal\link\Plugin\Field\FieldFormatter;
 
 use Drupal\Component\Utility\Unicode;
@@ -7,10 +17,6 @@ use Drupal\Core\Field\FieldItemListInterface;
 
 /**
  * Plugin implementation of the 'link_separate' formatter.
- *
- * @todo https://www.drupal.org/node/1829202 Merge into 'link' formatter once
- *   there is a #type like 'item' that can render a compound label and content
- *   outside of a form context.
  *
  * @FieldFormatter(
  *   id = "link_separate",
@@ -26,18 +32,18 @@ class LinkSeparateFormatter extends LinkFormatter {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return [
+    return array(
       'trim_length' => 80,
       'rel' => '',
       'target' => '',
-    ] + parent::defaultSettings();
+    ) + parent::defaultSettings();
   }
 
   /**
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $element = [];
+    $element = array();
     $entity = $items->getEntity();
     $settings = $this->getSettings();
 
@@ -67,12 +73,12 @@ class LinkSeparateFormatter extends LinkFormatter {
         $url_title = Unicode::truncate($url_title, $settings['trim_length'], FALSE, TRUE);
       }
 
-      $element[$delta] = [
+      $element[$delta] = array(
         '#theme' => 'link_formatter_link_separate',
         '#title' => $link_title,
         '#url_title' => $url_title,
         '#url' => $url,
-      ];
+      );
 
       if (!empty($item->_attributes)) {
         // Set our RDFa attributes on the <a> element that is being built.
@@ -85,5 +91,5 @@ class LinkSeparateFormatter extends LinkFormatter {
     }
     return $element;
   }
-
 }
+

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\Tests\FileTokenReplaceTest.
+ */
+
 namespace Drupal\file\Tests;
 
 use Drupal\Component\Utility\Html;
@@ -16,7 +21,7 @@ class FileTokenReplaceTest extends FileFieldTestBase {
   /**
    * Creates a file, then tests the tokens generated from it.
    */
-  public function testFileTokenReplacement() {
+  function testFileTokenReplacement() {
     $node_storage = $this->container->get('entity.manager')->getStorage('node');
     $token_service = \Drupal::token();
     $language_interface = \Drupal::languageManager()->getCurrentLanguage();
@@ -35,12 +40,12 @@ class FileTokenReplaceTest extends FileFieldTestBase {
     $nid = $this->uploadNodeFile($test_file, $field_name, $type_name);
 
     // Load the node and the file.
-    $node_storage->resetCache([$nid]);
+    $node_storage->resetCache(array($nid));
     $node = $node_storage->load($nid);
     $file = File::load($node->{$field_name}->target_id);
 
     // Generate and test sanitized tokens.
-    $tests = [];
+    $tests = array();
     $tests['[file:fid]'] = $file->id();
     $tests['[file:name]'] = Html::escape($file->getFilename());
     $tests['[file:path]'] = Html::escape($file->getFileUri());
@@ -61,8 +66,7 @@ class FileTokenReplaceTest extends FileFieldTestBase {
     $metadata_tests['[file:path]'] = $base_bubbleable_metadata;
     $metadata_tests['[file:mime]'] = $base_bubbleable_metadata;
     $metadata_tests['[file:size]'] = $base_bubbleable_metadata;
-    $bubbleable_metadata = clone $base_bubbleable_metadata;
-    $metadata_tests['[file:url]'] = $bubbleable_metadata->addCacheContexts(['url.site']);
+    $metadata_tests['[file:url]'] = $base_bubbleable_metadata;
     $bubbleable_metadata = clone $base_bubbleable_metadata;
     $metadata_tests['[file:created]'] = $bubbleable_metadata->addCacheTags(['rendered']);
     $metadata_tests['[file:created:short]'] = $bubbleable_metadata;
@@ -77,8 +81,8 @@ class FileTokenReplaceTest extends FileFieldTestBase {
 
     foreach ($tests as $input => $expected) {
       $bubbleable_metadata = new BubbleableMetadata();
-      $output = $token_service->replace($input, ['file' => $file], ['langcode' => $language_interface->getId()], $bubbleable_metadata);
-      $this->assertEqual($output, $expected, format_string('Sanitized file token %token replaced.', ['%token' => $input]));
+      $output = $token_service->replace($input, array('file' => $file), array('langcode' => $language_interface->getId()), $bubbleable_metadata);
+      $this->assertEqual($output, $expected, format_string('Sanitized file token %token replaced.', array('%token' => $input)));
       $this->assertEqual($bubbleable_metadata, $metadata_tests[$input]);
     }
 
@@ -89,9 +93,8 @@ class FileTokenReplaceTest extends FileFieldTestBase {
     $tests['[file:size]'] = format_size($file->getSize());
 
     foreach ($tests as $input => $expected) {
-      $output = $token_service->replace($input, ['file' => $file], ['langcode' => $language_interface->getId(), 'sanitize' => FALSE]);
-      $this->assertEqual($output, $expected, format_string('Unsanitized file token %token replaced.', ['%token' => $input]));
+      $output = $token_service->replace($input, array('file' => $file), array('langcode' => $language_interface->getId(), 'sanitize' => FALSE));
+      $this->assertEqual($output, $expected, format_string('Unsanitized file token %token replaced.', array('%token' => $input)));
     }
   }
-
 }

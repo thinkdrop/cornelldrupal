@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Session\StackSessionHandlerIntegrationTest.
+ */
+
 namespace Drupal\system\Tests\Session;
 
 use Drupal\simpletest\WebTestBase;
@@ -16,7 +21,7 @@ class StackSessionHandlerIntegrationTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['session_test'];
+  public static $modules = array('session_test');
 
   /**
    * Tests a request.

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\AppRootFactory.
+ */
+
 namespace Drupal\Core;
 
 /**
@@ -34,3 +39,4 @@ class AppRootFactory {
   }
 
 }
+

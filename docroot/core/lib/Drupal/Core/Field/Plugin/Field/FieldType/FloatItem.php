@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Plugin\Field\FieldType\FloatItem.
+ */
+
 namespace Drupal\Core\Field\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -36,13 +41,13 @@ class FloatItem extends NumericItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return [
-      'columns' => [
-        'value' => [
+    return array(
+      'columns' => array(
+        'value' => array(
           'type' => 'float',
-        ],
-      ],
-    ];
+        ),
+      ),
+    );
   }
 
   /**
@@ -67,7 +72,7 @@ class FloatItem extends NumericItemBase {
     $max = is_numeric($settings['max']) ?: pow(10, ($precision - $scale)) - 1;
     $min = is_numeric($settings['min']) ?: -pow(10, ($precision - $scale)) + 1;
     // @see "Example #1 Calculate a random floating-point number" in
-    // http://php.net/manual/function.mt-getrandmax.php
+    // http://php.net/manual/en/function.mt-getrandmax.php
     $random_decimal = $min + mt_rand() / mt_getrandmax() * ($max - $min);
     $values['value'] = self::truncateDecimal($random_decimal, $scale);
     return $values;

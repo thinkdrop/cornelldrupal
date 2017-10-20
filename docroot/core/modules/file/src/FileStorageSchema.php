@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\FileStorageSchema.
+ */
+
 namespace Drupal\file;
 
 use Drupal\Core\Entity\Sql\SqlContentEntityStorageSchema;
@@ -21,6 +26,9 @@ class FileStorageSchema extends SqlContentEntityStorageSchema {
       switch ($field_name) {
         case 'status':
         case 'changed':
+          $this->addSharedTableFieldIndex($storage_definition, $schema, TRUE);
+          break;
+
         case 'uri':
           $this->addSharedTableFieldIndex($storage_definition, $schema, TRUE);
           break;

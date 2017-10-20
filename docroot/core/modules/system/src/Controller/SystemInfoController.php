@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Controller\SystemInfoController.
+ */
+
 namespace Drupal\system\Controller;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -41,13 +46,12 @@ class SystemInfoController implements ContainerInjectionInterface {
   /**
    * Displays the site status report.
    *
-   * @return array
-   *   A render array containing a list of system requirements for the Drupal
-   *   installation and whether this installation meets the requirements.
+   * @return string
+   *   The current status of the Drupal installation.
    */
   public function status() {
     $requirements = $this->systemManager->listRequirements();
-    return ['#type' => 'status_report_page', '#requirements' => $requirements];
+    return array('#theme' => 'status_report', '#requirements' => $requirements);
   }
 
   /**
@@ -63,7 +67,7 @@ class SystemInfoController implements ContainerInjectionInterface {
       $output = ob_get_clean();
     }
     else {
-      $output = t('The phpinfo() function has been disabled for security reasons. For more information, visit <a href=":phpinfo">Enabling and disabling phpinfo()</a> handbook page.', [':phpinfo' => 'https://www.drupal.org/node/243993']);
+      $output = t('The phpinfo() function has been disabled for security reasons. For more information, visit <a href=":phpinfo">Enabling and disabling phpinfo()</a> handbook page.', array(':phpinfo' => 'https://www.drupal.org/node/243993'));
     }
     return new Response($output);
   }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\Schema\SchemaCheckTrait.
+ */
+
 namespace Drupal\Core\Config\Schema;
 
 use Drupal\Core\Config\TypedConfigManagerInterface;
@@ -58,7 +63,7 @@ trait SchemaCheckTrait {
     $definition = $typed_config->getDefinition($config_name);
     $data_definition = $typed_config->buildDataDefinition($definition, $config_data);
     $this->schema = $typed_config->create($data_definition, $config_data);
-    $errors = [];
+    $errors = array();
     foreach ($config_data as $key => $value) {
       $errors = array_merge($errors, $this->checkValue($key, $value));
     }
@@ -83,12 +88,12 @@ trait SchemaCheckTrait {
     $error_key = $this->configName . ':' . $key;
     $element = $this->schema->get($key);
     if ($element instanceof Undefined) {
-      return [$error_key => 'missing schema'];
+      return array($error_key => 'missing schema');
     }
 
     // Do not check value if it is defined to be ignored.
     if ($element && $element instanceof Ignore) {
-      return [];
+      return array();
     }
 
     if ($element && is_scalar($value) || $value === NULL) {
@@ -110,11 +115,11 @@ trait SchemaCheckTrait {
       }
       $class = get_class($element);
       if (!$success) {
-        return [$error_key => "variable type is $type but applied schema class is $class"];
+        return array($error_key => "variable type is $type but applied schema class is $class");
       }
     }
     else {
-      $errors = [];
+      $errors = array();
       if (!$element instanceof TraversableTypedDataInterface) {
         $errors[$error_key] = 'non-scalar value but not defined as an array (such as mapping or sequence)';
       }
@@ -131,7 +136,6 @@ trait SchemaCheckTrait {
       return $errors;
     }
     // No errors found.
-    return [];
+    return array();
   }
-
 }

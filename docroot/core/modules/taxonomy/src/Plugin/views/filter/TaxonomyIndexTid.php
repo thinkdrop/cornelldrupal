@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Plugin\views\filter\TaxonomyIndexTid.
+ */
+
 namespace Drupal\taxonomy\Plugin\views\filter;
 
 use Drupal\Core\Entity\Element\EntityAutocomplete;
@@ -22,7 +27,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class TaxonomyIndexTid extends ManyToOne {
 
   // Stores the exposed input for this filter.
-  public $validated_exposed_input = NULL;
+  var $validated_exposed_input = NULL;
 
   /**
    * The vocabulary storage.
@@ -84,28 +89,23 @@ class TaxonomyIndexTid extends ManyToOne {
 
   public function hasExtraOptions() { return TRUE; }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getValueOptions() {
-    return $this->valueOptions;
-  }
+  public function getValueOptions() { /* don't overwrite the value options */ }
 
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['type'] = ['default' => 'textfield'];
-    $options['limit'] = ['default' => TRUE];
-    $options['vid'] = ['default' => ''];
-    $options['hierarchy'] = ['default' => FALSE];
-    $options['error_message'] = ['default' => TRUE];
+    $options['type'] = array('default' => 'textfield');
+    $options['limit'] = array('default' => TRUE);
+    $options['vid'] = array('default' => '');
+    $options['hierarchy'] = array('default' => FALSE);
+    $options['error_message'] = array('default' => TRUE);
 
     return $options;
   }
 
   public function buildExtraOptionsForm(&$form, FormStateInterface $form_state) {
     $vocabularies = $this->vocabularyStorage->loadMultiple();
-    $options = [];
+    $options = array();
     foreach ($vocabularies as $voc) {
       $options[$voc->id()] = $voc->label();
     }
@@ -118,56 +118,56 @@ class TaxonomyIndexTid extends ManyToOne {
       }
 
       if (empty($this->definition['vocabulary'])) {
-        $form['vid'] = [
+        $form['vid'] = array(
           '#type' => 'radios',
           '#title' => $this->t('Vocabulary'),
           '#options' => $options,
           '#description' => $this->t('Select which vocabulary to show terms for in the regular options.'),
           '#default_value' => $this->options['vid'],
-        ];
+        );
       }
     }
 
-    $form['type'] = [
+    $form['type'] = array(
       '#type' => 'radios',
       '#title' => $this->t('Selection type'),
-      '#options' => ['select' => $this->t('Dropdown'), 'textfield' => $this->t('Autocomplete')],
+      '#options' => array('select' => $this->t('Dropdown'), 'textfield' => $this->t('Autocomplete')),
       '#default_value' => $this->options['type'],
-    ];
+    );
 
-    $form['hierarchy'] = [
+    $form['hierarchy'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Show hierarchy in dropdown'),
       '#default_value' => !empty($this->options['hierarchy']),
-      '#states' => [
-        'visible' => [
-          ':input[name="options[type]"]' => ['value' => 'select'],
-        ],
-      ],
-    ];
+      '#states' => array(
+        'visible' => array(
+          ':input[name="options[type]"]' => array('value' => 'select'),
+        ),
+      ),
+    );
   }
 
   protected function valueForm(&$form, FormStateInterface $form_state) {
     $vocabulary = $this->vocabularyStorage->load($this->options['vid']);
     if (empty($vocabulary) && $this->options['limit']) {
-      $form['markup'] = [
+      $form['markup'] = array(
         '#markup' => '<div class="js-form-item form-item">' . $this->t('An invalid vocabulary is selected. Please change it in the options.') . '</div>',
-      ];
+      );
       return;
     }
 
     if ($this->options['type'] == 'textfield') {
-      $terms = $this->value ? Term::loadMultiple(($this->value)) : [];
-      $form['value'] = [
-        '#title' => $this->options['limit'] ? $this->t('Select terms from vocabulary @voc', ['@voc' => $vocabulary->label()]) : $this->t('Select terms'),
+      $terms = $this->value ? Term::loadMultiple(($this->value)) : array();
+      $form['value'] = array(
+        '#title' => $this->options['limit'] ? $this->t('Select terms from vocabulary @voc', array('@voc' => $vocabulary->label())) : $this->t('Select terms'),
         '#type' => 'textfield',
         '#default_value' => EntityAutocomplete::getEntityLabels($terms),
-      ];
+      );
 
       if ($this->options['limit']) {
         $form['value']['#type'] = 'entity_autocomplete';
         $form['value']['#target_type'] = 'taxonomy_term';
-        $form['value']['#selection_settings']['target_bundles'] = [$vocabulary->id()];
+        $form['value']['#selection_settings']['target_bundles'] = array($vocabulary->id());
         $form['value']['#tags'] = TRUE;
         $form['value']['#process_default_value'] = FALSE;
       }
@@ -175,24 +175,24 @@ class TaxonomyIndexTid extends ManyToOne {
     else {
       if (!empty($this->options['hierarchy']) && $this->options['limit']) {
         $tree = $this->termStorage->loadTree($vocabulary->id(), 0, NULL, TRUE);
-        $options = [];
+        $options = array();
 
         if ($tree) {
           foreach ($tree as $term) {
             $choice = new \stdClass();
-            $choice->option = [$term->id() => str_repeat('-', $term->depth) . \Drupal::entityManager()->getTranslationFromContext($term)->label()];
+            $choice->option = array($term->id() => str_repeat('-', $term->depth) . \Drupal::entityManager()->getTranslationFromContext($term)->label());
             $options[] = $choice;
           }
         }
       }
       else {
-        $options = [];
+        $options = array();
         $query = \Drupal::entityQuery('taxonomy_term')
           // @todo Sorting on vocabulary properties -
           //   https://www.drupal.org/node/1821274.
           ->sort('weight')
           ->sort('name')
-          ->addTag('taxonomy_term_access');
+          ->addTag('term_access');
         if ($this->options['limit']) {
           $query->condition('vid', $vocabulary->id());
         }
@@ -211,7 +211,7 @@ class TaxonomyIndexTid extends ManyToOne {
           $options = $this->reduceValueOptions($options);
 
           if (!empty($this->options['expose']['multiple']) && empty($this->options['expose']['required'])) {
-            $default_value = [];
+            $default_value = array();
           }
         }
 
@@ -225,7 +225,7 @@ class TaxonomyIndexTid extends ManyToOne {
           }
           // Due to #1464174 there is a chance that array('') was saved in the admin ui.
           // Let's choose a safe default value.
-          elseif ($default_value == ['']) {
+          elseif ($default_value == array('')) {
             $default_value = 'All';
           }
           else {
@@ -234,14 +234,14 @@ class TaxonomyIndexTid extends ManyToOne {
           }
         }
       }
-      $form['value'] = [
+      $form['value'] = array(
         '#type' => 'select',
-        '#title' => $this->options['limit'] ? $this->t('Select terms from vocabulary @voc', ['@voc' => $vocabulary->label()]) : $this->t('Select terms'),
+        '#title' => $this->options['limit'] ? $this->t('Select terms from vocabulary @voc', array('@voc' => $vocabulary->label())) : $this->t('Select terms'),
         '#multiple' => TRUE,
         '#options' => $options,
         '#size' => min(9, count($options)),
         '#default_value' => $default_value,
-      ];
+      );
 
       $user_input = $form_state->getUserInput();
       if ($exposed && isset($identifier) && !isset($user_input[$identifier])) {
@@ -253,9 +253,6 @@ class TaxonomyIndexTid extends ManyToOne {
     if (!$form_state->get('exposed')) {
       // Retain the helper option
       $this->helper->buildOptionsForm($form, $form_state);
-
-      // Show help text if not exposed to end users.
-      $form['value']['#description'] = t('Leave blank for all. Otherwise, the first selected term will be the default instead of "Any".');
     }
   }
 
@@ -265,13 +262,11 @@ class TaxonomyIndexTid extends ManyToOne {
       return;
     }
 
-    $tids = [];
-    if ($values = $form_state->getValue(['options', 'value'])) {
-      foreach ($values as $value) {
-        $tids[] = $value['target_id'];
-      }
+    $tids = array();
+    foreach ($form_state->getValue(array('options', 'value')) as $value) {
+      $tids[] = $value['target_id'];
     }
-    $form_state->setValue(['options', 'value'], $tids);
+    $form_state->setValue(array('options', 'value'), $tids);
   }
 
   public function acceptExposedInput($input) {
@@ -322,7 +317,7 @@ class TaxonomyIndexTid extends ManyToOne {
 
     // We only validate if they've chosen the text field style.
     if ($this->options['type'] != 'textfield') {
-      if ($form_state->getValue($identifier) != 'All') {
+      if ($form_state->getValue($identifier) != 'All')  {
         $this->validated_exposed_input = (array) $form_state->getValue($identifier);
       }
       return;
@@ -332,10 +327,8 @@ class TaxonomyIndexTid extends ManyToOne {
       return;
     }
 
-    if ($values = $form_state->getValue($identifier)) {
-      foreach ($values as $value) {
-        $this->validated_exposed_input[] = $value['target_id'];
-      }
+    foreach ($form_state->getValue($identifier) as $value) {
+      $this->validated_exposed_input[] = $value['target_id'];
     }
   }
 
@@ -348,16 +341,16 @@ class TaxonomyIndexTid extends ManyToOne {
     if ($this->options['type'] != 'select') {
       unset($form['expose']['reduce']);
     }
-    $form['error_message'] = [
+    $form['error_message'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Display error message'),
       '#default_value' => !empty($this->options['error_message']),
-    ];
+    );
   }
 
   public function adminSummary() {
     // set up $this->valueOptions for the parent summary
-    $this->valueOptions = [];
+    $this->valueOptions = array();
 
     if ($this->value) {
       $this->value = array_filter($this->value);
@@ -391,7 +384,8 @@ class TaxonomyIndexTid extends ManyToOne {
     $vocabulary = $this->vocabularyStorage->load($this->options['vid']);
     $dependencies[$vocabulary->getConfigDependencyKey()][] = $vocabulary->getConfigDependencyName();
 
-    foreach ($this->termStorage->loadMultiple($this->options['value']) as $term) {
+    foreach ($this->options['value'] as $tid) {
+      $term = $this->termStorage->load($tid);
       $dependencies[$term->getConfigDependencyKey()][] = $term->getConfigDependencyName();
     }
 

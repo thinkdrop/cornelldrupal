@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\form_test\Form\FormTestRedirectForm.
+ */
+
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -22,23 +27,23 @@ class FormTestRedirectForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['redirection'] = [
+    $form['redirection'] = array(
       '#type' => 'checkbox',
       '#title' => t('Use redirection'),
-    ];
-    $form['destination'] = [
+    );
+    $form['destination'] = array(
       '#type' => 'textfield',
       '#title' => t('Redirect destination'),
-      '#states' => [
-        'visible' => [
-          ':input[name="redirection"]' => ['checked' => TRUE],
-        ],
-      ],
-    ];
-    $form['submit'] = [
+      '#states' => array(
+        'visible' => array(
+          ':input[name="redirection"]' => array('checked' => TRUE),
+        ),
+      ),
+    );
+    $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Submit'),
-    ];
+    );
 
     return $form;
   }

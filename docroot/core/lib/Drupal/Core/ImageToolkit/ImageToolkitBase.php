@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\ImageToolkit\ImageToolkitBase.
+ */
+
 namespace Drupal\Core\ImageToolkit;
 
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -100,7 +105,7 @@ abstract class ImageToolkitBase extends PluginBase implements ImageToolkitInterf
    * {@inheritdoc}
    */
   public function getRequirements() {
-    return [];
+    return array();
   }
 
   /**
@@ -119,17 +124,17 @@ abstract class ImageToolkitBase extends PluginBase implements ImageToolkitInterf
   /**
    * {@inheritdoc}
    */
-  public function apply($operation, array $arguments = []) {
+  public function apply($operation, array $arguments = array()) {
     try {
       // Get the plugin to use for the operation and apply the operation.
       return $this->getToolkitOperation($operation)->apply($arguments);
     }
     catch (PluginNotFoundException $e) {
-      $this->logger->error("The selected image handling toolkit '@toolkit' can not process operation '@operation'.", ['@toolkit' => $this->getPluginId(), '@operation' => $operation]);
+      $this->logger->error("The selected image handling toolkit '@toolkit' can not process operation '@operation'.", array('@toolkit' => $this->getPluginId(), '@operation' => $operation));
       return FALSE;
     }
     catch (\InvalidArgumentException $e) {
-      $this->logger->warning($e->getMessage(), []);
+      $this->logger->warning($e->getMessage(), array());
       return FALSE;
     }
   }

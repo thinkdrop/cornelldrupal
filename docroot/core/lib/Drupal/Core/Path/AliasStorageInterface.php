@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Path\AliasStorageInterface.
+ */
+
 namespace Drupal\Core\Path;
 
 use Drupal\Core\Language\LanguageInterface;
@@ -164,5 +169,4 @@ interface AliasStorageInterface {
    *   TRUE if any alias exists, FALSE otherwise.
    */
   public function pathHasMatchingAlias($initial_substring);
-
 }

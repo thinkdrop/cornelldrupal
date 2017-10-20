@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\block\Unit\CategoryAutocompleteTest.
+ */
+
 namespace Drupal\Tests\block\Unit;
 
 use Drupal\Component\Utility\Html;
@@ -24,7 +29,7 @@ class CategoryAutocompleteTest extends UnitTestCase {
     $block_manager = $this->getMock('Drupal\Core\Block\BlockManagerInterface');
     $block_manager->expects($this->any())
       ->method('getCategories')
-      ->will($this->returnValue(['Comment', 'Node', 'None & Such', 'User']));
+      ->will($this->returnValue(array('Comment', 'Node', 'None & Such', 'User')));
 
     $this->autocompleteController = new CategoryAutocompleteController($block_manager);
   }
@@ -43,9 +48,9 @@ class CategoryAutocompleteTest extends UnitTestCase {
    */
   public function testAutocompleteSuggestions($string, $suggestions) {
     $suggestions = array_map(function ($suggestion) {
-      return ['value' => $suggestion, 'label' => Html::escape($suggestion)];
+      return array('value' => $suggestion, 'label' => Html::escape($suggestion));
     }, $suggestions);
-    $result = $this->autocompleteController->autocomplete(new Request(['q' => $string]));
+    $result = $this->autocompleteController->autocomplete(new Request(array('q' => $string)));
     $this->assertSame($suggestions, json_decode($result->getContent(), TRUE));
   }
 
@@ -55,30 +60,30 @@ class CategoryAutocompleteTest extends UnitTestCase {
    * @return array
    */
   public function providerTestAutocompleteSuggestions() {
-    $test_parameters = [];
-    $test_parameters[] = [
+    $test_parameters = array();
+    $test_parameters[] = array(
       'string' => 'Com',
-      'suggestions' => [
+      'suggestions' => array(
         'Comment',
-      ],
-    ];
-    $test_parameters[] = [
+      ),
+    );
+    $test_parameters[] = array(
       'string' => 'No',
-      'suggestions' => [
+      'suggestions' => array(
         'Node',
         'None & Such',
-      ],
-    ];
-    $test_parameters[] = [
+      ),
+    );
+    $test_parameters[] = array(
       'string' => 'us',
-      'suggestions' => [
+      'suggestions' => array(
         'User',
-      ],
-    ];
-    $test_parameters[] = [
+      ),
+    );
+    $test_parameters[] = array(
       'string' => 'Banana',
-      'suggestions' => [],
-    ];
+      'suggestions' => array(),
+    );
     return $test_parameters;
   }
 

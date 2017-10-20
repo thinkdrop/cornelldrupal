@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block\Plugin\migrate\destination\EntityBlock.
+ */
+
 namespace Drupal\block\Plugin\migrate\destination;
 
 use Drupal\migrate\Plugin\migrate\destination\EntityConfigBase;
@@ -17,10 +22,10 @@ class EntityBlock extends EntityConfigBase {
    */
   protected function getEntityId(Row $row) {
     // Try to find the block by its plugin ID and theme.
-    $properties = [
+    $properties = array(
       'plugin' => $row->getDestinationProperty('plugin'),
       'theme' => $row->getDestinationProperty('theme'),
-    ];
+    );
     $blocks = array_keys($this->storage->loadByProperties($properties));
     return reset($blocks);
   }

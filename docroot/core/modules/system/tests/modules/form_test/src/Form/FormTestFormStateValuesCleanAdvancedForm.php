@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\form_test\Form\FormTestFormStateValuesCleanAdvancedForm.
+ */
+
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -22,16 +27,16 @@ class FormTestFormStateValuesCleanAdvancedForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Build an example form containing a managed file and a submit form element.
-    $form['image'] = [
+    $form['image'] = array(
       '#type' => 'managed_file',
       '#title' => t('Image'),
       '#upload_location' => 'public://',
       '#default_value' => 0,
-    ];
-    $form['submit'] = [
+    );
+    $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Submit'),
-    ];
+    );
     return $form;
   }
 

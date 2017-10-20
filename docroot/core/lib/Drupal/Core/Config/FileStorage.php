@@ -1,10 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\FileStorage.
+ */
+
 namespace Drupal\Core\Config;
 
-use Drupal\Component\FileCache\FileCacheFactory;
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
-use Drupal\Core\Serialization\Yaml;
 
 /**
  * Defines the file storage.
@@ -26,13 +30,6 @@ class FileStorage implements StorageInterface {
   protected $directory = '';
 
   /**
-   * The file cache object.
-   *
-   * @var \Drupal\Component\FileCache\FileCacheInterface
-   */
-  protected $fileCache;
-
-  /**
    * Constructs a new FileStorage.
    *
    * @param string $directory
@@ -44,11 +41,6 @@ class FileStorage implements StorageInterface {
   public function __construct($directory, $collection = StorageInterface::DEFAULT_COLLECTION) {
     $this->directory = $directory;
     $this->collection = $collection;
-
-    // Use a NULL File Cache backend by default. This will ensure only the
-    // internal statc caching of FileCache is used and thus avoids blowing up
-    // the APCu cache.
-    $this->fileCache = FileCacheFactory::get('config', ['cache_backend_class' => NULL]);
   }
 
   /**
@@ -103,21 +95,13 @@ class FileStorage implements StorageInterface {
     if (!$this->exists($name)) {
       return FALSE;
     }
-
-    $filepath = $this->getFilePath($name);
-    if ($data = $this->fileCache->get($filepath)) {
-      return $data;
-    }
-
-    $data = file_get_contents($filepath);
+    $data = file_get_contents($this->getFilePath($name));
     try {
       $data = $this->decode($data);
     }
     catch (InvalidDataTypeException $e) {
-      throw new UnsupportedDataTypeConfigException('Invalid data type in config ' . $name . ', found in file' . $filepath . ' : ' . $e->getMessage());
+      throw new UnsupportedDataTypeConfigException("Invalid data type in config $name: {$e->getMessage()}");
     }
-    $this->fileCache->set($filepath, $data);
-
     return $data;
   }
 
@@ -125,7 +109,7 @@ class FileStorage implements StorageInterface {
    * {@inheritdoc}
    */
   public function readMultiple(array $names) {
-    $list = [];
+    $list = array();
     foreach ($names as $name) {
       if ($data = $this->read($name)) {
         $list[$name] = $data;
@@ -139,18 +123,18 @@ class FileStorage implements StorageInterface {
    */
   public function write($name, array $data) {
     try {
-      $encoded_data = $this->encode($data);
+      $data = $this->encode($data);
     }
     catch (InvalidDataTypeException $e) {
       throw new StorageException("Invalid data type in config $name: {$e->getMessage()}");
     }
 
     $target = $this->getFilePath($name);
-    $status = @file_put_contents($target, $encoded_data);
+    $status = @file_put_contents($target, $data);
     if ($status === FALSE) {
       // Try to make sure the directory exists and try writing again.
       $this->ensureStorage();
-      $status = @file_put_contents($target, $encoded_data);
+      $status = @file_put_contents($target, $data);
     }
     if ($status === FALSE) {
       throw new StorageException('Failed to write configuration file: ' . $this->getFilePath($name));
@@ -158,9 +142,6 @@ class FileStorage implements StorageInterface {
     else {
       drupal_chmod($target);
     }
-
-    $this->fileCache->set($target, $data);
-
     return TRUE;
   }
 
@@ -175,7 +156,6 @@ class FileStorage implements StorageInterface {
       }
       return FALSE;
     }
-    $this->fileCache->delete($this->getFilePath($name));
     return drupal_unlink($this->getFilePath($name));
   }
 
@@ -187,8 +167,6 @@ class FileStorage implements StorageInterface {
     if ($status === FALSE) {
       throw new StorageException('Failed to rename configuration file from: ' . $this->getFilePath($name) . ' to: ' . $this->getFilePath($new_name));
     }
-    $this->fileCache->delete($this->getFilePath($name));
-    $this->fileCache->delete($this->getFilePath($new_name));
     return TRUE;
   }
 
@@ -217,7 +195,7 @@ class FileStorage implements StorageInterface {
   public function listAll($prefix = '') {
     $dir = $this->getCollectionDirectory();
     if (!is_dir($dir)) {
-      return [];
+      return array();
     }
     $extension = '.' . static::getFileExtension();
 
@@ -227,10 +205,9 @@ class FileStorage implements StorageInterface {
     // @see https://github.com/mikey179/vfsStream/issues/2
     $files = scandir($dir);
 
-    $names = [];
-    $pattern = '/^' . preg_quote($prefix, '/') . '.*' . preg_quote($extension, '/') . '$/';
+    $names = array();
     foreach ($files as $file) {
-      if ($file[0] !== '.' && preg_match($pattern, $file)) {
+      if ($file[0] !== '.' && fnmatch($prefix . '*' . $extension, $file)) {
         $names[] = basename($file, $extension);
       }
     }
@@ -311,8 +288,7 @@ class FileStorage implements StorageInterface {
    *   A list of collection names contained within the provided directory.
    */
   protected function getAllCollectionNamesHelper($directory) {
-    $collections = [];
-    $pattern = '/\.' . preg_quote($this->getFileExtension(), '/') . '$/';
+    $collections = array();
     foreach (new \DirectoryIterator($directory) as $fileinfo) {
       if ($fileinfo->isDir() && !$fileinfo->isDot()) {
         $collection = $fileinfo->getFilename();
@@ -332,7 +308,7 @@ class FileStorage implements StorageInterface {
         // collection.
         // @see \Drupal\Core\Config\FileStorage::listAll()
         foreach (scandir($directory . '/' . $collection) as $file) {
-          if ($file[0] !== '.' && preg_match($pattern, $file)) {
+          if ($file[0] !== '.' && fnmatch('*.' . $this->getFileExtension(), $file)) {
             $collections[] = $collection;
             break;
           }

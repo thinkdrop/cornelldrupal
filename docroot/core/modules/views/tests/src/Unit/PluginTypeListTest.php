@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\Tests\views\Unit\PluginTypeListTest.
+ */
 
 namespace Drupal\Tests\views\Unit;
 
@@ -16,7 +20,7 @@ class PluginTypeListTest extends UnitTestCase {
    * Tests the plugins list is correct.
    */
   public function testPluginList() {
-    $plugin_list = [
+    $plugin_list = array(
       'access',
       'area',
       'argument',
@@ -36,7 +40,7 @@ class PluginTypeListTest extends UnitTestCase {
       'sort',
       'style',
       'wizard',
-    ];
+    );
 
     $diff = array_diff($plugin_list, ViewExecutable::getPluginTypes());
     $this->assertTrue(empty($diff), 'The plugin list is correct');

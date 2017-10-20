@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\PrimitiveBase.
+ */
+
 namespace Drupal\Core\TypedData;
 
 /**
@@ -31,5 +36,4 @@ abstract class PrimitiveBase extends TypedData implements PrimitiveInterface {
       $this->parent->onChange($this->name);
     }
   }
-
 }

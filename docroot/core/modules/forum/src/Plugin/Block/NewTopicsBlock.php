@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\forum\Plugin\Block\NewTopicsBlock.
+ */
+
 namespace Drupal\forum\Plugin\Block;
 
 /**
@@ -24,5 +29,4 @@ class NewTopicsBlock extends ForumBlockBase {
       ->orderBy('f.created', 'DESC')
       ->range(0, $this->configuration['block_count']);
   }
-
 }

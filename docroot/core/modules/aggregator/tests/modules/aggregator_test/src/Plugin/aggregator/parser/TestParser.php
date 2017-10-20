@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\aggregator_test\Plugin\aggregator\parser\TestParser.
+ */
+
 namespace Drupal\aggregator_test\Plugin\aggregator\parser;
 
 use Drupal\aggregator\Plugin\ParserInterface;
@@ -27,5 +32,4 @@ class TestParser extends DefaultParser implements ParserInterface {
   public function parse(FeedInterface $feed) {
     return parent::parse($feed);
   }
-
 }

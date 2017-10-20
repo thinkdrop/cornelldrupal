@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Fieldset.
+ */
+
 namespace Drupal\Core\Render\Element;
+
+use Drupal\Core\Render\Element;
 
 /**
  * Provides a render element for a group of form elements.
@@ -9,12 +16,12 @@ namespace Drupal\Core\Render\Element;
  * @code
  * $form['author'] = array(
  *   '#type' => 'fieldset',
- *   '#title' => $this->t('Author'),
+ *   '#title' => 'Author',
  * );
  *
  * $form['author']['name'] = array(
  *   '#type' => 'textfield',
- *   '#title' => $this->t('Name'),
+ *   '#title' => t('Name'),
  * );
  * @endcode
  *
@@ -30,17 +37,17 @@ class Fieldset extends RenderElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
-      '#process' => [
-        [$class, 'processGroup'],
-        [$class, 'processAjaxForm'],
-      ],
-      '#pre_render' => [
-        [$class, 'preRenderGroup'],
-      ],
+    return array(
+      '#process' => array(
+        array($class, 'processGroup'),
+        array($class, 'processAjaxForm'),
+      ),
+      '#pre_render' => array(
+        array($class, 'preRenderGroup'),
+      ),
       '#value' => NULL,
-      '#theme_wrappers' => ['fieldset'],
-    ];
+      '#theme_wrappers' => array('fieldset'),
+    );
   }
 
 }

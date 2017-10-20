@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\PhpBackendFactory.
+ */
+
 namespace Drupal\Core\Cache;
 
 class PhpBackendFactory implements CacheFactoryInterface {
@@ -30,7 +35,7 @@ class PhpBackendFactory implements CacheFactoryInterface {
    * @return \Drupal\Core\Cache\PhpBackend
    *   The cache backend object for the specified cache bin.
    */
-  public function get($bin) {
+  function get($bin) {
     return new PhpBackend($bin, $this->checksumProvider);
   }
 

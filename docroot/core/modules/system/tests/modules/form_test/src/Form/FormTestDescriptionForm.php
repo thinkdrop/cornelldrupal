@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\form_test\Form\FormTestDescriptionForm.
+ */
+
 namespace Drupal\form_test\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -23,26 +28,26 @@ class FormTestDescriptionForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['form_textfield_test_description_before'] = [
+    $form['form_textfield_test_description_before'] = array(
       '#type' => 'textfield',
       '#title' => 'Textfield test for description before element',
       '#description' => 'Textfield test for description before element',
       '#description_display' => 'before',
-    ];
+    );
 
-    $form['form_textfield_test_description_after'] = [
+    $form['form_textfield_test_description_after'] = array(
       '#type' => 'textfield',
       '#title' => 'Textfield test for description after element',
       '#description' => 'Textfield test for description after element',
       '#description_display' => 'after',
-    ];
+    );
 
-    $form['form_textfield_test_description_invisible'] = [
+    $form['form_textfield_test_description_invisible'] = array(
       '#type' => 'textfield',
       '#title' => 'Textfield test for visually-hidden description',
       '#description' => 'Textfield test for visually-hidden description',
       '#description_display' => 'invisible',
-    ];
+    );
 
     return $form;
   }

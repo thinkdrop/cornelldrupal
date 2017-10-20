@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Composer\Composer.
+ */
+
 namespace Drupal\Core\Composer;
 
 use Drupal\Component\PhpStorage\FileStorage;
@@ -18,7 +23,6 @@ class Composer {
     'behat/mink' => ['tests', 'driver-testsuite'],
     'behat/mink-browserkit-driver' => ['tests'],
     'behat/mink-goutte-driver' => ['tests'],
-    'drupal/coder' => ['coder_sniffer/Drupal/Test', 'coder_sniffer/DrupalPractice/Test'],
     'doctrine/cache' => ['tests'],
     'doctrine/collections' => ['tests'],
     'doctrine/common' => ['tests'],
@@ -32,7 +36,6 @@ class Composer {
     'jcalderonzumba/mink-phantomjs-driver' => ['tests'],
     'masterminds/html5' => ['test'],
     'mikey179/vfsStream' => ['src/test'],
-    'paragonie/random_compat' => ['tests'],
     'phpdocumentor/reflection-docblock' => ['tests'],
     'phpunit/php-code-coverage' => ['tests'],
     'phpunit/php-timer' => ['tests'],
@@ -62,7 +65,7 @@ class Composer {
     'symfony/routing' => ['Tests'],
     'symfony/serializer' => ['Tests'],
     'symfony/translation' => ['Tests'],
-    'symfony/validator' => ['Tests', 'Resources'],
+    'symfony/validator' => ['Tests'],
     'symfony/yaml' => ['Tests'],
     'symfony-cmf/routing' => ['Test', 'Tests'],
     'twig/twig' => ['doc', 'ext', 'test'],
@@ -83,22 +86,22 @@ class Composer {
     // Check for our packages, and then optimize them if they're present.
     if ($repository->findPackage('symfony/http-foundation', $constraint)) {
       $autoload = $package->getAutoload();
-      $autoload['classmap'] = array_merge($autoload['classmap'], [
+      $autoload['classmap'] = array_merge($autoload['classmap'], array(
         'vendor/symfony/http-foundation/Request.php',
         'vendor/symfony/http-foundation/ParameterBag.php',
         'vendor/symfony/http-foundation/FileBag.php',
         'vendor/symfony/http-foundation/ServerBag.php',
         'vendor/symfony/http-foundation/HeaderBag.php',
-      ]);
+      ));
       $package->setAutoload($autoload);
     }
     if ($repository->findPackage('symfony/http-kernel', $constraint)) {
       $autoload = $package->getAutoload();
-      $autoload['classmap'] = array_merge($autoload['classmap'], [
+      $autoload['classmap'] = array_merge($autoload['classmap'], array(
         'vendor/symfony/http-kernel/HttpKernel.php',
         'vendor/symfony/http-kernel/HttpKernelInterface.php',
         'vendor/symfony/http-kernel/TerminableInterface.php',
-      ]);
+      ));
       $package->setAutoload($autoload);
     }
   }
@@ -139,13 +142,10 @@ EOT;
   /**
    * Remove possibly problematic test files from vendored projects.
    *
-   * @param \Composer\Installer\PackageEvent $event
-   *   A PackageEvent object to get the configured composer vendor directories
-   *   from.
+   * @param \Composer\Script\Event $event
    */
   public static function vendorTestCodeCleanup(PackageEvent $event) {
     $vendor_dir = $event->getComposer()->getConfig()->get('vendor-dir');
-    $io = $event->getIO();
     $op = $event->getOperation();
     if ($op->getJobType() == 'update') {
       $package = $op->getTargetPackage();
@@ -154,39 +154,17 @@ EOT;
       $package = $op->getPackage();
     }
     $package_key = static::findPackageKey($package->getName());
-    $message = sprintf("    Processing <comment>%s</comment>", $package->getPrettyName());
-    if ($io->isVeryVerbose()) {
-      $io->write($message);
-    }
     if ($package_key) {
       foreach (static::$packageToCleanup[$package_key] as $path) {
         $dir_to_remove = $vendor_dir . '/' . $package_key . '/' . $path;
-        $print_message = $io->isVeryVerbose();
         if (is_dir($dir_to_remove)) {
-          if (static::deleteRecursive($dir_to_remove)) {
-            $message = sprintf("      <info>Removing directory '%s'</info>", $path);
-          }
-          else {
-            // Always display a message if this fails as it means something has
-            // gone wrong. Therefore the message has to include the package name
-            // as the first informational message might not exist.
-            $print_message = TRUE;
-            $message = sprintf("      <error>Failure removing directory '%s'</error> in package <comment>%s</comment>.", $path, $package->getPrettyName());
+          if (!static::deleteRecursive($dir_to_remove)) {
+            throw new \RuntimeException(sprintf("Failure removing directory '%s' in package '%s'.", $path, $package->getPrettyName()));
           }
         }
         else {
-          // If the package has changed or the --prefer-dist version does not
-          // include the directory this is not an error.
-          $message = sprintf("      Directory '%s' does not exist", $path);
+          throw new \RuntimeException(sprintf("The directory '%s' in package '%s' does not exist.", $path, $package->getPrettyName()));
         }
-        if ($print_message) {
-          $io->write($message);
-        }
-      }
-
-      if ($io->isVeryVerbose()) {
-        // Add a new line to separate this output from the next package.
-        $io->write("");
       }
     }
   }
@@ -197,7 +175,7 @@ EOT;
    * @param string $package_name
    *   The package name from composer. This is always already lower case.
    *
-   * @return string|null
+   * @return NULL|string
    *   The string key, or NULL if none was found.
    */
   protected static function findPackageKey($package_name) {

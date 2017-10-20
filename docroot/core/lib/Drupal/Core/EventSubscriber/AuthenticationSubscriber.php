@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\AuthenticationSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Core\Authentication\AuthenticationProviderFilterInterface;
@@ -30,14 +35,14 @@ class AuthenticationSubscriber implements EventSubscriberInterface {
   /**
    * Authentication provider filter.
    *
-   * @var \Drupal\Core\Authentication\AuthenticationProviderFilterInterface|null
+   * @var \Drupal\Core\Authentication\AuthenticationProviderFilterInterface|NULL
    */
   protected $filter;
 
   /**
    * Authentication challenge provider.
    *
-   * @var \Drupal\Core\Authentication\AuthenticationProviderChallengeInterface|null
+   * @var \Drupal\Core\Authentication\AuthenticationProviderChallengeInterface|NULL
    */
   protected $challengeProvider;
 
@@ -78,11 +83,8 @@ class AuthenticationSubscriber implements EventSubscriberInterface {
         $account = $this->authenticationProvider->authenticate($request);
         if ($account) {
           $this->accountProxy->setAccount($account);
-          return;
         }
       }
-      // No account has been set explicitly, initialize the timezone here.
-      date_default_timezone_set(drupal_get_user_timezone());
     }
   }
 
@@ -96,7 +98,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface {
     if (isset($this->filter) && $event->getRequestType() === HttpKernelInterface::MASTER_REQUEST) {
       $request = $event->getRequest();
       if ($this->authenticationProvider->applies($request) && !$this->filter->appliesToRoutedRequest($request, TRUE)) {
-        throw new AccessDeniedHttpException('The used authentication method is not allowed on this route.');
+        throw new AccessDeniedHttpException();
       }
     }
   }

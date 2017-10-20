@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\image_test\Plugin\ImageToolkit\BrokenToolkit.
+ */
+
 namespace Drupal\image_test\Plugin\ImageToolkit;
 
 /**
@@ -18,5 +23,4 @@ class BrokenToolkit extends TestToolkit {
   public static function isAvailable() {
     return FALSE;
   }
-
 }

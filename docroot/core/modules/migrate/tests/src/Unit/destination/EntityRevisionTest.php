@@ -9,7 +9,6 @@ namespace Drupal\Tests\migrate\Unit\destination;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\migrate\destination\EntityRevision as RealEntityRevision;
 use Drupal\migrate\Row;
 use Drupal\Tests\UnitTestCase;
@@ -23,7 +22,7 @@ use Drupal\Tests\UnitTestCase;
 class EntityRevisionTest extends UnitTestCase {
 
   /**
-   * @var \Drupal\migrate\Plugin\MigrationInterface
+   * @var \Drupal\migrate\Entity\MigrationInterface
    */
   protected $migration;
 
@@ -42,11 +41,11 @@ class EntityRevisionTest extends UnitTestCase {
    */
   protected $fieldTypeManager;
 
-  protected function setUp() {
+  public function setUp() {
     parent::setUp();
 
     // Setup mocks to be used when creating a revision destination.
-    $this->migration = $this->prophesize(MigrationInterface::class);
+    $this->migration = $this->prophesize('\Drupal\migrate\Entity\MigrationInterface');
     $this->storage = $this->prophesize('\Drupal\Core\Entity\EntityStorageInterface');
     $this->entityManager = $this->prophesize('\Drupal\Core\Entity\EntityManagerInterface');
     $this->fieldTypeManager = $this->prophesize('\Drupal\Core\Field\FieldTypePluginManagerInterface');
@@ -67,7 +66,7 @@ class EntityRevisionTest extends UnitTestCase {
     $this->storage->loadRevision(12)
       ->shouldBeCalled()
       ->willReturn($entity->reveal());
-    $row = new Row();
+    $row = new Row([], []);
     $this->assertEquals($entity->reveal(), $destination->getEntity($row, [12, 13]));
   }
 
@@ -212,7 +211,7 @@ class EntityRevision extends RealEntityRevision {
   /**
    * Allow public access for testing.
    */
-  public function save(ContentEntityInterface $entity, array $old_destination_id_values = []) {
+  public function save(ContentEntityInterface $entity, array $old_destination_id_values = array()) {
     return parent::save($entity, $old_destination_id_values);
   }
 

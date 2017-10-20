@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Component\Bridge\ZfExtensionManagerSfContainerTest.
+ */
+
 namespace Drupal\Tests\Component\Bridge;
 
 use Drupal\Component\Bridge\ZfExtensionManagerSfContainer;
@@ -80,41 +85,40 @@ class ZfExtensionManagerSfContainerTest extends UnitTestCase {
    *   array('-' => '', '_' => '', ' ' => '', '\\' => '', '/' => '')
    */
   public function canonicalizeNameProvider() {
-    return [
-      [
+    return array(
+      array(
         'foobar',
         'foobar',
-      ],
-      [
+      ),
+      array(
         'foo-bar',
         'foobar',
-      ],
-      [
+      ),
+      array(
         'foo_bar',
         'foobar',
-      ],
-      [
+      ),
+      array(
         'foo bar',
         'foobar',
-      ],
-      [
+      ),
+      array(
         'foo\\bar',
         'foobar',
-      ],
-      [
+      ),
+      array(
         'foo/bar',
         'foobar',
-      ],
+      ),
       // There is also a strtolower in canonicalizeName.
-      [
+      array(
         'Foo/bAr',
         'foobar',
-      ],
-      [
+      ),
+      array(
         'foo/-_\\ bar',
         'foobar',
-      ],
-    ];
+      ),
+    );
   }
-
 }

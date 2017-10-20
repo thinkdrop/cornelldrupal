@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\book\BookManagerInterface.
+ */
+
 namespace Drupal\book;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -18,8 +23,6 @@ interface BookManagerInterface {
    * Since this can be the full tree including hidden items, the data returned
    * may be used for generating an an admin interface or a select.
    *
-   * Note: based on menu_tree_all_data().
-   *
    * @param int $bid
    *   The Book ID to find links for.
    * @param array|null $link
@@ -33,6 +36,8 @@ interface BookManagerInterface {
    *
    * @return array
    *   An tree of menu links in an array, in the order they should be rendered.
+   *
+   * Note: based on menu_tree_all_data().
    */
   public function bookTreeAllData($bid, $link = NULL, $max_depth = NULL);
 
@@ -81,6 +86,7 @@ interface BookManagerInterface {
    *
    * @param int[] $nids
    *   An array of nids to load.
+   *
    * @param bool $translate
    *   If TRUE, set access, title, and other elements.
    *
@@ -108,7 +114,7 @@ interface BookManagerInterface {
    *   An array of (menu link ID, title) pairs for use as options for selecting
    *   a book page.
    */
-  public function getTableOfContents($bid, $depth_limit, array $exclude = []);
+  public function getTableOfContents($bid, $depth_limit, array $exclude = array());
 
   /**
    * Finds the depth limit for items in the parent select.
@@ -134,11 +140,11 @@ interface BookManagerInterface {
   /**
    * Provides book loading, access control and translation.
    *
-   * Note: copied from _menu_link_translate() in menu.inc, but reduced to the
-   * minimal code that's used.
-   *
    * @param array $link
    *   A book link.
+   *
+   * Note: copied from _menu_link_translate() in menu.inc, but reduced to the
+   * minimal code that's used.
    */
   public function bookLinkTranslate(&$link);
 
@@ -207,7 +213,7 @@ interface BookManagerInterface {
    */
   public function getLinkDefaults($nid);
 
-  public function getBookParents(array $item, array $parent = []);
+  public function getBookParents(array $item, array $parent = array());
 
   /**
    * Builds the common elements of the book form for the node and outline forms.
@@ -262,7 +268,7 @@ interface BookManagerInterface {
    *   A collection of node link references generated from $tree by
    *   menu_tree_collect_node_links().
    */
-  public function bookTreeCheckAccess(&$tree, $node_links = []);
+  public function bookTreeCheckAccess(&$tree, $node_links = array());
 
   /**
    * Gets the data representing a subtree of the book hierarchy.

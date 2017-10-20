@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Theme\ThemeInitialization.
+ */
+
 namespace Drupal\Core\Theme;
 
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -100,7 +105,7 @@ class ThemeInitialization implements ThemeInitializationInterface {
     }
 
     // Find all our ancestor themes and put them in an array.
-    $base_themes = [];
+    $base_themes = array();
     $ancestor = $theme_name;
     while ($ancestor && isset($themes[$ancestor]->base_theme)) {
       $ancestor = $themes[$ancestor]->base_theme;
@@ -220,7 +225,7 @@ class ThemeInitialization implements ThemeInitializationInterface {
     }
 
     // Do basically the same as the above for libraries
-    $values['libraries'] = [];
+    $values['libraries'] = array();
 
     // Grab libraries from base theme
     foreach ($base_themes as $base) {
@@ -242,7 +247,7 @@ class ThemeInitialization implements ThemeInitializationInterface {
     $values['owner'] = isset($theme->owner) ? $theme->owner : NULL;
     $values['extension'] = $theme;
 
-    $base_active_themes = [];
+    $base_active_themes = array();
     foreach ($base_themes as $base_theme) {
       $base_active_themes[$base_theme->getName()] = $this->getActiveTheme($base_theme, array_slice($base_themes, 1));
     }
@@ -262,7 +267,7 @@ class ThemeInitialization implements ThemeInitializationInterface {
    */
   protected function getExtensions() {
     if (!isset($this->extensions)) {
-      $this->extensions = array_merge($this->moduleHandler->getModuleList(), $this->themeHandler->listInfo());
+      $this->extensions = array_merge($this->moduleHandler->getModuleList(),  $this->themeHandler->listInfo());
     }
     return $this->extensions;
   }
@@ -310,9 +315,10 @@ class ThemeInitialization implements ThemeInitializationInterface {
     // Prepare stylesheets from this theme as well as all ancestor themes.
     // We work it this way so that we can have child themes remove CSS files
     // easily from parent.
-    $stylesheets_remove = [];
+    $stylesheets_remove = array();
     // Grab stylesheets from base theme.
     foreach ($base_themes as $base) {
+      $base_theme_path = $base->getPath();
       if (!empty($base->info['stylesheets-remove'])) {
         foreach ($base->info['stylesheets-remove'] as $css_file) {
           $css_file = $this->resolveStyleSheetPlaceholders($css_file);

@@ -1,10 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\user\Unit\SharedTempStoreTest.
+ */
+
 namespace Drupal\Tests\user\Unit;
 
 use Drupal\Tests\UnitTestCase;
 use Drupal\user\SharedTempStore;
-use Drupal\user\TempStoreException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -77,11 +81,11 @@ class SharedTempStoreTest extends UnitTestCase {
 
     $this->tempStore = new SharedTempStore($this->keyValue, $this->lock, $this->owner, $this->requestStack, 604800);
 
-    $this->ownObject = (object) [
+    $this->ownObject = (object) array(
       'data' => 'test_data',
       'owner' => $this->owner,
       'updated' => (int) $request->server->get('REQUEST_TIME'),
-    ];
+    );
 
     // Clone the object but change the owner.
     $this->otherObject = clone $this->ownObject;
@@ -133,6 +137,7 @@ class SharedTempStoreTest extends UnitTestCase {
    * Tests the set() method with no lock available.
    *
    * @covers ::set
+   * @expectedException \Drupal\user\TempStoreException
    */
   public function testSetWithNoLockAvailable() {
     $this->lock->expects($this->at(0))
@@ -150,7 +155,6 @@ class SharedTempStoreTest extends UnitTestCase {
     $this->keyValue->expects($this->once())
       ->method('getCollectionName');
 
-    $this->setExpectedException(TempStoreException::class);
     $this->tempStore->set('test', 'value');
   }
 
@@ -297,6 +301,7 @@ class SharedTempStoreTest extends UnitTestCase {
    * Tests the delete() method with no lock available.
    *
    * @covers ::delete
+   * @expectedException \Drupal\user\TempStoreException
    */
   public function testDeleteWithNoLockAvailable() {
     $this->lock->expects($this->at(0))
@@ -314,7 +319,6 @@ class SharedTempStoreTest extends UnitTestCase {
     $this->keyValue->expects($this->once())
       ->method('getCollectionName');
 
-    $this->setExpectedException(TempStoreException::class);
     $this->tempStore->delete('test');
   }
 
@@ -351,3 +355,4 @@ class SharedTempStoreTest extends UnitTestCase {
   }
 
 }
+

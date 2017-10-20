@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Plugin\Validation\Constraint\EntityTypeConstraint.
+ */
+
 namespace Drupal\Core\Entity\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -40,7 +45,6 @@ class EntityTypeConstraint extends Constraint {
    * {@inheritdoc}
    */
   public function getRequiredOptions() {
-    return ['type'];
+    return array('type');
   }
-
 }

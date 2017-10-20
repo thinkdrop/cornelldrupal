@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\language\Form\NegotiationBrowserDeleteForm.
+ */
+
 namespace Drupal\language\Form;
 
 use Drupal\Core\Form\ConfigFormBaseTrait;
@@ -32,7 +37,7 @@ class NegotiationBrowserDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete %browser_langcode?', ['%browser_langcode' => $this->browserLangcode]);
+    return $this->t('Are you sure you want to delete %browser_langcode?', array('%browser_langcode' => $this->browserLangcode));
   }
 
   /**
@@ -68,9 +73,9 @@ class NegotiationBrowserDeleteForm extends ConfirmFormBase {
       ->clear('map.' . $this->browserLangcode)
       ->save();
 
-    $args = [
+    $args = array(
       '%browser' => $this->browserLangcode,
-    ];
+    );
 
     $this->logger('language')->notice('The browser language detection mapping for the %browser browser language code has been deleted.', $args);
 

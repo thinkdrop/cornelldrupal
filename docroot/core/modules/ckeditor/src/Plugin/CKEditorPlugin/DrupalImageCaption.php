@@ -1,12 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\ckeditor\Plugin\CKEditorPlugin\DrupalImageCaption.
+ */
+
 namespace Drupal\ckeditor\Plugin\CKEditorPlugin;
 
-use Drupal\Core\Plugin\PluginBase;
+use Drupal\Component\Plugin\PluginBase;
 use Drupal\editor\Entity\Editor;
 use Drupal\ckeditor\CKEditorPluginInterface;
 use Drupal\ckeditor\CKEditorPluginContextualInterface;
-use Drupal\ckeditor\CKEditorPluginCssInterface;
 
 /**
  * Defines the "drupalimagecaption" plugin.
@@ -17,7 +21,7 @@ use Drupal\ckeditor\CKEditorPluginCssInterface;
  *   module = "ckeditor"
  * )
  */
-class DrupalImageCaption extends PluginBase implements CKEditorPluginInterface, CKEditorPluginContextualInterface, CKEditorPluginCssInterface {
+class DrupalImageCaption extends PluginBase implements CKEditorPluginInterface, CKEditorPluginContextualInterface {
 
   /**
    * {@inheritdoc}
@@ -30,16 +34,16 @@ class DrupalImageCaption extends PluginBase implements CKEditorPluginInterface, 
    * {@inheritdoc}
    */
   public function getDependencies(Editor $editor) {
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
   public function getLibraries(Editor $editor) {
-    return [
+    return array(
       'ckeditor/drupal.ckeditor.plugins.drupalimagecaption',
-    ];
+    );
   }
 
   /**
@@ -54,30 +58,21 @@ class DrupalImageCaption extends PluginBase implements CKEditorPluginInterface, 
    */
   public function getConfig(Editor $editor) {
     $format = $editor->getFilterFormat();
-    return [
+    return array(
       'image2_captionedClass' => 'caption caption-img',
-      'image2_alignClasses' => ['align-left', 'align-center', 'align-right'],
-      'drupalImageCaption_captionPlaceholderText' => $this->t('Enter caption here'),
+      'image2_alignClasses' => array('align-left', 'align-center', 'align-right'),
+      'drupalImageCaption_captionPlaceholderText' => t('Enter caption here'),
       // Only enable those parts of DrupalImageCaption for which the
       // corresponding Drupal text filters are enabled.
       'drupalImageCaption_captionFilterEnabled' => $format->filters('filter_caption')->status,
       'drupalImageCaption_alignFilterEnabled' => $format->filters('filter_align')->status,
-    ];
+    );
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getCssFiles(Editor $editor) {
-    return [
-      drupal_get_path('module', 'ckeditor') . '/css/plugins/drupalimagecaption/ckeditor.drupalimagecaption.css'
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isEnabled(Editor $editor) {
+  function isEnabled(Editor $editor) {
     if (!$editor->hasAssociatedFilterFormat()) {
       return FALSE;
     }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Template\AttributeValueBase.
+ */
+
 namespace Drupal\Core\Template;
 use Drupal\Component\Utility\Html;
 
@@ -65,6 +70,6 @@ abstract class AttributeValueBase {
   /**
    * Implements the magic __toString() method.
    */
-  abstract public function __toString();
+  abstract function __toString();
 
 }

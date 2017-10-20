@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Ajax\RedirectCommand.
+ */
+
 namespace Drupal\Core\Ajax;
 
 /**
@@ -31,10 +36,10 @@ class RedirectCommand implements CommandInterface {
    * Implements \Drupal\Core\Ajax\CommandInterface:render().
    */
   public function render() {
-    return [
+    return array(
       'command' => 'redirect',
       'url' => $this->url,
-    ];
+    );
   }
 
 }

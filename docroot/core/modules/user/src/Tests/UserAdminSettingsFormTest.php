@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Tests\UserAdminSettingsFormTest.
+ */
+
 namespace Drupal\user\Tests;
 
 use Drupal\system\Tests\System\SystemConfigFormTestBase;
@@ -16,33 +21,22 @@ class UserAdminSettingsFormTest extends SystemConfigFormTestBase {
     parent::setUp();
 
     $this->form = AccountSettingsForm::create($this->container);
-    $this->values = [
-      'anonymous' => [
+    $this->values = array(
+      'anonymous' => array(
         '#value' => $this->randomString(10),
         '#config_name' => 'user.settings',
         '#config_key' => 'anonymous',
-      ],
-      'user_mail_cancel_confirm_body' => [
+      ),
+      'user_mail_cancel_confirm_body' => array(
         '#value' => $this->randomString(),
         '#config_name' => 'user.mail',
         '#config_key' => 'cancel_confirm.body',
-      ],
-      'user_mail_cancel_confirm_subject' => [
+      ),
+      'user_mail_cancel_confirm_subject' => array(
         '#value' => $this->randomString(20),
         '#config_name' => 'user.mail',
         '#config_key' => 'cancel_confirm.subject',
-      ],
-      'register_pending_approval_admin_body' => [
-        '#value' => $this->randomString(),
-        '#config_name' => 'user.mail',
-        '#config_key' => 'register_pending_approval_admin.body',
-      ],
-      'register_pending_approval_admin_subject' => [
-        '#value' => $this->randomString(20),
-        '#config_name' => 'user.mail',
-        '#config_key' => 'register_pending_approval_admin.subject',
-      ],
-    ];
+      ),
+    );
   }
-
 }

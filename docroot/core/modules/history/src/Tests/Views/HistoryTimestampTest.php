@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\history\Tests\Views\HistoryTimestampTest.
+ */
+
 namespace Drupal\history\Tests\Views;
 
 use Drupal\views\Views;
@@ -19,20 +24,20 @@ class HistoryTimestampTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $modules = ['history', 'node'];
+  public static $modules = array('history', 'node');
 
   /**
    * Views used by this test.
    *
    * @var array
    */
-  public static $testViews = ['test_history'];
+  public static $testViews = array('test_history');
 
   /**
    * Tests the handlers.
    */
   public function testHandlers() {
-    $nodes = [];
+    $nodes = array();
     $nodes[] = $this->drupalCreateNode();
     $nodes[] = $this->drupalCreateNode();
 
@@ -41,23 +46,23 @@ class HistoryTimestampTest extends ViewTestBase {
     \Drupal::currentUser()->setAccount($account);
 
     db_insert('history')
-      ->fields([
+      ->fields(array(
         'uid' => $account->id(),
         'nid' => $nodes[0]->id(),
         'timestamp' => REQUEST_TIME - 100,
-      ])->execute();
+      ))->execute();
 
     db_insert('history')
-      ->fields([
+      ->fields(array(
         'uid' => $account->id(),
         'nid' => $nodes[1]->id(),
         'timestamp' => REQUEST_TIME + 100,
-      ])->execute();
+      ))->execute();
 
 
-    $column_map = [
+    $column_map = array(
       'nid' => 'nid',
-    ];
+    );
 
     // Test the history field.
     $view = Views::getView('test_history');
@@ -66,7 +71,7 @@ class HistoryTimestampTest extends ViewTestBase {
     $this->assertEqual(count($view->result), 2);
     $output = $view->preview();
     $this->setRawContent(\Drupal::service('renderer')->renderRoot($output));
-    $result = $this->xpath('//span[@class=:class]', [':class' => 'marker']);
+    $result = $this->xpath('//span[@class=:class]', array(':class' => 'marker'));
     $this->assertEqual(count($result), 1, 'Just one node is marked as new');
 
     // Test the history filter.
@@ -74,7 +79,7 @@ class HistoryTimestampTest extends ViewTestBase {
     $view->setDisplay('page_2');
     $this->executeView($view);
     $this->assertEqual(count($view->result), 1);
-    $this->assertIdenticalResultset($view, [['nid' => $nodes[0]->id()]], $column_map);
+    $this->assertIdenticalResultset($view, array(array('nid' => $nodes[0]->id())), $column_map);
 
     // Install Comment module and make sure that content types without comment
     // field will not break the view.
@@ -85,5 +90,4 @@ class HistoryTimestampTest extends ViewTestBase {
     $this->executeView($view);
 
   }
-
 }

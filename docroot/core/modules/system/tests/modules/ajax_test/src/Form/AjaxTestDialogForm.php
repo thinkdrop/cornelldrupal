@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\ajax_test\Form\AjaxTestDialogForm.
+ */
+
 namespace Drupal\ajax_test\Form;
 
 use Drupal\ajax_test\Controller\AjaxTestController;
@@ -28,25 +33,25 @@ class AjaxTestDialogForm extends FormBase {
     // In order to use WebTestBase::drupalPostAjaxForm() to POST from a link, we need
     // to have a dummy field we can set in WebTestBase::drupalPostForm() else it won't
     // submit anything.
-    $form['textfield'] = [
+    $form['textfield'] = array(
       '#type' => 'hidden'
-    ];
-    $form['button1'] = [
+    );
+    $form['button1'] = array(
       '#type' => 'submit',
       '#name' => 'button1',
       '#value' => 'Button 1 (modal)',
-      '#ajax' => [
+      '#ajax' => array(
         'callback' => '::modal',
-      ],
-    ];
-    $form['button2'] = [
+      ),
+    );
+    $form['button2'] = array(
       '#type' => 'submit',
       '#name' => 'button2',
       '#value' => 'Button 2 (non-modal)',
-      '#ajax' => [
+      '#ajax' => array(
         'callback' => '::nonModal',
-      ],
-    ];
+      ),
+    );
 
     return $form;
   }
@@ -93,7 +98,7 @@ class AjaxTestDialogForm extends FormBase {
   protected function dialog($is_modal = FALSE) {
     $content = AjaxTestController::dialogContents();
     $response = new AjaxResponse();
-    $title = $this->t('AJAX Dialog & contents');
+    $title = $this->t('AJAX Dialog contents');
 
     // Attach the library necessary for using the Open(Modal)DialogCommand and
     // set the attachments for this Ajax response.

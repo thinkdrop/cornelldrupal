@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\NullBackendFactory.
+ */
+
 namespace Drupal\Core\Cache;
 
 class NullBackendFactory implements CacheFactoryInterface {
@@ -7,7 +12,7 @@ class NullBackendFactory implements CacheFactoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function get($bin) {
+  function get($bin) {
     return new NullBackend($bin);
   }
 

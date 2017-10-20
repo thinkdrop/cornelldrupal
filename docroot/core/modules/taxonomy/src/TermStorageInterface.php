@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\TermStorageInterface.
+*/
+
 namespace Drupal\taxonomy;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -78,7 +83,7 @@ interface TermStorageInterface extends ContentEntityStorageInterface {
    *   table to save execution time and memory consumption when listing large
    *   numbers of terms. Defaults to FALSE.
    *
-   * @return object[]|\Drupal\taxonomy\TermInterface[]
+   * @return \Drupal\taxonomy\TermInterface[]
    *   An array of term objects that are the children of the vocabulary $vid.
    */
   public function loadTree($vid, $parent = 0, $max_depth = NULL, $load_entities = FALSE);
@@ -116,6 +121,6 @@ interface TermStorageInterface extends ContentEntityStorageInterface {
    * @return array
    *   An array of nids and the term entities they were tagged with.
    */
-  public function getNodeTerms(array $nids, array $vocabs = [], $langcode = NULL);
+  public function getNodeTerms(array $nids, array $vocabs = array(), $langcode = NULL);
 
 }

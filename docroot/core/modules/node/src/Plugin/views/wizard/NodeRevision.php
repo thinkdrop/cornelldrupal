@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\views\wizard\NodeRevision.
+ */
+
 namespace Drupal\node\Plugin\views\wizard;
 
 use Drupal\views\Plugin\views\wizard\WizardPluginBase;
@@ -27,16 +32,16 @@ class NodeRevision extends WizardPluginBase {
   /**
    * Set default values for the filters.
    */
-  protected $filters = [
-    'status' => [
+  protected $filters = array(
+    'status' => array(
       'value' => TRUE,
       'table' => 'node_field_revision',
       'field' => 'status',
       'plugin_id' => 'boolean',
       'entity_type' => 'node',
       'entity_field' => 'status',
-    ]
-  ];
+    )
+  );
 
   /**
    * Overrides Drupal\views\Plugin\views\wizard\WizardPluginBase::rowStyleOptions().

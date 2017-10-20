@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Url.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 use Drupal\Component\Utility\UrlHelper;
@@ -11,13 +16,12 @@ use Drupal\Core\Render\Element;
  *
  * Properties:
  * - #default_value: A valid URL string.
- * - #size: The size of the input element in characters.
  *
  * Usage example:
  * @code
  * $form['homepage'] = array(
  *   '#type' => 'url',
- *   '#title' => $this->t('Home Page'),
+ *   '#title' => t('Home Page'),
  *   '#size' => 30,
  *   ...
  * );
@@ -34,25 +38,25 @@ class Url extends FormElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
+    return array(
       '#input' => TRUE,
       '#size' => 60,
       '#maxlength' => 255,
       '#autocomplete_route_name' => FALSE,
-      '#process' => [
-        [$class, 'processAutocomplete'],
-        [$class, 'processAjaxForm'],
-        [$class, 'processPattern'],
-      ],
-      '#element_validate' => [
-        [$class, 'validateUrl'],
-      ],
-      '#pre_render' => [
-        [$class, 'preRenderUrl'],
-      ],
+      '#process' => array(
+        array($class, 'processAutocomplete'),
+        array($class, 'processAjaxForm'),
+        array($class, 'processPattern'),
+      ),
+      '#element_validate' => array(
+        array($class, 'validateUrl'),
+      ),
+      '#pre_render' => array(
+        array($class, 'preRenderUrl'),
+      ),
       '#theme' => 'input__url',
-      '#theme_wrappers' => ['form_element'],
-    ];
+      '#theme_wrappers' => array('form_element'),
+    );
   }
 
   /**
@@ -65,7 +69,7 @@ class Url extends FormElement {
     $form_state->setValueForElement($element, $value);
 
     if ($value !== '' && !UrlHelper::isValid($value, TRUE)) {
-      $form_state->setError($element, t('The URL %url is not valid.', ['%url' => $value]));
+      $form_state->setError($element, t('The URL %url is not valid.', array('%url' => $value)));
     }
   }
 
@@ -82,8 +86,8 @@ class Url extends FormElement {
    */
   public static function preRenderUrl($element) {
     $element['#attributes']['type'] = 'url';
-    Element::setAttributes($element, ['id', 'name', 'value', 'size', 'maxlength', 'placeholder']);
-    static::setAttributes($element, ['form-url']);
+    Element::setAttributes($element, array('id', 'name', 'value', 'size', 'maxlength', 'placeholder'));
+    static::setAttributes($element, array('form-url'));
 
     return $element;
   }

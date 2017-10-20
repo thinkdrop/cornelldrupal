@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\views\Unit\Plugin\field\CounterTest.
+ */
+
 namespace Drupal\Tests\views\Unit\Plugin\field;
 
 use Drupal\Tests\UnitTestCase;
@@ -41,7 +46,7 @@ class CounterTest extends UnitTestCase {
    *
    * @var array
    */
-  protected $testData = [];
+  protected $testData = array();
 
   /**
    * The handler definition of the counter field.
@@ -57,12 +62,12 @@ class CounterTest extends UnitTestCase {
     parent::setUp();
 
     // Setup basic stuff like the view and the display.
-    $config = [];
-    $config['display']['default'] = [
+    $config = array();
+    $config['display']['default'] = array(
       'id' => 'default',
       'display_plugin' => 'default',
       'display_title' => 'Default',
-    ];
+    );
 
     $storage = new View($config, 'view');
     $user = $this->getMock('Drupal\Core\Session\AccountInterface');
@@ -70,7 +75,7 @@ class CounterTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
     $route_provider = $this->getMock('Drupal\Core\Routing\RouteProviderInterface');
-    $this->view = $this->getMock('Drupal\views\ViewExecutable', NULL, [$storage, $user, $views_data, $route_provider]);
+    $this->view = $this->getMock('Drupal\views\ViewExecutable', NULL, array($storage, $user, $views_data, $route_provider));
 
     $this->display = $this->getMockBuilder('Drupal\views\Plugin\views\display\DisplayPluginBase')
       ->disableOriginalConstructor()
@@ -88,7 +93,7 @@ class CounterTest extends UnitTestCase {
       $this->testData[] = new ResultRow($set + ['index' => $index]);
     }
 
-    $this->definition = ['title' => 'counter field', 'plugin_type' => 'field'];
+    $this->definition = array('title' => 'counter field', 'plugin_type' => 'field');
   }
 
   /**
@@ -98,11 +103,11 @@ class CounterTest extends UnitTestCase {
    *   Returns an array of row index to test.
    */
   public function providerRowIndexes() {
-    return [
-      [0],
-      [1],
-      [2],
-    ];
+    return array(
+      array(0),
+      array(1),
+      array(2),
+    );
   }
 
   /**
@@ -111,8 +116,8 @@ class CounterTest extends UnitTestCase {
    * @dataProvider providerRowIndexes
    */
   public function testSimpleCounter($i) {
-    $counter_handler = new Counter([], 'counter', $this->definition);
-    $options = [];
+    $counter_handler = new Counter(array(), 'counter', $this->definition);
+    $options = array();
     $counter_handler->init($this->view, $this->display, $options);
 
     $this->view->row_index = $i;
@@ -135,10 +140,10 @@ class CounterTest extends UnitTestCase {
   public function testCounterRandomStart($i) {
     // Setup a counter field with a random start.
     $rand_start = rand(5, 10);
-    $counter_handler = new Counter([], 'counter', $this->definition);
-    $options = [
+    $counter_handler = new Counter(array(), 'counter', $this->definition);
+    $options = array(
       'counter_start' => $rand_start,
-    ];
+    );
     $counter_handler->init($this->view, $this->display, $options);
 
     $this->view->row_index = $i;
@@ -164,10 +169,10 @@ class CounterTest extends UnitTestCase {
     $this->pager->setOffset($offset);
 
     $rand_start = rand(5, 10);
-    $counter_handler = new Counter([], 'counter', $this->definition);
-    $options = [
+    $counter_handler = new Counter(array(), 'counter', $this->definition);
+    $options = array(
       'counter_start' => $rand_start,
-    ];
+    );
     $counter_handler->init($this->view, $this->display, $options);
 
     $this->view->row_index = $i;
@@ -197,10 +202,10 @@ class CounterTest extends UnitTestCase {
     $this->pager->setCurrentPage($current_page);
 
     $rand_start = rand(5, 10);
-    $counter_handler = new Counter([], 'counter', $this->definition);
-    $options = [
+    $counter_handler = new Counter(array(), 'counter', $this->definition);
+    $options = array(
       'counter_start' => $rand_start,
-    ];
+    );
     $counter_handler->init($this->view, $this->display, $options);
 
     $this->view->row_index = $i;

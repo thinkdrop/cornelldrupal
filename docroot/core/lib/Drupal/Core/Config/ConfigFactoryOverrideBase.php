@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\ConfigFactoryOverrideBase.
+ */
+
 namespace Drupal\Core\Config;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -13,7 +18,7 @@ abstract class ConfigFactoryOverrideBase implements EventSubscriberInterface {
    * Reacts to the ConfigEvents::COLLECTION_INFO event.
    *
    * @param \Drupal\Core\Config\ConfigCollectionInfo $collection_info
-   *   The configuration collection info event.
+   *   The configuration collection names event.
    */
   abstract public function addCollections(ConfigCollectionInfo $collection_info);
 
@@ -44,11 +49,11 @@ abstract class ConfigFactoryOverrideBase implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
-    $events[ConfigEvents::COLLECTION_INFO][] = ['addCollections'];
-    $events[ConfigEvents::SAVE][] = ['onConfigSave', 20];
-    $events[ConfigEvents::DELETE][] = ['onConfigDelete', 20];
-    $events[ConfigEvents::RENAME][] = ['onConfigRename', 20];
+  static function getSubscribedEvents() {
+    $events[ConfigEvents::COLLECTION_INFO][] = array('addCollections');
+    $events[ConfigEvents::SAVE][] = array('onConfigSave', 20);
+    $events[ConfigEvents::DELETE][] = array('onConfigDelete', 20);
+    $events[ConfigEvents::RENAME][] = array('onConfigRename', 20);
     return $events;
   }
 
@@ -95,10 +100,7 @@ abstract class ConfigFactoryOverrideBase implements EventSubscriberInterface {
       elseif (is_array($override_data[$key])) {
         if (is_array($original_data[$key])) {
           // Do the filtering one level deeper.
-          // Ensure that we track $changed along the way.
-          if ($this->filterNestedArray($original_data[$key], $override_data[$key])) {
-            $changed = TRUE;
-          }
+          $changed = $this->filterNestedArray($original_data[$key], $override_data[$key]);
           // If no overrides are left under this level, remove the level.
           if (empty($override_data[$key])) {
             unset($override_data[$key]);

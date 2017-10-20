@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\ckeditor\Annotation\CKEditorPlugin.
+ */
+
 namespace Drupal\ckeditor\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
@@ -14,7 +19,6 @@ use Drupal\Component\Annotation\Plugin;
  * @see \Drupal\ckeditor\CKEditorPluginInterface
  * @see \Drupal\ckeditor\CKEditorPluginBase
  * @see \Drupal\ckeditor\CKEditorPluginManager
- * @see hook_ckeditor_plugin_info_alter()
  * @see plugin_api
  *
  * @Annotation

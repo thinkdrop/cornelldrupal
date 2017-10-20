@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Plugin\Field\FieldType\StringItemBase.
+ */
+
 namespace Drupal\Core\Field\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldItemBase;
@@ -16,9 +21,9 @@ abstract class StringItemBase extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function defaultStorageSettings() {
-    return [
+    return array(
       'case_sensitive' => FALSE,
-    ] + parent::defaultStorageSettings();
+    ) + parent::defaultStorageSettings();
   }
 
   /**

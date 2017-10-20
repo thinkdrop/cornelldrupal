@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\update_test\Plugin\Archiver\UpdateTestArchiver.
+ */
+
 namespace Drupal\update_test\Plugin\Archiver;
 
 use Drupal\Core\Archiver\ArchiverInterface;
@@ -32,7 +37,7 @@ class UpdateTestArchiver implements ArchiverInterface {
   /**
    * {@inheritdoc}
    */
-  public function extract($path, array $files = []) {
+  public function extract($path, array $files = array()) {
     return $this;
   }
 
@@ -40,7 +45,7 @@ class UpdateTestArchiver implements ArchiverInterface {
    * {@inheritdoc}
    */
   public function listContents() {
-    return [];
+    return array();
   }
 
 }

@@ -11,13 +11,11 @@
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Render\MarkupInterface;
 use Drupal\Component\Utility\Unicode;
-use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Config\Config;
 use Drupal\Core\Config\StorageException;
-use Drupal\Core\Render\AttachmentsInterface;
-use Drupal\Core\Render\BubbleableMetadata;
 use Drupal\Core\Render\RenderableInterface;
 use Drupal\Core\Template\Attribute;
 use Drupal\Core\Theme\ThemeSettings;
@@ -97,21 +95,6 @@ function theme_get_registry($complete = TRUE) {
 }
 
 /**
- * Returns an array of default theme features.
- *
- * @see \Drupal\Core\Extension\ThemeHandler::$defaultFeatures
- */
-function _system_default_theme_features() {
-  return [
-    'favicon',
-    'logo',
-    'node_user_picture',
-    'comment_user_picture',
-    'comment_user_verification',
-  ];
-}
-
-/**
  * Forces the system to rebuild the theme registry.
  *
  * This function should be called when modules are added to the system, or when
@@ -134,7 +117,7 @@ function drupal_theme_rebuild() {
  */
 function drupal_find_theme_functions($cache, $prefixes) {
   $implementations = [];
-  $grouped_functions = \Drupal::service('theme.registry')->getPrefixGroupedUserFunctions($prefixes);
+  $grouped_functions = \Drupal::service('theme.registry')->getPrefixGroupedUserFunctions();
 
   foreach ($cache as $hook => $info) {
     foreach ($prefixes as $prefix) {
@@ -158,11 +141,11 @@ function drupal_find_theme_functions($cache, $prefixes) {
           foreach ($matches as $match) {
             $new_hook = substr($match, strlen($prefix) + 1);
             $arg_name = isset($info['variables']) ? 'variables' : 'render element';
-            $implementations[$new_hook] = [
+            $implementations[$new_hook] = array(
               'function' => $match,
               $arg_name => $info[$arg_name],
               'base hook' => $hook,
-            ];
+            );
           }
         }
       }
@@ -170,9 +153,9 @@ function drupal_find_theme_functions($cache, $prefixes) {
       // that in what is returned so that the registry knows that the theme has
       // this implementation.
       if (function_exists($prefix . '_' . $hook)) {
-        $implementations[$hook] = [
+        $implementations[$hook] = array(
           'function' => $prefix . '_' . $hook,
-        ];
+        );
       }
     }
   }
@@ -191,12 +174,12 @@ function drupal_find_theme_functions($cache, $prefixes) {
  *   The path to search.
  */
 function drupal_find_theme_templates($cache, $extension, $path) {
-  $implementations = [];
+  $implementations = array();
 
   // Collect paths to all sub-themes grouped by base themes. These will be
   // used for filtering. This allows base themes to have sub-themes in its
   // folder hierarchy without affecting the base themes template discovery.
-  $theme_paths = [];
+  $theme_paths = array();
   foreach (\Drupal::service('theme_handler')->listInfo() as $theme_info) {
     if (!empty($theme_info->base_theme)) {
       $theme_paths[$theme_info->base_theme][$theme_info->getName()] = $theme_info->getPath();
@@ -210,12 +193,12 @@ function drupal_find_theme_templates($cache, $extension, $path) {
     }
   }
   $theme = \Drupal::theme()->getActiveTheme()->getName();
-  $subtheme_paths = isset($theme_paths[$theme]) ? $theme_paths[$theme] : [];
+  $subtheme_paths = isset($theme_paths[$theme]) ? $theme_paths[$theme] : array();
 
   // Escape the periods in the extension.
   $regex = '/' . str_replace('.', '\.', $extension) . '$/';
   // Get a listing of all template files in the path to search.
-  $files = file_scan_directory($path, $regex, ['key' => 'filename']);
+  $files = file_scan_directory($path, $regex, array('key' => 'filename'));
 
   // Find templates that implement registered theme hooks and include that in
   // what is returned so that the registry knows that the theme has this
@@ -231,21 +214,21 @@ function drupal_find_theme_templates($cache, $extension, $path) {
     // for the purposes of searching.
     $hook = strtr($template, '-', '_');
     if (isset($cache[$hook])) {
-      $implementations[$hook] = [
+      $implementations[$hook] = array(
         'template' => $template,
         'path' => dirname($file->uri),
-      ];
+      );
     }
 
     // Match templates based on the 'template' filename.
     foreach ($cache as $hook => $info) {
       if (isset($info['template'])) {
-        $template_candidates = [$info['template'], str_replace($info['theme path'] . '/templates/', '', $info['template'])];
+        $template_candidates = array($info['template'], str_replace($info['theme path'] . '/templates/', '', $info['template']));
         if (in_array($template, $template_candidates)) {
-          $implementations[$hook] = [
+          $implementations[$hook] = array(
             'template' => $template,
             'path' => dirname($file->uri),
-          ];
+          );
         }
       }
     }
@@ -272,12 +255,12 @@ function drupal_find_theme_templates($cache, $extension, $path) {
           // Put the underscores back in for the hook name and register this
           // pattern.
           $arg_name = isset($info['variables']) ? 'variables' : 'render element';
-          $implementations[strtr($file, '-', '_')] = [
+          $implementations[strtr($file, '-', '_')] = array(
             'template' => $file,
             'path' => dirname($files[$match]->uri),
             $arg_name => $info[$arg_name],
             'base hook' => $hook,
-          ];
+          );
         }
       }
     }
@@ -305,7 +288,7 @@ function drupal_find_theme_templates($cache, $extension, $path) {
  */
 function theme_get_setting($setting_name, $theme = NULL) {
   /** @var \Drupal\Core\Theme\ThemeSettings[] $cache */
-  $cache = &drupal_static(__FUNCTION__, []);
+  $cache = &drupal_static(__FUNCTION__, array());
 
   // If no key is given, use the current theme if we can determine it.
   if (!isset($theme)) {
@@ -345,10 +328,10 @@ function theme_get_setting($setting_name, $theme = NULL) {
 
       // Generate the path to the logo image.
       if ($cache[$theme]->get('logo.use_default')) {
-        $cache[$theme]->set('logo.url', file_url_transform_relative(file_create_url($theme_object->getPath() . '/logo.svg')));
+        $cache[$theme]->set('logo.url', file_create_url($theme_object->getPath() . '/logo.svg'));
       }
       elseif ($logo_path = $cache[$theme]->get('logo.path')) {
-        $cache[$theme]->set('logo.url', file_url_transform_relative(file_create_url($logo_path)));
+        $cache[$theme]->set('logo.url', file_create_url($logo_path));
       }
 
       // Generate the path to the favicon.
@@ -356,14 +339,14 @@ function theme_get_setting($setting_name, $theme = NULL) {
         $favicon_path = $cache[$theme]->get('favicon.path');
         if ($cache[$theme]->get('favicon.use_default')) {
           if (file_exists($favicon = $theme_object->getPath() . '/favicon.ico')) {
-            $cache[$theme]->set('favicon.url', file_url_transform_relative(file_create_url($favicon)));
+            $cache[$theme]->set('favicon.url', file_create_url($favicon));
           }
           else {
-            $cache[$theme]->set('favicon.url', file_url_transform_relative(file_create_url('core/misc/favicon.ico')));
+            $cache[$theme]->set('favicon.url', file_create_url('core/misc/favicon.ico'));
           }
         }
         elseif ($favicon_path) {
-          $cache[$theme]->set('favicon.url', file_url_transform_relative(file_create_url($favicon_path)));
+          $cache[$theme]->set('favicon.url', file_create_url($favicon_path));
         }
         else {
           $cache[$theme]->set('features.favicon', FALSE);
@@ -402,17 +385,6 @@ function theme_get_setting($setting_name, $theme = NULL) {
  *   https://www.drupal.org/node/2575065
  */
 function theme_render_and_autoescape($arg) {
-  // If it's a renderable, then it'll be up to the generated render array it
-  // returns to contain the necessary cacheability & attachment metadata. If
-  // it doesn't implement CacheableDependencyInterface or AttachmentsInterface
-  // then there is nothing to do here.
-  if (!($arg instanceof RenderableInterface) && ($arg instanceof CacheableDependencyInterface || $arg instanceof AttachmentsInterface)) {
-    $arg_bubbleable = [];
-    BubbleableMetadata::createFromObject($arg)
-      ->applyTo($arg_bubbleable);
-    \Drupal::service('renderer')->render($arg_bubbleable);
-  }
-
   if ($arg instanceof MarkupInterface) {
     return (string) $arg;
   }
@@ -429,19 +401,19 @@ function theme_render_and_autoescape($arg) {
       $return = (string) $arg;
     }
     // You can't throw exceptions in the magic PHP __toString methods, see
-    // http://php.net/manual/language.oop5.magic.php#object.tostring so
+    // http://php.net/manual/en/language.oop5.magic.php#object.tostring so
     // we also support a toString method.
     elseif (method_exists($arg, 'toString')) {
       $return = $arg->toString();
     }
     else {
-      throw new \Exception('Object of type ' . get_class($arg) . ' cannot be printed.');
+      throw new \Exception(t('Object of type "@class" cannot be printed.', array('@class' => get_class($arg))));
     }
   }
 
   // We have a string or an object converted to a string: Escape it!
   if (isset($return)) {
-    return $return instanceof MarkupInterface ? $return : Html::escape($return);
+    return SafeMarkup::isSafe($return, 'html') ? $return : Html::escape($return);
   }
 
   // This is a normal render array, which is safe by definition, with special
@@ -473,22 +445,22 @@ function theme_settings_convert_to_config(array $theme_settings, Config $config)
     if ($key == 'default_logo') {
       $config->set('logo.use_default', $value);
     }
-    elseif ($key == 'logo_path') {
+    else if ($key == 'logo_path') {
       $config->set('logo.path', $value);
     }
-    elseif ($key == 'default_favicon') {
+    else if ($key == 'default_favicon') {
       $config->set('favicon.use_default', $value);
     }
-    elseif ($key == 'favicon_path') {
+    else if ($key == 'favicon_path') {
       $config->set('favicon.path', $value);
     }
-    elseif ($key == 'favicon_mimetype') {
+    else if ($key == 'favicon_mimetype') {
       $config->set('favicon.mimetype', $value);
     }
-    elseif (substr($key, 0, 7) == 'toggle_') {
+    else if (substr($key, 0, 7) == 'toggle_') {
       $config->set('features.' . Unicode::substr($key, 7), $value);
     }
-    elseif (!in_array($key, ['theme', 'logo_upload'])) {
+    else if (!in_array($key, array('theme', 'logo_upload'))) {
       $config->set($key, $value);
     }
   }
@@ -545,7 +517,7 @@ function template_preprocess_time(&$variables) {
 function template_preprocess_datetime_form(&$variables) {
   $element = $variables['element'];
 
-  $variables['attributes'] = [];
+  $variables['attributes'] = array();
   if (isset($element['#id'])) {
     $variables['attributes']['id'] = $element['#id'];
   }
@@ -576,14 +548,8 @@ function template_preprocess_datetime_wrapper(&$variables) {
   // Suppress error messages.
   $variables['errors'] = NULL;
 
-  $variables['description'] = NULL;
   if (!empty($element['#description'])) {
-    $description_attributes = [];
-    if (!empty($element['#id'])) {
-      $description_attributes['id'] = $element['#id'] . '--description';
-    }
     $variables['description'] = $element['#description'];
-    $variables['description_attributes'] = new Attribute($description_attributes);
   }
 
   $variables['required'] = FALSE;
@@ -600,29 +566,21 @@ function template_preprocess_datetime_wrapper(&$variables) {
  *
  * Default template: links.html.twig.
  *
- * Unfortunately links templates duplicate the "active" class handling of l()
- * and LinkGenerator::generate() because it needs to be able to set the "active"
- * class not on the links themselves (<a> tags), but on the list items (<li>
- * tags) that contain the links. This is necessary for CSS to be able to style
- * list items differently when the link is active, since CSS does not yet allow
- * one to style list items only if it contains a certain element with a certain
- * class. I.e. we cannot yet convert this jQuery selector to a CSS selector:
- * jQuery('li:has("a.is-active")')
- *
  * @param array $variables
  *   An associative array containing:
- *   - links: An array of links to be themed. Each link should be itself an
- *     array, with the following elements:
+ *   - links: An associative array of links to be themed. The key for each link
+ *     is used as its CSS class. Each link should be itself an array, with the
+ *     following elements:
  *     - title: The link text.
- *     - url: (optional) The \Drupal\Core\Url object to link to. If omitted, no
- *       anchor tag is printed out.
+ *     - url: (optional) The url object to link to. If omitted, no a tag is
+ *       printed out.
  *     - attributes: (optional) Attributes for the anchor, or for the <span>
  *       tag used in its place if no 'href' is supplied. If element 'class' is
  *       included, it must be an array of one or more class names.
  *     If the 'href' element is supplied, the entire link array is passed to
  *     l() as its $options parameter.
- *   - attributes: A keyed array of attributes for the <ul> containing the list
- *     of links.
+ *   - attributes: A keyed array of attributes for the UL containing the
+ *     list of links.
  *   - set_active_class: (optional) Whether each link should compare the
  *     route_name + route_parameters or href (path), language and query options
  *     to the current URL, to determine whether the link is "active". If so, an
@@ -651,6 +609,15 @@ function template_preprocess_datetime_wrapper(&$variables) {
  *     http://juicystudio.com/article/screen-readers-display-none.php and
  *     http://www.w3.org/TR/WCAG-TECHS/H42.html for more information.
  *
+ * Unfortunately links templates duplicate the "active" class handling of l()
+ * and LinkGenerator::generate() because it needs to be able to set the "active"
+ * class not on the links themselves ("a" tags), but on the list items ("li"
+ * tags) that contain the links. This is necessary for CSS to be able to style
+ * list items differently when the link is active, since CSS does not yet allow
+ * one to style list items only if it contains a certain element with a certain
+ * class. I.e. we cannot yet convert this jQuery selector to a CSS selector:
+ *   jQuery('li:has("a.is-active")')
+ *
  * @see \Drupal\Core\Utility\LinkGenerator
  * @see \Drupal\Core\Utility\LinkGenerator::generate()
  * @see system_page_attachments()
@@ -662,36 +629,36 @@ function template_preprocess_links(&$variables) {
   if (!empty($links)) {
     // Prepend the heading to the list, if any.
     if (!empty($heading)) {
-      // Convert a string heading into an array, using a <h2> tag by default.
+      // Convert a string heading into an array, using a H2 tag by default.
       if (is_string($heading)) {
-        $heading = ['text' => $heading];
+        $heading = array('text' => $heading);
       }
       // Merge in default array properties into $heading.
-      $heading += [
+      $heading += array(
         'level' => 'h2',
-        'attributes' => [],
-      ];
+        'attributes' => array(),
+      );
       // Convert the attributes array into an Attribute object.
       $heading['attributes'] = new Attribute($heading['attributes']);
     }
 
-    $variables['links'] = [];
+    $variables['links'] = array();
     foreach ($links as $key => $link) {
-      $item = [];
-      $link += [
+      $item = array();
+      $link += array(
         'ajax' => NULL,
         'url' => NULL,
-      ];
+      );
 
-      $li_attributes = [];
+      $li_attributes = array();
       $keys = ['title', 'url'];
-      $link_element = [
+      $link_element = array(
         '#type' => 'link',
         '#title' => $link['title'],
         '#options' => array_diff_key($link, array_combine($keys, $keys)),
         '#url' => $link['url'],
         '#ajax' => $link['ajax'],
-      ];
+      );
 
       // Handle links and ensure that the active class is added on the LIs, but
       // only if the 'set_active_class' option is not empty.
@@ -760,8 +727,7 @@ function template_preprocess_links(&$variables) {
  *     to an empty string, but can be set to NULL for the attribute to be
  *     omitted. Usually, neither omission nor an empty string satisfies
  *     accessibility requirements, so it is strongly encouraged for code
- *     building variables for image.html.twig templates to pass a meaningful
- *     value for this variable.
+ *     calling _theme('image') to pass a meaningful value for this variable.
  *     - http://www.w3.org/TR/REC-html40/struct/objects.html#h-13.8
  *     - http://www.w3.org/TR/xhtml1/dtds.html
  *     - http://dev.w3.org/html5/spec/Overview.html#alt
@@ -774,15 +740,15 @@ function template_preprocess_links(&$variables) {
  */
 function template_preprocess_image(&$variables) {
   if (!empty($variables['uri'])) {
-    $variables['attributes']['src'] = file_url_transform_relative(file_create_url($variables['uri']));
+    $variables['attributes']['src'] = file_create_url($variables['uri']);
   }
   // Generate a srcset attribute conforming to the spec at
   // http://www.w3.org/html/wg/drafts/html/master/embedded-content.html#attr-img-srcset
   if (!empty($variables['srcset'])) {
-    $srcset = [];
+    $srcset = array();
     foreach ($variables['srcset'] as $src) {
       // URI is mandatory.
-      $source = file_url_transform_relative(file_create_url($src['uri']));
+      $source = file_create_url($src['uri']);
       if (isset($src['width']) && !empty($src['width'])) {
         $source .= ' ' . $src['width'];
       }
@@ -794,7 +760,7 @@ function template_preprocess_image(&$variables) {
     $variables['attributes']['srcset'] = implode(', ', $srcset);
   }
 
-  foreach (['width', 'height', 'alt', 'title', 'sizes'] as $key) {
+  foreach (array('width', 'height', 'alt', 'title', 'sizes') as $key) {
     if (isset($variables[$key])) {
       // If the property has already been defined in the attributes,
       // do not override, including NULL.
@@ -864,28 +830,28 @@ function template_preprocess_image(&$variables) {
  *   - colgroups: An array of column groups. Each element of the array can be
  *     either:
  *     - An array of columns, each of which is an associative array of HTML
- *       attributes applied to the <col> element.
- *     - An array of attributes applied to the <colgroup> element, which must
- *       include a "data" attribute. To add attributes to <col> elements,
- *       set the "data" attribute with an array of columns, each of which is an
+ *       attributes applied to the COL element.
+ *     - An array of attributes applied to the COLGROUP element, which must
+ *       include a "data" attribute. To add attributes to COL elements, set the
+ *       "data" attribute with an array of columns, each of which is an
  *       associative array of HTML attributes.
  *     Here's an example for $colgroup:
  *     @code
  *     $colgroup = array(
- *       // <colgroup> with one <col> element.
+ *       // COLGROUP with one COL element.
  *       array(
  *         array(
- *           'class' => array('funky'), // Attribute for the <col> element.
+ *           'class' => array('funky'), // Attribute for the COL element.
  *         ),
  *       ),
- *       // <colgroup> with attributes and inner <col> elements.
+ *       // Colgroup with attributes and inner COL elements.
  *       array(
  *         'data' => array(
  *           array(
- *             'class' => array('funky'), // Attribute for the <col> element.
+ *             'class' => array('funky'), // Attribute for the COL element.
  *           ),
  *         ),
- *         'class' => array('jazzy'), // Attribute for the <colgroup> element.
+ *         'class' => array('jazzy'), // Attribute for the COLGROUP element.
  *       ),
  *     );
  *     @endcode
@@ -908,11 +874,11 @@ function template_preprocess_table(&$variables) {
       }
       else {
         $cols = $colgroup;
-        $colgroup_attributes = [];
+        $colgroup_attributes = array();
       }
-      $colgroup = [];
+      $colgroup = array();
       $colgroup['attributes'] = new Attribute($colgroup_attributes);
-      $colgroup['cols'] = [];
+      $colgroup['cols'] = array();
 
       // Build columns.
       if (is_array($cols) && !empty($cols)) {
@@ -924,10 +890,10 @@ function template_preprocess_table(&$variables) {
   }
 
   // Build an associative array of responsive classes keyed by column.
-  $responsive_classes = [];
+  $responsive_classes = array();
 
   // Format the table header:
-  $ts = [];
+  $ts = array();
   $header_columns = 0;
   if (!empty($variables['header'])) {
     $ts = tablesort_init($variables['header']);
@@ -979,7 +945,7 @@ function template_preprocess_table(&$variables) {
         // tablesort_header() removes the 'sort' and 'field' keys.
         $cell_attributes = new Attribute($cell);
       }
-      $variables['header'][$col_key] = [];
+      $variables['header'][$col_key] = array();
       $variables['header'][$col_key]['tag'] = $is_header ? 'th' : 'td';
       $variables['header'][$col_key]['attributes'] = $cell_attributes;
       $variables['header'][$col_key]['content'] = $cell_content;
@@ -988,12 +954,12 @@ function template_preprocess_table(&$variables) {
   $variables['header_columns'] = $header_columns;
 
   // Rows and footer have the same structure.
-  $sections = ['rows' , 'footer'];
+  $sections = array('rows' , 'footer');
   foreach ($sections as $section) {
     if (!empty($variables[$section])) {
       foreach ($variables[$section] as $row_key => $row) {
         $cells = $row;
-        $row_attributes = [];
+        $row_attributes = array();
 
         // Check if we're dealing with a simple or complex row
         if (isset($row['data'])) {
@@ -1007,9 +973,9 @@ function template_preprocess_table(&$variables) {
         }
 
         // Build row.
-        $variables[$section][$row_key] = [];
+        $variables[$section][$row_key] = array();
         $variables[$section][$row_key]['attributes'] = new Attribute($row_attributes);
-        $variables[$section][$row_key]['cells'] = [];
+        $variables[$section][$row_key]['cells'] = array();
         if (!empty($cells)) {
           // Reset the responsive index.
           $responsive_index = -1;
@@ -1019,7 +985,7 @@ function template_preprocess_table(&$variables) {
 
             if (!is_array($cell)) {
               $cell_content = $cell;
-              $cell_attributes = [];
+              $cell_attributes = array();
               $is_header = FALSE;
             }
             else {
@@ -1072,14 +1038,13 @@ function template_preprocess_table(&$variables) {
  *     render properties for all nested child lists.
  *   - title: A title to be prepended to the list.
  *   - list_type: The type of list to return (e.g. "ul", "ol").
- *   - wrapper_attributes: HTML attributes to be applied to the list wrapper.
  *
  * @see https://www.drupal.org/node/1842756
  */
 function template_preprocess_item_list(&$variables) {
   $variables['wrapper_attributes'] = new Attribute($variables['wrapper_attributes']);
   foreach ($variables['items'] as &$item) {
-    $attributes = [];
+    $attributes = array();
     // If the item value is an array, then it is a render array.
     if (is_array($item)) {
       // List items support attributes via the '#wrapper_attributes' property.
@@ -1118,10 +1083,10 @@ function template_preprocess_item_list(&$variables) {
     }
 
     // Set the item's value and attributes for the template.
-    $item = [
+    $item = array(
       'value' => $item,
       'attributes' => new Attribute($attributes),
-    ];
+    );
   }
 }
 
@@ -1139,7 +1104,7 @@ function template_preprocess_container(&$variables) {
   $variables['has_parent'] = FALSE;
   $element = $variables['element'];
   // Ensure #attributes is set.
-  $element += ['#attributes' => []];
+  $element += array('#attributes' => array());
 
   // Special handling for form elements.
   if (isset($element['#array_parents'])) {
@@ -1163,7 +1128,7 @@ function template_preprocess_container(&$variables) {
  *   An associative array containing:
  *   - items: An associative array of maintenance tasks.
  *     It's the caller's responsibility to ensure this array's items contain no
- *     dangerous HTML such as <script> tags.
+ *     dangerous HTML such as SCRIPT tags.
  *   - active: The key for the currently active maintenance task.
  */
 function template_preprocess_maintenance_task_list(&$variables) {
@@ -1228,16 +1193,16 @@ function template_preprocess(&$variables, $hook, $info) {
  */
 function _template_preprocess_default_variables() {
   // Variables that don't depend on a database connection.
-  $variables = [
-    'attributes' => [],
-    'title_attributes' => [],
-    'content_attributes' => [],
-    'title_prefix' => [],
-    'title_suffix' => [],
+  $variables = array(
+    'attributes' => array(),
+    'title_attributes' => array(),
+    'content_attributes' => array(),
+    'title_prefix' => array(),
+    'title_suffix' => array(),
     'db_is_active' => !defined('MAINTENANCE_MODE'),
     'is_admin' => FALSE,
     'logged_in' => FALSE,
-  ];
+  );
 
   // Give modules a chance to alter the default template variables.
   \Drupal::moduleHandler()->alter('template_preprocess_default_variables', $variables);
@@ -1273,7 +1238,7 @@ function template_preprocess_html(&$variables) {
 
   $variables['html_attributes'] = new Attribute();
 
-  // <html> element attributes.
+  // HTML element attributes.
   $language_interface = \Drupal::languageManager()->getCurrentLanguage();
   $variables['html_attributes']['lang'] = $language_interface->getId();
   $variables['html_attributes']['dir'] = $language_interface->getDirection();
@@ -1285,7 +1250,7 @@ function template_preprocess_html(&$variables) {
   // Add a variable for the root path. This can be used to create a class and
   // theme the page depending on the current path (e.g. node, admin, user) as
   // well as more specific data like path-frontpage.
-  $is_front_page = \Drupal::service('path.matcher')->isFrontPage();
+  $is_front_page =  \Drupal::service('path.matcher')->isFrontPage();
 
   if ($is_front_page) {
     $variables['root_path'] = FALSE;
@@ -1302,19 +1267,19 @@ function template_preprocess_html(&$variables) {
     $variables['page']['#title'] = (string) \Drupal::service('renderer')->render($variables['page']['#title']);
   }
   if (!empty($variables['page']['#title'])) {
-    $head_title = [
+    $head_title = array(
       // Marking the title as safe since it has had the tags stripped.
       'title' => Markup::create(trim(strip_tags($variables['page']['#title']))),
       'name' => $site_config->get('name'),
-    ];
+    );
   }
   // @todo Remove once views is not bypassing the view subscriber anymore.
   //   @see https://www.drupal.org/node/2068471
   elseif ($is_front_page) {
-    $head_title = [
+    $head_title = array(
       'title' => t('Home'),
       'name' => $site_config->get('name'),
-    ];
+    );
   }
   else {
     $head_title = ['name' => $site_config->get('name')];
@@ -1347,14 +1312,16 @@ function template_preprocess_html(&$variables) {
  *
  * Default template: page.html.twig.
  *
- * See the page.html.twig template for the list of variables.
+ * Most themes use their own copy of page.html.twig. The default is located
+ * inside "modules/system/page.html.twig". Look in there for the full list of
+ * variables.
  */
 function template_preprocess_page(&$variables) {
   $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
   foreach (\Drupal::theme()->getActiveTheme()->getRegions() as $region) {
     if (!isset($variables['page'][$region])) {
-      $variables['page'][$region] = [];
+      $variables['page'][$region] = array();
     }
   }
 
@@ -1414,7 +1381,7 @@ function theme_get_suggestions($args, $base, $delimiter = '__') {
   // page__node__1
   // page__node__edit
 
-  $suggestions = [];
+  $suggestions = array();
   $prefix = $base;
   foreach ($args as $arg) {
     // Remove slashes or null per SA-CORE-2009-003 and change - (hyphen) to _
@@ -1429,7 +1396,7 @@ function theme_get_suggestions($args, $base, $delimiter = '__') {
     // converted to underscores so here we must convert any hyphens in path
     // arguments to underscores here before fetching theme hook suggestions
     // to ensure the templates are appropriately recognized.
-    $arg = str_replace(["/", "\\", "\0", '-'], ['', '', '', '_'], $arg);
+    $arg = str_replace(array("/", "\\", "\0", '-'), array('', '', '', '_'), $arg);
     // The percent acts as a wildcard for numeric arguments since
     // asterisks are not valid filename characters on many filesystems.
     if (is_numeric($arg)) {
@@ -1548,11 +1515,11 @@ function template_preprocess_field(&$variables, $hook) {
 
   static $default_attributes;
   if (!isset($default_attributes)) {
-    $default_attributes = new Attribute();
+    $default_attributes = new Attribute;
   }
 
   // Merge attributes when a single-value field has a hidden label.
-  if ($element['#label_display'] == 'hidden' && !$variables['multiple'] && !empty($element['#items'][0]->_attributes)) {
+  if ($element['#label_display'] == 'hidden' && !$variables['multiple']) {
     $variables['attributes'] = NestedArray::mergeDeep($variables['attributes'], (array) $element['#items'][0]->_attributes);
   }
 
@@ -1562,7 +1529,7 @@ function template_preprocess_field(&$variables, $hook) {
   // on those keys is faster than calling Element::children() or looping on all
   // keys within $element, since that requires traversal of all element
   // properties.
-  $variables['items'] = [];
+  $variables['items'] = array();
   $delta = 0;
   while (!empty($element[$delta])) {
     $variables['items'][$delta]['content'] = $element[$delta];
@@ -1597,29 +1564,31 @@ function template_preprocess_field_multiple_value_form(&$variables) {
   if ($variables['multiple']) {
     $table_id = Html::getUniqueId($element['#field_name'] . '_values');
     $order_class = $element['#field_name'] . '-delta-order';
-    $header_attributes = new Attribute(['class' => ['label']]);
+    $header_attributes = new Attribute(array('class' => array('label')));
     if (!empty($element['#required'])) {
       $header_attributes['class'][] = 'js-form-required';
       $header_attributes['class'][] = 'form-required';
     }
-    $header = [
-      [
-        'data' => [
+    $header = array(
+      array(
+        'data' => array(
           '#prefix' => '<h4' . $header_attributes . '>',
-          '#markup' => $element['#title'],
+          'title' => array(
+            '#markup' => $element['#title'],
+          ),
           '#suffix' => '</h4>',
-        ],
+        ),
         'colspan' => 2,
-        'class' => ['field-label'],
-      ],
-      t('Order', [], ['context' => 'Sort order']),
-    ];
-    $rows = [];
+        'class' => array('field-label'),
+      ),
+      t('Order', array(), array('context' => 'Sort order')),
+    );
+    $rows = array();
 
     // Sort items according to '_weight' (needed when the form comes back after
     // preview or failed validation).
-    $items = [];
-    $variables['button'] = [];
+    $items = array();
+    $variables['button'] = array();
     foreach (Element::children($element) as $key) {
       if ($key === 'add_more') {
         $variables['button'] = &$element[$key];
@@ -1632,40 +1601,40 @@ function template_preprocess_field_multiple_value_form(&$variables) {
 
     // Add the items as table rows.
     foreach ($items as $item) {
-      $item['_weight']['#attributes']['class'] = [$order_class];
+      $item['_weight']['#attributes']['class'] = array($order_class);
 
       // Remove weight form element from item render array so it can be rendered
       // in a separate table column.
       $delta_element = $item['_weight'];
       unset($item['_weight']);
 
-      $cells = [
-        ['data' => '', 'class' => ['field-multiple-drag']],
-        ['data' => $item],
-        ['data' => $delta_element, 'class' => ['delta-order']],
-      ];
-      $rows[] = [
+      $cells = array(
+        array('data' => '', 'class' => array('field-multiple-drag')),
+        array('data' => $item),
+        array('data' => $delta_element, 'class' => array('delta-order')),
+      );
+      $rows[] = array(
         'data' => $cells,
-        'class' => ['draggable'],
-      ];
+        'class' => array('draggable'),
+      );
     }
 
-    $variables['table'] = [
+    $variables['table'] = array(
       '#type' => 'table',
       '#header' => $header,
       '#rows' => $rows,
-      '#attributes' => [
+      '#attributes' => array(
         'id' => $table_id,
-        'class' => ['field-multiple-table'],
-      ],
-      '#tabledrag' => [
-        [
+        'class' => array('field-multiple-table'),
+      ),
+      '#tabledrag' => array(
+        array(
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => $order_class,
-        ],
-      ],
-    ];
+        ),
+      ),
+    );
 
     if (!empty($element['#description'])) {
       $description_id = $element['#attributes']['aria-describedby'];
@@ -1678,7 +1647,7 @@ function template_preprocess_field_multiple_value_form(&$variables) {
     }
   }
   else {
-    $variables['elements'] = [];
+    $variables['elements'] = array();
     foreach (Element::children($element) as $key) {
       $variables['elements'][] = $element[$key];
     }
@@ -1695,10 +1664,10 @@ function template_preprocess_field_multiple_value_form(&$variables) {
  *   - links: A list of \Drupal\Core\Link objects which should be rendered.
  */
 function template_preprocess_breadcrumb(&$variables) {
-  $variables['breadcrumb'] = [];
+  $variables['breadcrumb'] = array();
   /** @var \Drupal\Core\Link $link */
   foreach ($variables['links'] as $key => $link) {
-    $variables['breadcrumb'][$key] = ['text' => $link->getText(), 'url' => $link->getUrl()->toString()];
+    $variables['breadcrumb'][$key] = array('text' => $link->getText(), 'url' => $link->getUrl()->toString());
   }
 }
 
@@ -1717,153 +1686,152 @@ function _field_multiple_value_form_sort_helper($a, $b) {
  * Provides theme registration for themes across .inc files.
  */
 function drupal_common_theme() {
-  return [
+  return array(
     // From theme.inc.
-    'html' => [
+    'html' => array(
       'render element' => 'html',
-    ],
-    'page' => [
+    ),
+    'page' => array(
       'render element' => 'page',
-    ],
-    'page_title' => [
-      'variables' => ['title' => NULL],
-    ],
-    'region' => [
+    ),
+    'page_title' => array(
+      'variables' => array('title' => NULL),
+    ),
+    'region' => array(
       'render element' => 'elements',
-    ],
-    'time' => [
-      'variables' => ['timestamp' => NULL, 'text' => NULL, 'attributes' => []],
-    ],
-    'datetime_form' => [
+    ),
+    'time' => array(
+      'variables' => array('timestamp' => NULL, 'text' => NULL, 'attributes' => array()),
+    ),
+    'datetime_form' => array(
       'render element' => 'element',
-    ],
-    'datetime_wrapper' => [
+    ),
+    'datetime_wrapper' => array(
       'render element' => 'element',
-    ],
-    'status_messages' => [
+    ),
+    'status_messages' => array(
       'variables' => ['status_headings' => [], 'message_list' => NULL],
-    ],
-    'links' => [
-      'variables' => ['links' => [], 'attributes' => ['class' => ['links']], 'heading' => [], 'set_active_class' => FALSE],
-    ],
-    'dropbutton_wrapper' => [
-      'variables' => ['children' => NULL],
-    ],
-    'image' => [
+    ),
+    'links' => array(
+      'variables' => array('links' => array(), 'attributes' => array('class' => array('links')), 'heading' => array(), 'set_active_class' => FALSE),
+    ),
+    'dropbutton_wrapper' => array(
+      'variables' => array('children' => NULL),
+    ),
+    'image' => array(
       // HTML 4 and XHTML 1.0 always require an alt attribute. The HTML 5 draft
       // allows the alt attribute to be omitted in some cases. Therefore,
-      // default the alt attribute to an empty string, but allow code providing
-      // variables to image.html.twig templates to pass explicit NULL for it to
-      // be omitted. Usually, neither omission nor an empty string satisfies
-      // accessibility requirements, so it is strongly encouraged for code
-      // building variables for image.html.twig templates to pass a meaningful
-      // value for the alt variable.
+      // default the alt attribute to an empty string, but allow code calling
+      // _theme('image') to pass explicit NULL for it to be omitted. Usually,
+      // neither omission nor an empty string satisfies accessibility
+      // requirements, so it is strongly encouraged for code calling
+      // _theme('image') to pass a meaningful value for the alt variable.
       // - http://www.w3.org/TR/REC-html40/struct/objects.html#h-13.8
       // - http://www.w3.org/TR/xhtml1/dtds.html
       // - http://dev.w3.org/html5/spec/Overview.html#alt
       // The title attribute is optional in all cases, so it is omitted by
       // default.
-      'variables' => ['uri' => NULL, 'width' => NULL, 'height' => NULL, 'alt' => '', 'title' => NULL, 'attributes' => [], 'sizes' => NULL, 'srcset' => [], 'style_name' => NULL],
-    ],
-    'breadcrumb' => [
-      'variables' => ['links' => []],
-    ],
-    'table' => [
-      'variables' => ['header' => NULL, 'rows' => NULL, 'footer' => NULL, 'attributes' => [], 'caption' => NULL, 'colgroups' => [], 'sticky' => FALSE, 'responsive' => TRUE, 'empty' => ''],
-    ],
-    'tablesort_indicator' => [
-      'variables' => ['style' => NULL],
-    ],
-    'mark' => [
-      'variables' => ['status' => MARK_NEW],
-    ],
-    'item_list' => [
-      'variables' => ['items' => [], 'title' => '', 'list_type' => 'ul', 'wrapper_attributes' => [], 'attributes' => [], 'empty' => NULL, 'context' => []],
-    ],
-    'feed_icon' => [
-      'variables' => ['url' => NULL, 'title' => NULL],
-    ],
-    'progress_bar' => [
-      'variables' => ['label' => NULL, 'percent' => NULL, 'message' => NULL],
-    ],
-    'indentation' => [
-      'variables' => ['size' => 1],
-    ],
+      'variables' => array('uri' => NULL, 'width' => NULL, 'height' => NULL, 'alt' => '', 'title' => NULL, 'attributes' => array(), 'sizes' => NULL, 'srcset' => array(), 'style_name' => NULL),
+    ),
+    'breadcrumb' => array(
+      'variables' => array('links' => array()),
+    ),
+    'table' => array(
+      'variables' => array('header' => NULL, 'rows' => NULL, 'footer' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => FALSE, 'responsive' => TRUE, 'empty' => ''),
+    ),
+    'tablesort_indicator' => array(
+      'variables' => array('style' => NULL),
+    ),
+    'mark' => array(
+      'variables' => array('status' => MARK_NEW),
+    ),
+    'item_list' => array(
+      'variables' => array('items' => array(), 'title' => '', 'list_type' => 'ul', 'wrapper_attributes' => array(), 'attributes' => array(), 'empty' => NULL, 'context' => array()),
+    ),
+    'feed_icon' => array(
+      'variables' => array('url' => NULL, 'title' => NULL),
+    ),
+    'progress_bar' => array(
+      'variables' => array('label' => NULL, 'percent' => NULL, 'message' => NULL),
+    ),
+    'indentation' => array(
+      'variables' => array('size' => 1),
+    ),
     // From theme.maintenance.inc.
-    'maintenance_page' => [
+    'maintenance_page' => array(
       'render element' => 'page',
-    ],
-    'install_page' => [
+    ),
+    'install_page' => array(
       'render element' => 'page',
-    ],
-    'maintenance_task_list' => [
-      'variables' => ['items' => NULL, 'active' => NULL, 'variant' => NULL],
-    ],
-    'authorize_report' => [
+    ),
+    'maintenance_task_list' => array(
+      'variables' => array('items' => NULL, 'active' => NULL,  'variant' => NULL),
+    ),
+    'authorize_report' => array(
       'variables' => ['messages' => [], 'attributes' => []],
       'includes' => ['core/includes/theme.maintenance.inc'],
       'template' => 'authorize-report',
-    ],
+    ),
     // From pager.inc.
-    'pager' => [
+    'pager' => array(
       'render element' => 'pager',
-    ],
+    ),
     // From menu.inc.
-    'menu' => [
-      'variables' => ['menu_name' => NULL, 'items' => [], 'attributes' => []],
-    ],
-    'menu_local_task' => [
+    'menu' => array(
+      'variables' => array('menu_name' => NULL, 'items' => array(), 'attributes' => array()),
+    ),
+    'menu_local_task' => array(
       'render element' => 'element',
-    ],
-    'menu_local_action' => [
+    ),
+    'menu_local_action' => array(
       'render element' => 'element',
-    ],
-    'menu_local_tasks' => [
-      'variables' => ['primary' => [], 'secondary' => []],
-    ],
+    ),
+    'menu_local_tasks' => array(
+      'variables' => array('primary' => array(), 'secondary' => array()),
+    ),
     // From form.inc.
-    'input' => [
+    'input' => array(
       'render element' => 'element',
-    ],
-    'select' => [
+    ),
+    'select' => array(
       'render element' => 'element',
-    ],
-    'fieldset' => [
+    ),
+    'fieldset' => array(
       'render element' => 'element',
-    ],
-    'details' => [
+    ),
+    'details' => array(
       'render element' => 'element',
-    ],
-    'radios' => [
+    ),
+    'radios' => array(
       'render element' => 'element',
-    ],
-    'checkboxes' => [
+    ),
+    'checkboxes' => array(
       'render element' => 'element',
-    ],
-    'form' => [
+    ),
+    'form' => array(
       'render element' => 'element',
-    ],
-    'textarea' => [
+    ),
+    'textarea' => array(
       'render element' => 'element',
-    ],
-    'form_element' => [
+    ),
+    'form_element' => array(
       'render element' => 'element',
-    ],
-    'form_element_label' => [
+    ),
+    'form_element_label' => array(
       'render element' => 'element',
-    ],
-    'vertical_tabs' => [
+    ),
+    'vertical_tabs' => array(
       'render element' => 'element',
-    ],
-    'container' => [
+    ),
+    'container' => array(
       'render element' => 'element',
-    ],
+    ),
     // From field system.
-    'field' => [
+    'field' => array(
       'render element' => 'element',
-    ],
-    'field_multiple_value_form' => [
+    ),
+    'field_multiple_value_form' => array(
       'render element' => 'element',
-    ],
-  ];
+    ),
+  );
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\path\Plugin\migrate\source\UrlAliasBase.
+ */
+
 namespace Drupal\path\Plugin\migrate\source;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -13,21 +18,17 @@ abstract class UrlAliasBase extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function query() {
-    // The order of the migration is significant since
-    // \Drupal\Core\Path\AliasStorage::lookupPathAlias() orders by pid before
-    // returning a result. Postgres does not automatically order by primary key
-    // therefore we need to add a specific order by.
-    return $this->select('url_alias', 'ua')->fields('ua')->orderBy('pid');
+    return $this->select('url_alias', 'ua')->fields('ua');
   }
 
   /**
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'pid' => $this->t('The numeric identifier of the path alias.'),
-      'language' => $this->t('The language code of the URL alias.'),
-    ];
+      'language' => $this->t('The language code of the url alias.'),
+    );
   }
 
   /**

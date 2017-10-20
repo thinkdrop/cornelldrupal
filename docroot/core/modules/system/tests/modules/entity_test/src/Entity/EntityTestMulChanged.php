@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\entity_test\Entity\EntityTestMulChanged.
+ */
+
 namespace Drupal\entity_test\Entity;
 
 use Drupal\Core\Entity\EntityChangedInterface;
@@ -37,7 +42,6 @@ use Drupal\Core\Field\BaseFieldDefinition;
  *     "langcode" = "langcode"
  *   },
  *   links = {
- *     "add-form" = "/entity_test_mul_changed/add",
  *     "canonical" = "/entity_test_mul_changed/manage/{entity_test_mul_changed}",
  *     "edit-form" = "/entity_test_mul_changed/manage/{entity_test_mul_changed}/edit",
  *     "delete-form" = "/entity_test/delete/entity_test_mul_changed/{entity_test_mul_changed}",
@@ -60,10 +64,6 @@ class EntityTestMulChanged extends EntityTestMul implements EntityChangedInterfa
       ->setDescription(t('The time that the entity was last edited.'))
       ->setTranslatable(TRUE);
 
-    $fields['not_translatable'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Non translatable'))
-      ->setDescription(t('A non-translatable string field'));
-
     return $fields;
   }
 
@@ -75,5 +75,4 @@ class EntityTestMulChanged extends EntityTestMul implements EntityChangedInterfa
     sleep(1);
     parent::save();
   }
-
 }

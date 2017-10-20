@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\Tests\SearchNumbersTest.
+ */
+
 namespace Drupal\search\Tests;
 
 use Drupal\Core\Language\LanguageInterface;
@@ -26,7 +31,7 @@ class SearchNumbersTest extends SearchTestBase {
    *
    * @var string[]
    */
-  protected $numbers = [
+  protected $numbers = array(
     'ISBN' => '978-0446365383',
     'UPC' => '036000 291452',
     'EAN bar code' => '5901234123457',
@@ -41,7 +46,7 @@ class SearchNumbersTest extends SearchTestBase {
     'over fifty characters' => '666666666666666666666666666666666666666666666666666666666666',
     'date' => '01/02/2009',
     'commas' => '987,654,321',
-  ];
+  );
 
   /**
    * An array of nodes created for testing purposes.
@@ -53,16 +58,16 @@ class SearchNumbersTest extends SearchTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->testUser = $this->drupalCreateUser(['search content', 'access content', 'administer nodes', 'access site reports']);
+    $this->testUser = $this->drupalCreateUser(array('search content', 'access content', 'administer nodes', 'access site reports'));
     $this->drupalLogin($this->testUser);
 
     foreach ($this->numbers as $doc => $num) {
-      $info = [
-        'body' => [['value' => $num]],
+      $info = array(
+        'body' => array(array('value' => $num)),
         'type' => 'page',
         'language' => LanguageInterface::LANGCODE_NOT_SPECIFIED,
         'title' => $doc . ' number',
-      ];
+      );
       $this->nodes[$doc] = $this->drupalCreateNode($info);
     }
 
@@ -75,7 +80,7 @@ class SearchNumbersTest extends SearchTestBase {
   /**
    * Tests that all the numbers can be searched.
    */
-  public function testNumberSearching() {
+  function testNumberSearching() {
     $types = array_keys($this->numbers);
 
     foreach ($types as $type) {
@@ -88,17 +93,16 @@ class SearchNumbersTest extends SearchTestBase {
       // Verify that the node title does not appear on the search page
       // with a dummy search.
       $this->drupalPostForm('search/node',
-        ['keys' => 'foo'],
+        array('keys' => 'foo'),
         t('Search'));
       $this->assertNoText($node->label(), $type . ': node title not shown in dummy search');
 
       // Verify that the node title does appear as a link on the search page
       // when searching for the number.
       $this->drupalPostForm('search/node',
-        ['keys' => $number],
+        array('keys' => $number),
         t('Search'));
-      $this->assertText($node->label(), format_string('%type: node title shown (search found the node) in search for number %number.', ['%type' => $type, '%number' => $number]));
+      $this->assertText($node->label(), format_string('%type: node title shown (search found the node) in search for number %number.', array('%type' => $type, '%number' => $number)));
     }
   }
-
 }

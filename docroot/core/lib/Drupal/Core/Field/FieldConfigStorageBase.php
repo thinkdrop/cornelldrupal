@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\FieldConfigStorageBase.
+ */
+
 namespace Drupal\Core\Field;
 
 use Drupal\Core\Config\Entity\ConfigEntityStorage;
@@ -21,12 +26,8 @@ abstract class FieldConfigStorageBase extends ConfigEntityStorage {
    * {@inheritdoc}
    */
   protected function mapFromStorageRecords(array $records) {
-    foreach ($records as $id => &$record) {
+    foreach ($records as &$record) {
       $class = $this->fieldTypeManager->getPluginClass($record['field_type']);
-      if (empty($class)) {
-        $config_id = $this->getPrefix() . $id;
-        throw new \RuntimeException("Unable to determine class for field type '{$record['field_type']}' found in the '$config_id' configuration");
-      }
       $record['settings'] = $class::fieldSettingsFromConfigData($record['settings']);
     }
     return parent::mapFromStorageRecords($records);

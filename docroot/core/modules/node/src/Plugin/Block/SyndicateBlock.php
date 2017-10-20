@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\Block\SyndicateBlock.
+ */
+
 namespace Drupal\node\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
@@ -21,9 +26,9 @@ class SyndicateBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [
+    return array(
       'block_count' => 10,
-    ];
+    );
   }
 
   /**
@@ -37,10 +42,10 @@ class SyndicateBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    return [
+    return array(
       '#theme' => 'feed_icon',
       '#url' => 'rss.xml',
-    ];
+    );
   }
 
 }

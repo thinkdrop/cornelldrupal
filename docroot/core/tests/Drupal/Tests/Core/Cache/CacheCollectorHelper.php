@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Cache\CacheCollectorHelper.
+ */
+
 namespace Drupal\Tests\Core\Cache;
 
 use Drupal\Core\Cache\CacheCollector;
@@ -13,7 +18,7 @@ class CacheCollectorHelper extends CacheCollector {
    * Contains data to return on a cache miss.
    * @var array
    */
-  protected $cacheMissData = [];
+  protected $cacheMissData = array();
 
   /**
    * Number of calls to \Drupal\Core\Cache\CacheCollector::resolveCacheMiss().

@@ -1,15 +1,35 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\link\Plugin\Validation\Constraint\LinkExternalProtocolsConstraintValidator.
+ */
+
 namespace Drupal\link\Plugin\Validation\Constraint;
 
 use Drupal\Component\Utility\UrlHelper;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
  * Validates the LinkExternalProtocols constraint.
  */
-class LinkExternalProtocolsConstraintValidator extends ConstraintValidator {
+class LinkExternalProtocolsConstraintValidator implements ConstraintValidatorInterface {
+
+  /**
+   * Stores the validator's state during validation.
+   *
+   * @var \Symfony\Component\Validator\ExecutionContextInterface
+   */
+  protected $context;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function initialize(ExecutionContextInterface $context) {
+    $this->context = $context;
+  }
 
   /**
    * {@inheritdoc}
@@ -26,7 +46,7 @@ class LinkExternalProtocolsConstraintValidator extends ConstraintValidator {
       }
       // Disallow external URLs using untrusted protocols.
       if ($url->isExternal() && !in_array(parse_url($url->getUri(), PHP_URL_SCHEME), UrlHelper::getAllowedProtocols())) {
-        $this->context->addViolation($constraint->message, ['@uri' => $value->uri]);
+        $this->context->addViolation($constraint->message, array('@uri' => $value->uri));
       }
     }
   }

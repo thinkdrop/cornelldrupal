@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\KeyValueStore\KeyValueEntityStorage.
+ */
+
 namespace Drupal\Core\Entity\KeyValueStore;
 
 use Drupal\Component\Uuid\UuidInterface;
@@ -86,9 +91,9 @@ class KeyValueEntityStorage extends EntityStorageBase {
   /**
    * {@inheritdoc}
    */
-  public function doCreate(array $values = []) {
+  public function doCreate(array $values = array()) {
     // Set default language to site default if not provided.
-    $values += [$this->getEntityType()->getKey('langcode') => $this->languageManager->getDefaultLanguage()->getId()];
+    $values += array($this->getEntityType()->getKey('langcode') => $this->languageManager->getDefaultLanguage()->getId());
     $entity = new $this->entityClass($values, $this->entityTypeId);
 
     // @todo This is handled by ContentEntityStorageBase, which assumes

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Plugin\Menu\LocalTask\UnapprovedComments.
+ */
+
 namespace Drupal\comment\Plugin\Menu\LocalTask;
 
 use Drupal\comment\CommentStorageInterface;
@@ -54,7 +59,7 @@ class UnapprovedComments extends LocalTaskDefault implements ContainerFactoryPlu
    * {@inheritdoc}
    */
   public function getTitle() {
-    return $this->t('Unapproved comments (@count)', ['@count' => $this->commentStorage->getUnapprovedCount()]);
+    return $this->t('Unapproved comments (@count)', array('@count' => $this->commentStorage->getUnapprovedCount()));
   }
 
 }

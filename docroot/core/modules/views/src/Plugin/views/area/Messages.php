@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\area\Messages.
+ */
+
 namespace Drupal\views\Plugin\views\area;
 
 /**
@@ -7,7 +12,7 @@ namespace Drupal\views\Plugin\views\area;
  *
  * @ingroup views_area_handlers
  *
- * @ViewsArea("messages")
+ * @PluginID("messages")
  */
 class Messages extends AreaPluginBase {
 
@@ -26,11 +31,11 @@ class Messages extends AreaPluginBase {
    */
   public function render($empty = FALSE) {
     if (!$empty || !empty($this->options['empty'])) {
-      return [
+      return array(
         '#type' => 'status_messages',
-      ];
+      );
     }
-    return [];
+    return array();
   }
 
 }

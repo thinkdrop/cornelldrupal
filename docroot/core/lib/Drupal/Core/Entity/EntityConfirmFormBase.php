@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityConfirmFormBase.
+ */
+
 namespace Drupal\Core\Entity;
 
 use Drupal\Core\Form\ConfirmFormHelper;
@@ -57,8 +62,8 @@ abstract class EntityConfirmFormBase extends EntityForm implements ConfirmFormIn
     $form['#title'] = $this->getQuestion();
 
     $form['#attributes']['class'][] = 'confirmation';
-    $form['description'] = ['#markup' => $this->getDescription()];
-    $form[$this->getFormName()] = ['#type' => 'hidden', '#value' => 1];
+    $form['description'] = array('#markup' => $this->getDescription());
+    $form[$this->getFormName()] = array('#type' => 'hidden', '#value' => 1);
 
     // By default, render the form using theme_confirm_form().
     if (!isset($form['#theme'])) {
@@ -71,16 +76,16 @@ abstract class EntityConfirmFormBase extends EntityForm implements ConfirmFormIn
    * {@inheritdoc}
    */
   protected function actions(array $form, FormStateInterface $form_state) {
-    return [
-      'submit' => [
+    return array(
+      'submit' => array(
         '#type' => 'submit',
         '#value' => $this->getConfirmText(),
-        '#submit' => [
-          [$this, 'submitForm'],
-        ],
-      ],
+        '#submit' => array(
+          array($this, 'submitForm'),
+        ),
+      ),
       'cancel' => ConfirmFormHelper::buildCancelLink($this, $this->getRequest()),
-    ];
+    );
   }
 
   /**

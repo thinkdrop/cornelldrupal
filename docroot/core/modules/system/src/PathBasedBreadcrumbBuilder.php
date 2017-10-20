@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\PathBasedBreadcrumbBuilder.
+ */
+
 namespace Drupal\system;
 
 use Drupal\Component\Utility\Unicode;
@@ -52,7 +57,7 @@ class PathBasedBreadcrumbBuilder implements BreadcrumbBuilderInterface {
   protected $router;
 
   /**
-   * The inbound path processor.
+   * The dynamic router service.
    *
    * @var \Drupal\Core\PathProcessor\InboundPathProcessorInterface
    */
@@ -122,23 +127,23 @@ class PathBasedBreadcrumbBuilder implements BreadcrumbBuilderInterface {
    */
   public function build(RouteMatchInterface $route_match) {
     $breadcrumb = new Breadcrumb();
-    $links = [];
+    $links = array();
 
     // General path-based breadcrumbs. Use the actual request path, prior to
     // resolving path aliases, so the breadcrumb can be defined by simply
     // creating a hierarchy of path aliases.
     $path = trim($this->context->getPathInfo(), '/');
     $path_elements = explode('/', $path);
-    $exclude = [];
+    $exclude = array();
     // Don't show a link to the front-page path.
     $front = $this->config->get('page.front');
     $exclude[$front] = TRUE;
     // /user is just a redirect, so skip it.
     // @todo Find a better way to deal with /user.
     $exclude['/user'] = TRUE;
-    // Add the url.path.parent cache context. This code ignores the last path
-    // part so the result only depends on the path parents.
-    $breadcrumb->addCacheContexts(['url.path.parent']);
+    // Because this breadcrumb builder is entirely path-based, vary by the
+    // 'url.path' cache context.
+    $breadcrumb->addCacheContexts(['url.path']);
     while (count($path_elements) > 1) {
       array_pop($path_elements);
       // Copy the path elements for up-casting.
@@ -154,7 +159,7 @@ class PathBasedBreadcrumbBuilder implements BreadcrumbBuilderInterface {
           if (!isset($title)) {
             // Fallback to using the raw path component as the title if the
             // route is missing a _title or _title_callback attribute.
-            $title = str_replace(['-', '_'], ' ', Unicode::ucfirst(end($path_elements)));
+            $title = str_replace(array('-', '_'), ' ', Unicode::ucfirst(end($path_elements)));
           }
           $url = Url::fromRouteMatch($route_match);
           $links[] = new Link($title, $url);

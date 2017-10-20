@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views_test_data\Plugin\views\access\StaticTest.
+ */
+
 namespace Drupal\views_test_data\Plugin\views\access;
 
 use Drupal\Core\Session\AccountInterface;
@@ -19,7 +24,7 @@ class StaticTest extends AccessPluginBase {
 
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['access'] = ['default' => FALSE];
+    $options['access'] = array('default' => FALSE);
 
     return $options;
   }

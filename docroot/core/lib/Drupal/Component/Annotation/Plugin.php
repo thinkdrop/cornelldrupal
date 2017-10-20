@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Annotation\Plugin.
+ */
+
 namespace Drupal\Component\Annotation;
 
 use Drupal\Component\Utility\NestedArray;
@@ -49,10 +54,10 @@ class Plugin implements AnnotationInterface {
    *   The annotation array.
    *
    * @return array
-   *   The parsed annotation as a definition.
+   *  The parsed annotation as a definition.
    */
   protected function parse(array $values) {
-    $definitions = [];
+    $definitions = array();
     foreach ($values as $key => $value) {
       if ($value instanceof AnnotationInterface) {
         $definitions[$key] = $value->get();

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\row\EntityRow.
+ */
+
 namespace Drupal\views\Plugin\views\row;
 
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -130,7 +135,7 @@ class EntityRow extends RowPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['view_mode'] = ['default' => 'default'];
+    $options['view_mode'] = array('default' => 'default');
     return $options;
   }
 
@@ -140,12 +145,12 @@ class EntityRow extends RowPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['view_mode'] = [
+    $form['view_mode'] = array(
       '#type' => 'select',
       '#options' => \Drupal::entityManager()->getViewModeOptions($this->entityTypeId),
       '#title' => $this->t('View mode'),
       '#default_value' => $this->options['view_mode'],
-    ];
+    );
   }
 
   /**

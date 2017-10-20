@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\InstallStorage.
+ */
+
 namespace Drupal\Core\Config;
 
 use Drupal\Core\Extension\ExtensionDiscovery;
@@ -58,7 +63,8 @@ class InstallStorage extends FileStorage {
    *   default collection.
    */
   public function __construct($directory = self::CONFIG_INSTALL_DIRECTORY, $collection = StorageInterface::DEFAULT_COLLECTION) {
-    parent::__construct($directory, $collection);
+    $this->directory = $directory;
+    $this->collection = $collection;
   }
 
   /**
@@ -74,9 +80,9 @@ class InstallStorage extends FileStorage {
    *   The path to the configuration file.
    *
    * @todo Improve this when figuring out how we want to handle configuration in
-   *   installation profiles. For instance, a config object actually has to be
-   *   searched in the profile first (whereas the profile is never the owner);
-   *   only afterwards check for a corresponding module or theme.
+   *   installation profiles. E.g., a config object actually has to be searched
+   *   in the profile first (whereas the profile is never the owner), only
+   *   afterwards check for a corresponding module or theme.
    */
   public function getFilePath($name) {
     $folders = $this->getAllFolders();
@@ -131,7 +137,7 @@ class InstallStorage extends FileStorage {
       return $names;
     }
     else {
-      $return = [];
+      $return = array();
       foreach ($names as $index => $name) {
         if (strpos($name, $prefix) === 0 ) {
           $return[$index] = $names[$index];
@@ -149,7 +155,7 @@ class InstallStorage extends FileStorage {
    */
   protected function getAllFolders() {
     if (!isset($this->folders)) {
-      $this->folders = [];
+      $this->folders = array();
       $this->folders += $this->getCoreNames();
       // Perform an ExtensionDiscovery scan as we cannot use drupal_get_path()
       // yet because the system module may not yet be enabled during install.
@@ -163,7 +169,7 @@ class InstallStorage extends FileStorage {
           // during the module scan.
           // @todo Remove as part of https://www.drupal.org/node/2186491
           drupal_get_filename('profile', $profile, $profile_list[$profile]->getPathname());
-          $this->folders += $this->getComponentNames([$profile_list[$profile]]);
+          $this->folders += $this->getComponentNames(array($profile_list[$profile]));
         }
       }
       // @todo Remove as part of https://www.drupal.org/node/2186491
@@ -184,8 +190,7 @@ class InstallStorage extends FileStorage {
    */
   public function getComponentNames(array $list) {
     $extension = '.' . $this->getFileExtension();
-    $pattern = '/' . preg_quote($extension, '/') . '$/';
-    $folders = [];
+    $folders = array();
     foreach ($list as $extension_object) {
       // We don't have to use ExtensionDiscovery here because our list of
       // extensions was already obtained through an ExtensionDiscovery scan.
@@ -198,7 +203,7 @@ class InstallStorage extends FileStorage {
         $files = scandir($directory);
 
         foreach ($files as $file) {
-          if ($file[0] !== '.' && preg_match($pattern, $file)) {
+          if ($file[0] !== '.' && fnmatch('*' . $extension, $file)) {
             $folders[basename($file, $extension)] = $directory;
           }
         }
@@ -215,8 +220,7 @@ class InstallStorage extends FileStorage {
    */
   public function getCoreNames() {
     $extension = '.' . $this->getFileExtension();
-    $pattern = '/' . preg_quote($extension, '/') . '$/';
-    $folders = [];
+    $folders = array();
     $directory = $this->getCoreFolder();
     if (is_dir($directory)) {
       // glob() directly calls into libc glob(), which is not aware of PHP
@@ -226,7 +230,7 @@ class InstallStorage extends FileStorage {
       $files = scandir($directory);
 
       foreach ($files as $file) {
-        if ($file[0] !== '.' && preg_match($pattern, $file)) {
+        if ($file[0] !== '.' && fnmatch('*' . $extension, $file)) {
           $folders[basename($file, $extension)] = $directory;
         }
       }

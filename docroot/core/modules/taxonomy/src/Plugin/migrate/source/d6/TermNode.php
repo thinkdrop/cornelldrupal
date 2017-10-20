@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Plugin\migrate\source\d6\TermNode.
+ */
+
 namespace Drupal\taxonomy\Plugin\migrate\source\d6;
 
 use Drupal\migrate\Row;
@@ -26,10 +31,10 @@ class TermNode extends DrupalSqlBase {
   public function query() {
     $query = $this->select('term_node', 'tn')
       ->distinct()
-      ->fields('tn', ['nid', 'vid'])
-      ->fields('n', ['type']);
+      ->fields('tn', array('nid', 'vid'))
+      ->fields('n', array('type'));
     // Because this is an inner join it enforces the current revision.
-    $query->innerJoin('term_data', 'td', 'td.tid = tn.tid AND td.vid = :vid', [':vid' => $this->configuration['vid']]);
+    $query->innerJoin('term_data', 'td', 'td.tid = tn.tid AND td.vid = :vid', array(':vid' => $this->configuration['vid']));
     $query->innerJoin('node', 'n', static::JOIN);
     return $query;
   }
@@ -38,11 +43,11 @@ class TermNode extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'nid' => $this->t('The node revision ID.'),
       'vid' => $this->t('The node revision ID.'),
       'tid' => $this->t('The term ID.'),
-    ];
+    );
   }
 
   /**
@@ -51,10 +56,10 @@ class TermNode extends DrupalSqlBase {
   public function prepareRow(Row $row) {
     // Select the terms belonging to the revision selected.
     $query = $this->select('term_node', 'tn')
-      ->fields('tn', ['tid'])
+      ->fields('tn', array('tid'))
       ->condition('n.nid', $row->getSourceProperty('nid'));
     $query->join('node', 'n', static::JOIN);
-    $query->innerJoin('term_data', 'td', 'td.tid = tn.tid AND td.vid = :vid', [':vid' => $this->configuration['vid']]);
+    $query->innerJoin('term_data', 'td', 'td.tid = tn.tid AND td.vid = :vid', array(':vid' => $this->configuration['vid']));
     $row->setSourceProperty('tid', $query->execute()->fetchCol());
     return parent::prepareRow($row);
   }

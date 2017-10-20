@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate\Exception\RequirementsException.
+ */
+
 namespace Drupal\migrate\Exception;
 
 use Exception;
@@ -56,7 +61,7 @@ class RequirementsException extends \RuntimeException {
     $output = '';
     foreach ($this->requirements as $requirement_type => $requirements) {
       if (!is_array($requirements)) {
-        $requirements = [$requirements];
+        $requirements = array($requirements);
       }
 
       foreach ($requirements as $value) {

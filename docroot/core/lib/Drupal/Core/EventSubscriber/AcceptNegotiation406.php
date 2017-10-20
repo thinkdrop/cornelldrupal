@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\AcceptNegotiation406.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -29,14 +34,14 @@ class AcceptNegotiation406 implements EventSubscriberInterface {
     // not HTML though we can also assume that the requested format is invalid
     // so we provide a 406 response.
     if (is_array($result) && $request->getRequestFormat() !== 'html') {
-      throw new NotAcceptableHttpException('Not acceptable format: ' . $request->getRequestFormat());
+      throw new NotAcceptableHttpException('Not acceptable');
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  static function getSubscribedEvents() {
     $events[KernelEvents::VIEW][] = ['onViewDetect406', -10];
 
     return $events;

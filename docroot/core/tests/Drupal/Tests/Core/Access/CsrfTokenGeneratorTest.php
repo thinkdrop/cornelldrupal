@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Access\CsrfTokenGeneratorTest.
+ */
+
 namespace Drupal\Tests\Core\Access;
 
 use Drupal\Core\Site\Settings;
@@ -44,16 +49,16 @@ class CsrfTokenGeneratorTest extends UnitTestCase {
 
     $this->privateKey = $this->getMockBuilder('Drupal\Core\PrivateKey')
       ->disableOriginalConstructor()
-      ->setMethods(['get'])
+      ->setMethods(array('get'))
       ->getMock();
 
     $this->sessionMetadata = $this->getMockBuilder('Drupal\Core\Session\MetadataBag')
       ->disableOriginalConstructor()
       ->getMock();
 
-    $settings = [
+    $settings = array(
       'hash_salt' => $this->randomMachineName(),
-    ];
+    );
 
     new Settings($settings);
 
@@ -154,11 +159,11 @@ class CsrfTokenGeneratorTest extends UnitTestCase {
    *   An array of data used by the test.
    */
   public function providerTestValidateParameterTypes() {
-    return [
-      [[], ''],
-      [TRUE, 'foo'],
-      [0, 'foo'],
-    ];
+    return array(
+      array(array(), ''),
+      array(TRUE, 'foo'),
+      array(0, 'foo'),
+    );
   }
 
   /**
@@ -171,11 +176,11 @@ class CsrfTokenGeneratorTest extends UnitTestCase {
    *
    * @covers ::validate
    * @dataProvider providerTestInvalidParameterTypes
+   * @expectedException InvalidArgumentException
    */
   public function testInvalidParameterTypes($token, $value = '') {
     $this->setupDefaultExpectations();
 
-    $this->setExpectedException(\InvalidArgumentException::class);
     $this->generator->validate($token, $value);
   }
 
@@ -186,24 +191,24 @@ class CsrfTokenGeneratorTest extends UnitTestCase {
    *   An array of data used by the test.
    */
   public function providerTestInvalidParameterTypes() {
-    return [
-      [NULL, new \stdClass()],
-      [0, []],
-      ['', []],
-      [[], []],
-    ];
+    return array(
+      array(NULL, new \stdClass()),
+      array(0, array()),
+      array('', array()),
+      array(array(), array()),
+    );
   }
 
   /**
    * Tests the exception thrown when no 'hash_salt' is provided in settings.
    *
    * @covers ::get
+   * @expectedException \RuntimeException
    */
   public function testGetWithNoHashSalt() {
     // Update settings with no hash salt.
-    new Settings([]);
+    new Settings(array());
     $generator = new CsrfTokenGenerator($this->privateKey, $this->sessionMetadata);
-    $this->setExpectedException(\RuntimeException::class);
     $generator->get();
   }
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\contact\Plugin\migrate\source\ContactCategory.
+ */
+
 namespace Drupal\contact\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
@@ -20,16 +25,16 @@ class ContactCategory extends DrupalSqlBase {
    */
   public function query() {
     $query = $this->select('contact', 'c')
-      ->fields('c', [
+      ->fields('c', array(
         'cid',
         'category',
         'recipients',
         'reply',
         'weight',
         'selected',
-      ]
+      )
     );
-    $query->orderBy('c.cid');
+    $query->orderBy('cid');
     return $query;
   }
 
@@ -45,14 +50,14 @@ class ContactCategory extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'cid' => $this->t('Primary Key: Unique category ID.'),
       'category' => $this->t('Category name.'),
       'recipients' => $this->t('Comma-separated list of recipient email addresses.'),
       'reply' => $this->t('Text of the auto-reply message.'),
       'weight' => $this->t("The category's weight."),
       'selected' => $this->t('Flag to indicate whether or not category is selected by default. (1 = Yes, 0 = No)'),
-    ];
+    );
   }
 
   /**

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\area\Entity.
+ */
+
 namespace Drupal\views\Plugin\views\area;
 
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -93,12 +98,12 @@ class Entity extends TokenizeAreaPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['view_mode'] = [
+    $form['view_mode'] = array(
       '#type' => 'select',
       '#options' => $this->entityManager->getViewModeOptions($this->entityType),
       '#title' => $this->t('View mode'),
       '#default_value' => $this->options['view_mode'],
-    ];
+    );
 
     $label = $this->entityManager->getDefinition($this->entityType)->getLabel();
     $target = $this->options['target'];
@@ -115,18 +120,18 @@ class Entity extends TokenizeAreaPluginBase {
         $target = $target_entity->id();
       }
     }
-    $form['target'] = [
+      $form['target'] = [
       '#title' => $this->t('@entity_type_label ID', ['@entity_type_label' => $label]),
       '#type' => 'textfield',
       '#default_value' => $target,
     ];
 
-    $form['bypass_access'] = [
+    $form['bypass_access'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Bypass access checks'),
       '#description' => $this->t('If enabled, access permissions for rendering the entity are not checked.'),
       '#default_value' => !empty($this->options['bypass_access']),
-    ];
+    );
   }
 
   /**
@@ -194,5 +199,4 @@ class Entity extends TokenizeAreaPluginBase {
 
     return $dependencies;
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\TypedData\EntityDataDefinitionInterface.
+ */
+
 namespace Drupal\Core\Entity\TypedData;
 
 use Drupal\Core\TypedData\ComplexDataDefinitionInterface;
@@ -44,5 +49,4 @@ interface EntityDataDefinitionInterface extends ComplexDataDefinitionInterface {
    * @return $this
    */
   public function setBundles(array $bundles = NULL);
-
 }

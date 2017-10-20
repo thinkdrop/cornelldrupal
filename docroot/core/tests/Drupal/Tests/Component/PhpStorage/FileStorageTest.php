@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Component\PhpStorage\FileStorageTest.
+ */
+
 namespace Drupal\Tests\Component\PhpStorage;
 
 use Drupal\Component\PhpStorage\FileStorage;
@@ -24,10 +29,10 @@ class FileStorageTest extends PhpStorageTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->standardSettings = [
+    $this->standardSettings = array(
       'directory' => $this->directory,
       'bin' => 'test',
-    ];
+    );
   }
 
   /**

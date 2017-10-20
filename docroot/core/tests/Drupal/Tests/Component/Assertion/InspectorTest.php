@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Contains \Drupal\Tests\Component\Assertion\InspectorTest.
@@ -12,7 +11,7 @@ use Drupal\Component\Assertion\Inspector;
 
 /**
  * @coversDefaultClass \Drupal\Component\Assertion\Inspector
- * @group Assertion
+ * @group Inspector
  */
 class InspectorTest extends PHPUnit_Framework_TestCase {
 

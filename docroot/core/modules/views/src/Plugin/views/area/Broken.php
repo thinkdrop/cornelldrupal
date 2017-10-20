@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\area\Broken.
+ */
+
 namespace Drupal\views\Plugin\views\area;
 
 use Drupal\views\Plugin\views\BrokenHandlerTrait;
@@ -19,7 +24,7 @@ class Broken extends AreaPluginBase {
    */
   public function render($empty = FALSE) {
     // Simply render nothing by returning an empty render array.
-    return [];
+    return array();
   }
 
 }

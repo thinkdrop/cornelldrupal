@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\shortcut\Plugin\migrate\source\d7\ShortcutSetUsers.
+ */
 
 namespace Drupal\shortcut\Plugin\migrate\source\d7;
 
@@ -25,24 +29,24 @@ class ShortcutSetUsers extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'uid' => $this->t('The users.uid for this set.'),
       'set_name' => $this->t('The shortcut_set.set_name that will be displayed for this user.'),
-    ];
+    );
   }
 
   /**
    * {@inheritdoc}
    */
   public function getIds() {
-    return [
-      'set_name' => [
+    return array(
+      'set_name' => array(
         'type' => 'string',
-      ],
-      'uid' => [
+      ),
+      'uid' => array(
         'type' => 'integer',
-      ],
-    ];
+      ),
+    );
   }
 
 }

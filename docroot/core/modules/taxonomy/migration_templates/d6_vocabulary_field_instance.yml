@@ -10,17 +10,10 @@ source:
     selection_handler: 'default:taxonomy_term'
 process:
   entity_type: 'constants/entity_type'
-  bundle:
-    -
-      plugin: migration_lookup
-      migration: d6_node_type
-      source: type
-    -
-      plugin: skip_on_empty
-      method: row
+  bundle: type
   field_name:
     -
-      plugin: migration_lookup
+      plugin: migration
       migration: d6_taxonomy_vocabulary
       source: vid
     -
@@ -30,7 +23,6 @@ process:
   'settings/handler': 'constants/selection_handler'
   'settings/handler_settings/target_bundles/0': '@field_name'
   'settings/handler_settings/auto_create': 'constants/auto_create'
-  required: required
 destination:
   plugin: entity:field_config
 migration_dependencies:

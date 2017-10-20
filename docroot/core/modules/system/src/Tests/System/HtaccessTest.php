@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\System\HtaccessTest.
+ */
+
 namespace Drupal\system\Tests\System;
 
 use Drupal\simpletest\WebTestBase;
@@ -16,7 +21,7 @@ class HtaccessTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['node', 'path'];
+  public static $modules = array('node', 'path');
 
   /**
    * Get an array of file paths for access testing.
@@ -81,11 +86,6 @@ class HtaccessTest extends WebTestBase {
     foreach ($file_exts_to_allow as $file_ext) {
       $file_paths["$path/access_test.$file_ext"] = 200;
     }
-
-    // Ensure composer.json and composer.lock cannot be accessed.
-    $file_paths["$path/composer.json"] = 403;
-    $file_paths["$path/composer.lock"] = 403;
-
     return $file_paths;
   }
 

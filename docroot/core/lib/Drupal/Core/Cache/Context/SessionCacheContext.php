@@ -1,8 +1,11 @@
 <?php
 
-namespace Drupal\Core\Cache\Context;
+/**
+ * @file
+ * Contains \Drupal\Core\Cache\Context\SessionCacheContext.
+ */
 
-use Drupal\Component\Utility\Crypt;
+namespace Drupal\Core\Cache\Context;
 
 /**
  * Defines the SessionCacheContext service, for "per session" caching.
@@ -22,8 +25,7 @@ class SessionCacheContext extends RequestStackCacheContextBase {
    * {@inheritdoc}
    */
   public function getContext() {
-    $sid = $this->requestStack->getCurrentRequest()->getSession()->getId();
-    return Crypt::hashBase64($sid);
+    return $this->requestStack->getCurrentRequest()->getSession()->getId();
   }
 
 }

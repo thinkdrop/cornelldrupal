@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\shortcut\Plugin\Block\ShortcutsBlock.
+ */
+
 namespace Drupal\shortcut\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
@@ -21,9 +26,9 @@ class ShortcutsBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    return [
+    return array(
       shortcut_renderable_links(shortcut_current_displayed_set()),
-    ];
+    );
   }
 
   /**

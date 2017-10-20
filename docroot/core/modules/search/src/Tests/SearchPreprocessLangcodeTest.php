@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\search\Tests\SearchPreprocessLangcodeTest.
+ */
 
 namespace Drupal\search\Tests;
 
@@ -14,7 +18,7 @@ class SearchPreprocessLangcodeTest extends SearchTestBase {
    *
    * @var array
    */
-  public static $modules = ['search_langcode_test'];
+  public static $modules = array('search_langcode_test');
 
   /**
    * Test node for searching.
@@ -26,21 +30,21 @@ class SearchPreprocessLangcodeTest extends SearchTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $web_user = $this->drupalCreateUser([
+    $web_user = $this->drupalCreateUser(array(
       'create page content',
       'edit own page content',
       'search content',
       'use advanced search',
-    ]);
+    ));
     $this->drupalLogin($web_user);
   }
 
   /**
    * Tests that hook_search_preprocess() returns the correct langcode.
    */
-  public function testPreprocessLangcode() {
+  function testPreprocessLangcode() {
     // Create a node.
-    $this->node = $this->drupalCreateNode(['body' => [[]], 'langcode' => 'en']);
+    $this->node = $this->drupalCreateNode(array('body' => array(array()), 'langcode' => 'en'));
 
     // First update the index. This does the initial processing.
     $this->container->get('plugin.manager.search')->createInstance('node_search')->updateIndex();
@@ -53,7 +57,7 @@ class SearchPreprocessLangcodeTest extends SearchTestBase {
     // Search for the additional text that is added by the preprocess
     // function. If you search for text that is in the node, preprocess is
     // not invoked on the node during the search excerpt generation.
-    $edit = ['or' => 'Additional text'];
+    $edit = array('or' => 'Additional text');
     $this->drupalPostForm('search/node', $edit, t('Advanced search'));
 
     // Checks if the langcode message has been set by hook_search_preprocess().
@@ -63,13 +67,13 @@ class SearchPreprocessLangcodeTest extends SearchTestBase {
   /**
    * Tests stemming for hook_search_preprocess().
    */
-  public function testPreprocessStemming() {
+  function testPreprocessStemming() {
     // Create a node.
-    $this->node = $this->drupalCreateNode([
+    $this->node = $this->drupalCreateNode(array(
       'title' => 'we are testing',
-      'body' => [[]],
+      'body' => array(array()),
       'langcode' => 'en',
-    ]);
+    ));
 
     // First update the index. This does the initial processing.
     $this->container->get('plugin.manager.search')->createInstance('node_search')->updateIndex();
@@ -80,7 +84,7 @@ class SearchPreprocessLangcodeTest extends SearchTestBase {
     search_update_totals();
 
     // Search for the title of the node with a POST query.
-    $edit = ['or' => 'testing'];
+    $edit = array('or' => 'testing');
     $this->drupalPostForm('search/node', $edit, t('Advanced search'));
 
     // Check if the node has been found.
@@ -88,12 +92,11 @@ class SearchPreprocessLangcodeTest extends SearchTestBase {
     $this->assertText('we are testing');
 
     // Search for the same node using a different query.
-    $edit = ['or' => 'test'];
+    $edit = array('or' => 'test');
     $this->drupalPostForm('search/node', $edit, t('Advanced search'));
 
     // Check if the node has been found.
     $this->assertText('Search results');
     $this->assertText('we are testing');
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Access\CsrfTokenGenerator.
+ */
+
 namespace Drupal\Core\Access;
 
 use Drupal\Component\Utility\Crypt;
@@ -87,7 +92,7 @@ class CsrfTokenGenerator {
       return FALSE;
     }
 
-    return Crypt::hashEquals($this->computeToken($seed, $value), $token);
+    return $token === $this->computeToken($seed, $value);
   }
 
   /**

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Extension\ThemeInstallerInterface.
+ */
+
 namespace Drupal\Core\Extension;
 
 /**
@@ -21,7 +26,7 @@ interface ThemeInstallerInterface {
    *   Whether any of the given themes have been installed.
    *
    * @throws \Drupal\Core\Extension\ExtensionNameLengthException
-   *   Thrown when the theme name is to long.
+   *   Thrown when the theme name is to long
    */
   public function install(array $theme_list, $install_dependencies = TRUE);
 

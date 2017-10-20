@@ -1,9 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\comment\Unit\CommentManagerTest.
+ */
+
 namespace Drupal\Tests\comment\Unit;
 
 use Drupal\comment\CommentManager;
-use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -24,21 +28,21 @@ class CommentManagerTest extends UnitTestCase {
       ->method('getClass')
       ->will($this->returnValue('Node'));
     $entity_type->expects($this->any())
-      ->method('entityClassImplements')
-      ->with(FieldableEntityInterface::class)
+      ->method('isSubclassOf')
+      ->with('\Drupal\Core\Entity\FieldableEntityInterface')
       ->will($this->returnValue(TRUE));
 
     $entity_manager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
 
     $entity_manager->expects($this->once())
       ->method('getFieldMapByFieldType')
-      ->will($this->returnValue([
-        'node' => [
-          'field_foobar' => [
+      ->will($this->returnValue(array(
+        'node' => array(
+          'field_foobar' => array(
             'type' => 'comment',
-          ],
-        ],
-      ]));
+          ),
+        ),
+      )));
 
     $entity_manager->expects($this->any())
       ->method('getDefinition')
@@ -46,6 +50,7 @@ class CommentManagerTest extends UnitTestCase {
 
     $comment_manager = new CommentManager(
       $entity_manager,
+      $this->getMockBuilder('Drupal\Core\Entity\Query\QueryFactory')->disableOriginalConstructor()->getMock(),
       $this->getMock('Drupal\Core\Config\ConfigFactoryInterface'),
       $this->getMock('Drupal\Core\StringTranslation\TranslationInterface'),
       $this->getMock('Drupal\Core\Routing\UrlGeneratorInterface'),

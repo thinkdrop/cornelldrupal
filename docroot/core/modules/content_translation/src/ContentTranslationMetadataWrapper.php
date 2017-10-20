@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\content_translation\ContentTranslationMetadataWrapper.
+ */
+
 namespace Drupal\content_translation;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -146,5 +151,4 @@ class ContentTranslationMetadataWrapper implements ContentTranslationMetadataWra
       $this->translation->set($field_name, $value);
     }
   }
-
 }

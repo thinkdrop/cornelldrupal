@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Theme\ThemeNegotiatorTest.
+ */
+
 namespace Drupal\Tests\Core\Theme;
 
 use Drupal\Core\Routing\RouteMatch;
@@ -61,7 +66,7 @@ class ThemeNegotiatorTest extends UnitTestCase {
       ->method('checkAccess')
       ->will($this->returnValue(TRUE));
 
-    $route_match = new RouteMatch('test_route', new Route('/test-route'), [], []);
+    $route_match = new RouteMatch('test_route', new Route('/test-route'), array(), array());
     $theme = $this->themeNegotiator->determineActiveTheme($route_match);
 
     $this->assertEquals('example_test', $theme);
@@ -95,7 +100,7 @@ class ThemeNegotiatorTest extends UnitTestCase {
       ->method('checkAccess')
       ->will($this->returnValue(TRUE));
 
-    $route_match = new RouteMatch('test_route', new Route('/test-route'), [], []);
+    $route_match = new RouteMatch('test_route', new Route('/test-route'), array(), array());
     $theme = $this->themeNegotiator->determineActiveTheme($route_match);
 
     $this->assertEquals('example_test', $theme);
@@ -137,7 +142,7 @@ class ThemeNegotiatorTest extends UnitTestCase {
       ->with('example_test2')
       ->will($this->returnValue(TRUE));
 
-    $route_match = new RouteMatch('test_route', new Route('/test-route'), [], []);
+    $route_match = new RouteMatch('test_route', new Route('/test-route'), array(), array());
     $theme = $this->themeNegotiator->determineActiveTheme($route_match);
 
     $this->assertEquals('example_test2', $theme);
@@ -172,7 +177,7 @@ class ThemeNegotiatorTest extends UnitTestCase {
       ->method('checkAccess')
       ->will($this->returnValue(TRUE));
 
-    $route_match = new RouteMatch('test_route', new Route('/test-route'), [], []);
+    $route_match = new RouteMatch('test_route', new Route('/test-route'), array(), array());
     $theme = $this->themeNegotiator->determineActiveTheme($route_match);
 
     $this->assertEquals('example_test2', $theme);

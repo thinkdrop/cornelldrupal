@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\field\Plugin\migrate\process\d6\FieldTypeDefaults.
+ */
+
 namespace Drupal\field\Plugin\migrate\process\d6;
 
 use Drupal\migrate\MigrateException;
@@ -25,7 +30,7 @@ class FieldTypeDefaults extends ProcessPluginBase {
         $value = 'datetime_default';
       }
       else {
-        throw new MigrateException(sprintf('Failed to lookup field type %s in the static map.', var_export($value, TRUE)));
+        throw new MigrateException(sprintf('Failed to lookup %s in the static map.', var_export($value, TRUE)));
       }
     }
     return $value;

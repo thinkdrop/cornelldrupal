@@ -1,10 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block\Plugin\migrate\process\BlockPluginId.
+ */
+
 namespace Drupal\block\Plugin\migrate\process;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Entity\MigrationInterface;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Plugin\MigrateProcessInterface;
 use Drupal\migrate\ProcessPluginBase;
@@ -47,12 +52,12 @@ class BlockPluginId extends ProcessPluginBase implements ContainerFactoryPluginI
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
     $entity_manager = $container->get('entity.manager');
-    $migration_configuration = [
-      'migration' => [
+    $migration_configuration = array(
+      'migration' => array(
         'd6_custom_block',
         'd7_custom_block',
-      ],
-    ];
+      ),
+    );
     return new static(
       $configuration,
       $plugin_id,

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Cache\NullBackendTest.
+ */
+
 namespace Drupal\Tests\Core\Cache;
 
 use Drupal\Core\Cache\NullBackend;
@@ -15,7 +20,7 @@ class NullBackendTest extends UnitTestCase {
   /**
    * Tests that the NullBackend does not actually store variables.
    */
-  public function testNullBackend() {
+  function testNullBackend() {
     $null_cache = new NullBackend('test');
 
     $key = $this->randomMachineName();
@@ -24,5 +29,4 @@ class NullBackendTest extends UnitTestCase {
     $null_cache->set($key, $value);
     $this->assertFalse($null_cache->get($key));
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Session\AccountSwitcher.
+ */
+
 namespace Drupal\Core\Session;
 
 /**
@@ -16,14 +21,14 @@ class AccountSwitcher implements AccountSwitcherInterface {
    *
    * @var \Drupal\Core\Session\AccountInterface[]
    */
-  protected $accountStack = [];
+  protected $accountStack = array();
 
   /**
    * The current user service.
    *
    * @var \Drupal\Core\Session\AccountProxyInterface
    */
-  protected $currentUser = [];
+  protected $currentUser = array();
 
   /**
    * The write-safe session handler.

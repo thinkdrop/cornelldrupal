@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\filter\Annotation\Filter.
+ */
+
 namespace Drupal\filter\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
@@ -73,6 +78,6 @@ class Filter extends Plugin {
    *
    * @var array (optional)
    */
-  public $settings = [];
+  public $settings = array();
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Plugin\Field\FieldFormatter\DecimalFormatter.
+ */
+
 namespace Drupal\Core\Field\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -26,12 +31,12 @@ class DecimalFormatter extends NumericFormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return [
+    return array(
       'thousand_separator' => '',
       'decimal_separator' => '.',
       'scale' => 2,
       'prefix_suffix' => TRUE,
-    ] + parent::defaultSettings();
+    ) + parent::defaultSettings();
   }
 
   /**
@@ -40,22 +45,22 @@ class DecimalFormatter extends NumericFormatterBase {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $elements = parent::settingsForm($form, $form_state);
 
-    $elements['decimal_separator'] = [
+    $elements['decimal_separator'] = array(
       '#type' => 'select',
       '#title' => t('Decimal marker'),
-      '#options' => ['.' => t('Decimal point'), ',' => t('Comma')],
+      '#options' => array('.' => t('Decimal point'), ',' => t('Comma')),
       '#default_value' => $this->getSetting('decimal_separator'),
       '#weight' => 5,
-    ];
-    $elements['scale'] = [
-      '#type' => 'number',
-      '#title' => t('Scale', [], ['context' => 'decimal places']),
-      '#min' => 0,
-      '#max' => 10,
+    );
+    $range = range(0, 10);
+    $elements['scale'] = array(
+      '#type' => 'select',
+      '#title' => t('Scale', array(), array('decimal places')),
+      '#options' => array_combine($range, $range),
       '#default_value' => $this->getSetting('scale'),
       '#description' => t('The number of digits to the right of the decimal.'),
       '#weight' => 6,
-    ];
+    );
 
     return $elements;
   }

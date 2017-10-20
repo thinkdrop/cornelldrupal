@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Plugin\Block\SystemPoweredByBlock.
+ */
+
 namespace Drupal\system\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
@@ -17,15 +22,8 @@ class SystemPoweredByBlock extends BlockBase {
   /**
    * {@inheritdoc}
    */
-  public function defaultConfiguration() {
-    return ['label_display' => FALSE];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function build() {
-    return ['#markup' => '<span>' . $this->t('Powered by <a href=":poweredby">Drupal</a>', [':poweredby' => 'https://www.drupal.org']) . '</span>'];
+    return array('#markup' => '<span>' . $this->t('Powered by <a href=":poweredby">Drupal</a>', array(':poweredby' => 'https://www.drupal.org')) . '</span>');
   }
 
 }

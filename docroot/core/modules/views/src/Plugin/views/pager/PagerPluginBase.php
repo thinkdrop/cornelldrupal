@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\pager\PagerPluginBase.
+ */
+
 namespace Drupal\views\Plugin\views\pager;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -27,9 +32,9 @@ use Drupal\views\Plugin\views\PluginBase;
  */
 abstract class PagerPluginBase extends PluginBase {
 
-  public $current_page = NULL;
+  var $current_page = NULL;
 
-  public $total_items = 0;
+  var $total_items = 0;
 
   /**
    * {@inheritdoc}

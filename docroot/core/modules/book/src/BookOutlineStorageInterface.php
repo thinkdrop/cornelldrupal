@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\book\BookOutlineStorageInterface.
+*/
+
 namespace Drupal\book;
 
 /**
@@ -49,6 +54,7 @@ interface BookOutlineStorageInterface {
    *
    * @param array $book_link
    *   The book link.
+   *
    * @param int $max_depth
    *   The maximum supported depth of the book tree.
    *
@@ -165,5 +171,4 @@ interface BookOutlineStorageInterface {
    *   Array of unordered subtree book items.
    */
   public function getBookSubtree($link, $max_depth);
-
 }

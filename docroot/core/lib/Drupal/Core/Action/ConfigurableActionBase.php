@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Action\ConfigurableActionBase.
+ */
+
 namespace Drupal\Core\Action;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
@@ -24,7 +29,7 @@ abstract class ConfigurableActionBase extends ActionBase implements Configurable
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [];
+    return array();
   }
 
   /**
@@ -51,7 +56,7 @@ abstract class ConfigurableActionBase extends ActionBase implements Configurable
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return [];
+    return array();
   }
 
 }

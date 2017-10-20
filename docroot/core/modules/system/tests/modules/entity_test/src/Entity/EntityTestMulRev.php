@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\entity_test\Entity\EntityTestMulRev.
+ */
+
 namespace Drupal\entity_test\Entity;
 
 /**
@@ -27,7 +32,6 @@ namespace Drupal\entity_test\Entity;
  *   revision_data_table = "entity_test_mulrev_property_revision",
  *   admin_permission = "administer entity_test content",
  *   translatable = TRUE,
- *   show_revision_ui = TRUE,
  *   entity_keys = {
  *     "id" = "id",
  *     "uuid" = "uuid",
@@ -37,7 +41,6 @@ namespace Drupal\entity_test\Entity;
  *     "langcode" = "langcode",
  *   },
  *   links = {
- *     "add-form" = "/entity_test_mulrev/add",
  *     "canonical" = "/entity_test_mulrev/manage/{entity_test_mulrev}",
  *     "delete-form" = "/entity_test/delete/entity_test_mulrev/{entity_test_mulrev}",
  *     "edit-form" = "/entity_test_mulrev/manage/{entity_test_mulrev}/edit",

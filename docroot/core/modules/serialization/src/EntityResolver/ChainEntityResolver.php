@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\serialization\EntityResolver\ChainEntityResolver.
+ */
+
 namespace Drupal\serialization\EntityResolver;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -14,7 +19,7 @@ class ChainEntityResolver implements ChainEntityResolverInterface {
    *
    * @var \Drupal\serialization\EntityResolver\EntityResolverInterface[]
    */
-  protected $resolvers = [];
+  protected $resolvers = array();
 
   /**
    * Constructs a ChainEntityResolver object.
@@ -22,7 +27,7 @@ class ChainEntityResolver implements ChainEntityResolverInterface {
    * @param \Drupal\serialization\EntityResolver\EntityResolverInterface[] $resolvers
    *   The array of concrete resolvers.
    */
-  public function __construct(array $resolvers = []) {
+  public function __construct(array $resolvers = array()) {
     $this->resolvers = $resolvers;
   }
 

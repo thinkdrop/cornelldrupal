@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Http\ClientFactoryTest.
+ */
+
 namespace Drupal\Tests\Core\Http;
 
 use Drupal\Core\Http\ClientFactory;
@@ -22,7 +27,7 @@ class ClientFactoryTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  public function setUp() {
     $stack = $this->getMockBuilder('GuzzleHttp\HandlerStack')
       ->disableOriginalConstructor()
       ->getMock();

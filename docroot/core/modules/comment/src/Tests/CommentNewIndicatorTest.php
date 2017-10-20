@@ -1,12 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Tests\CommentNewIndicatorTest.
+ */
+
 namespace Drupal\comment\Tests;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\comment\CommentInterface;
 use Drupal\Core\Url;
-use Drupal\comment\Entity\Comment;
 
 /**
  * Tests the 'new' indicator posted on comments.
@@ -22,7 +26,7 @@ class CommentNewIndicatorTest extends CommentTestBase {
    *
    * @todo Remove this dependency.
    */
-  public static $modules = ['views'];
+  public static $modules = array('views');
 
   /**
    * Get node "x new comments" metadata from the server for the current user.
@@ -35,7 +39,7 @@ class CommentNewIndicatorTest extends CommentTestBase {
    */
   protected function renderNewCommentsNodeLinks(array $node_ids) {
     // Build POST values.
-    $post = [];
+    $post = array();
     for ($i = 0; $i < count($node_ids); $i++) {
       $post['node_ids[' . $i . ']'] = $node_ids[$i];
     }
@@ -51,15 +55,15 @@ class CommentNewIndicatorTest extends CommentTestBase {
     $post = implode('&', $post);
 
     // Perform HTTP request.
-    return $this->curlExec([
-      CURLOPT_URL => \Drupal::url('comment.new_comments_node_links', [], ['absolute' => TRUE]),
+    return $this->curlExec(array(
+      CURLOPT_URL => \Drupal::url('comment.new_comments_node_links', array(), array('absolute' => TRUE)),
       CURLOPT_POST => TRUE,
       CURLOPT_POSTFIELDS => $post,
-      CURLOPT_HTTPHEADER => [
+      CURLOPT_HTTPHEADER => array(
         'Accept: application/json',
         'Content-Type: application/x-www-form-urlencoded',
-      ],
-    ]);
+      ),
+    ));
   }
 
   /**
@@ -70,7 +74,7 @@ class CommentNewIndicatorTest extends CommentTestBase {
     // node.
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('node');
-    $this->assertNoLink(t('@count comments', ['@count' => 0]));
+    $this->assertNoLink(t('@count comments', array('@count' => 0)));
     $this->assertLink(t('Read more'));
     // Verify the data-history-node-last-comment-timestamp attribute, which is
     // used by the drupal.node-new-comments-link library to determine whether
@@ -81,7 +85,7 @@ class CommentNewIndicatorTest extends CommentTestBase {
     // Create a new comment. This helper function may be run with different
     // comment settings so use $comment->save() to avoid complex setup.
     /** @var \Drupal\comment\CommentInterface $comment */
-    $comment = Comment::create([
+    $comment = entity_create('comment', array(
       'cid' => NULL,
       'entity_id' => $this->node->id(),
       'entity_type' => 'node',
@@ -92,8 +96,8 @@ class CommentNewIndicatorTest extends CommentTestBase {
       'subject' => $this->randomMachineName(),
       'hostname' => '127.0.0.1',
       'langcode' => LanguageInterface::LANGCODE_NOT_SPECIFIED,
-      'comment_body' => [LanguageInterface::LANGCODE_NOT_SPECIFIED => [$this->randomMachineName()]],
-    ]);
+      'comment_body' => array(LanguageInterface::LANGCODE_NOT_SPECIFIED => array($this->randomMachineName())),
+    ));
     $comment->save();
     $this->drupalLogout();
 
@@ -104,7 +108,7 @@ class CommentNewIndicatorTest extends CommentTestBase {
     // value, the drupal.node-new-comments-link library would determine that the
     // node received a comment after the user last viewed it, and hence it would
     // perform an HTTP request to render the "new comments" node link.
-    $this->assertIdentical(1, count($this->xpath('//*[@data-history-node-last-comment-timestamp="' . $comment->getChangedTime() . '"]')), 'data-history-node-last-comment-timestamp attribute is set to the correct value.');
+    $this->assertIdentical(1, count($this->xpath('//*[@data-history-node-last-comment-timestamp="' . $comment->getChangedTime() .  '"]')), 'data-history-node-last-comment-timestamp attribute is set to the correct value.');
     $this->assertIdentical(1, count($this->xpath('//*[@data-history-node-field-name="comment"]')), 'data-history-node-field-name attribute is set to the correct value.');
     // The data will be pre-seeded on this particular page in drupalSettings, to
     // avoid the need for the client to make a separate request to the server.
@@ -126,24 +130,24 @@ class CommentNewIndicatorTest extends CommentTestBase {
     ]);
     // Pretend the data was not present in drupalSettings, i.e. test the
     // separate request to the server.
-    $response = $this->renderNewCommentsNodeLinks([$this->node->id()]);
+    $response = $this->renderNewCommentsNodeLinks(array($this->node->id()));
     $this->assertResponse(200);
     $json = Json::decode($response);
-    $expected = [$this->node->id() => [
+    $expected = array($this->node->id() => array(
       'new_comment_count' => 1,
-      'first_new_comment_link' => $this->node->url('canonical', ['fragment' => 'new']),
-    ]];
+      'first_new_comment_link' => $this->node->url('canonical', array('fragment' => 'new')),
+    ));
     $this->assertIdentical($expected, $json);
 
     // Failing to specify node IDs for the endpoint should return a 404.
-    $this->renderNewCommentsNodeLinks([]);
+    $this->renderNewCommentsNodeLinks(array());
     $this->assertResponse(404);
 
     // Accessing the endpoint as the anonymous user should return a 403.
     $this->drupalLogout();
-    $this->renderNewCommentsNodeLinks([$this->node->id()]);
+    $this->renderNewCommentsNodeLinks(array($this->node->id()));
     $this->assertResponse(403);
-    $this->renderNewCommentsNodeLinks([]);
+    $this->renderNewCommentsNodeLinks(array());
     $this->assertResponse(403);
   }
 

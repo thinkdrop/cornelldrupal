@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Common\SimpleTestErrorCollectorTest.
+ */
+
 namespace Drupal\system\Tests\Common;
 
 use Drupal\simpletest\WebTestBase;
@@ -16,7 +21,7 @@ class SimpleTestErrorCollectorTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['system_test', 'error_test'];
+  public static $modules = array('system_test', 'error_test');
 
   /**
    * Errors triggered during the test.
@@ -26,13 +31,13 @@ class SimpleTestErrorCollectorTest extends WebTestBase {
    *
    * @var Array
    */
-  protected $collectedErrors = [];
+  protected $collectedErrors = array();
 
   /**
    * Tests that simpletest collects errors from the tested site.
    */
-  public function testErrorCollect() {
-    $this->collectedErrors = [];
+  function testErrorCollect() {
+    $this->collectedErrors = array();
     $this->drupalGet('error-test/generate-warnings-with-report');
     $this->assertEqual(count($this->collectedErrors), 3, 'Three errors were collected');
 
@@ -71,24 +76,23 @@ class SimpleTestErrorCollectorTest extends WebTestBase {
     }
     // Everything else should be collected but not propagated.
     else {
-      $this->collectedErrors[] = [
+      $this->collectedErrors[] = array(
         'message' => $message,
         'group' => $group,
         'caller' => $caller
-      ];
+      );
     }
   }
 
   /**
    * Asserts that a collected error matches what we are expecting.
    */
-  public function assertError($error, $group, $function, $file, $message = NULL) {
-    $this->assertEqual($error['group'], $group, format_string("Group was %group", ['%group' => $group]));
-    $this->assertEqual($error['caller']['function'], $function, format_string("Function was %function", ['%function' => $function]));
-    $this->assertEqual(drupal_basename($error['caller']['file']), $file, format_string("File was %file", ['%file' => $file]));
+  function assertError($error, $group, $function, $file, $message = NULL) {
+    $this->assertEqual($error['group'], $group, format_string("Group was %group", array('%group' => $group)));
+    $this->assertEqual($error['caller']['function'], $function, format_string("Function was %function", array('%function' => $function)));
+    $this->assertEqual(drupal_basename($error['caller']['file']), $file, format_string("File was %file", array('%file' => $file)));
     if (isset($message)) {
-      $this->assertEqual($error['message'], $message, format_string("Message was %message", ['%message' => $message]));
+      $this->assertEqual($error['message'], $message, format_string("Message was %message", array('%message' => $message)));
     }
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\DependencyInjection\Compiler\StackedKernelPassTest.
+ */
+
 namespace Drupal\Tests\Core\DependencyInjection\Compiler;
 
 use Drupal\Core\DependencyInjection\Compiler\StackedKernelPass;
@@ -28,7 +33,7 @@ class StackedKernelPassTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  public function setUp() {
     $this->stackedKernelPass = new StackedKernelPass();
     $this->containerBuilder = new ContainerBuilder();
   }

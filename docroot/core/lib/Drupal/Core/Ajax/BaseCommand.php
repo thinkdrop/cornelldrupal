@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Ajax\BaseCommand.
+ */
+
 namespace Drupal\Core\Ajax;
 
 /**
@@ -38,10 +43,10 @@ class BaseCommand implements CommandInterface {
    * {@inheritdoc}
    */
   public function render() {
-    return [
+    return array(
       'command' => $this->command,
       'data' => $this->data,
-    ];
+    );
   }
 
 }

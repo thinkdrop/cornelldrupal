@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\field_test\Plugin\Field\FieldFormatter\TestFieldPrepareViewFormatter.
+ */
+
 namespace Drupal\field_test\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FormatterBase;
@@ -25,22 +30,22 @@ class TestFieldPrepareViewFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return [
+    return array(
       'test_formatter_setting_additional' => 'dummy test string',
-    ] + parent::defaultSettings();
+    ) + parent::defaultSettings();
   }
 
   /**
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $element['test_formatter_setting_additional'] = [
+    $element['test_formatter_setting_additional'] = array(
       '#title' => t('Setting'),
       '#type' => 'textfield',
       '#size' => 20,
       '#default_value' => $this->getSetting('test_formatter_setting_additional'),
       '#required' => TRUE,
-    ];
+    );
     return $element;
   }
 
@@ -48,8 +53,8 @@ class TestFieldPrepareViewFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function settingsSummary() {
-    $summary = [];
-    $summary[] = t('@setting: @value', ['@setting' => 'test_formatter_setting_additional', '@value' => $this->getSetting('test_formatter_setting_additional')]);
+    $summary = array();
+    $summary[] = t('@setting: @value', array('@setting' => 'test_formatter_setting_additional', '@value' => $this->getSetting('test_formatter_setting_additional')));
     return $summary;
   }
 
@@ -71,13 +76,12 @@ class TestFieldPrepareViewFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $elements = [];
+    $elements = array();
 
     foreach ($items as $delta => $item) {
-      $elements[$delta] = ['#markup' => $this->getSetting('test_formatter_setting_additional') . '|' . $item->value . '|' . $item->additional_formatter_value];
+      $elements[$delta] = array('#markup' => $this->getSetting('test_formatter_setting_additional') . '|' . $item->value . '|' . $item->additional_formatter_value);
     }
 
     return $elements;
   }
-
 }

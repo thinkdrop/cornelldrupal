@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\GeneratedLink.
+ */
+
 namespace Drupal\Core;
 
 use Drupal\Component\Render\MarkupInterface;
@@ -13,11 +18,6 @@ use Drupal\Core\Render\BubbleableMetadata;
  *   ungenerated links (typically link text + route name + route parameters).
  */
 class GeneratedLink extends BubbleableMetadata implements MarkupInterface, \Countable {
-
-  /**
-   * HTML tag to use when building the link.
-   */
-  const TAG = 'a';
 
   /**
    * The HTML string value containing a link.

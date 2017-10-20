@@ -1,8 +1,11 @@
 <?php
 
-namespace Drupal\Core\Language;
+/**
+ * @file
+ * Contains \Drupal\Core\Language\Language.
+ */
 
-use Drupal\Core\StringTranslation\TranslatableMarkup;
+namespace Drupal\Core\Language;
 
 /**
  * An object containing the information for an interface language.
@@ -16,13 +19,13 @@ class Language implements LanguageInterface {
    *
    * @var array
    */
-  public static $defaultValues = [
+  public static $defaultValues = array(
     'id' => 'en',
     'name' => 'English',
     'direction' => self::DIRECTION_LTR,
     'weight' => 0,
     'locked' => FALSE,
-  ];
+  );
 
   // Properties within the Language are set up as the default language.
 
@@ -74,7 +77,7 @@ class Language implements LanguageInterface {
    *   An array of property values, keyed by property name, used to construct
    *   the language.
    */
-  public function __construct(array $values = []) {
+  public function __construct(array $values = array()) {
     // Set all the provided properties for the language.
     foreach ($values as $key => $value) {
       if (property_exists($this, $key)) {
@@ -148,17 +151,7 @@ class Language implements LanguageInterface {
       $a_weight = $a->getWeight();
       $b_weight = $b->getWeight();
       if ($a_weight == $b_weight) {
-        $a_name = $a->getName();
-        $b_name = $b->getName();
-        // If either name is a TranslatableMarkup object it can not be converted
-        // to a string. This is because translation requires a sorted list of
-        // languages thereby causing an infinite loop. Determine the order based
-        // on ID if this is the case.
-        if ($a_name instanceof TranslatableMarkup || $b_name instanceof TranslatableMarkup) {
-          $a_name = $a->getId();
-          $b_name = $b->getId();
-        }
-        return strnatcasecmp($a_name, $b_name);
+        return strnatcasecmp($a->getName(), $b->getName());
       }
       return ($a_weight < $b_weight) ? -1 : 1;
     });

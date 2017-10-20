@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Update\UpdatePathTestJavaScriptTest.php.
+ */
+
 namespace Drupal\system\Tests\Update;
 
 /**
@@ -38,9 +43,7 @@ class UpdatePathTestJavaScriptTest extends UpdatePathTestBase {
       if (!isset($script['src'])) {
         continue;
       }
-      // Source is a root-relative URL. Transform it to an absolute URL to allow
-      // file_get_contents() to access the file.
-      $src = preg_replace('#^' . $GLOBALS['base_path'] . '(.*)#i', $GLOBALS['base_url'] . '/' . '${1}', (string) $script['src']);
+      $src = (string) $script['src'];
       $file_content = file_get_contents($src);
 
       if (strpos($file_content, 'window.drupalSettings =') !== FALSE) {

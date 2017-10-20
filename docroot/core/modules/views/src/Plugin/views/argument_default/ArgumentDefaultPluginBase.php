@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\argument_default\ArgumentDefaultPluginBase.
+ */
+
 namespace Drupal\views\Plugin\views\argument_default;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -58,7 +63,7 @@ abstract class ArgumentDefaultPluginBase extends PluginBase {
    * Retrieve the options when this is a new access
    * control plugin
    */
-  protected function defineOptions() { return []; }
+  protected function defineOptions() { return array(); }
 
   /**
    * Provide the default form for setting options.
@@ -73,7 +78,7 @@ abstract class ArgumentDefaultPluginBase extends PluginBase {
   /**
    * Provide the default form form for submitting options
    */
-  public function submitOptionsForm(&$form, FormStateInterface $form_state, &$options = []) { }
+  public function submitOptionsForm(&$form, FormStateInterface $form_state, &$options = array()) { }
 
   /**
    * Determine if the administrator has the privileges to use this

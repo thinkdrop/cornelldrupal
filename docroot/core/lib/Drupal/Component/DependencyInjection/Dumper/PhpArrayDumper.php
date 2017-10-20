@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\DependencyInjection\Dumper\PhpArrayDumper.
+ */
+
 namespace Drupal\Component\DependencyInjection\Dumper;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,7 +35,7 @@ class PhpArrayDumper extends OptimizedPhpArrayDumper {
    * {@inheritdoc}
    */
   protected function dumpCollection($collection, &$resolve = FALSE) {
-    $code = [];
+    $code = array();
 
     foreach ($collection as $key => $value) {
       if (is_array($value)) {

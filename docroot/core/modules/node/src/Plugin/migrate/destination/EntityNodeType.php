@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\migrate\destination\EntityNodeType.
+ */
+
 namespace Drupal\node\Plugin\migrate\destination;
 
 use Drupal\migrate\Plugin\migrate\destination\EntityConfigBase;
@@ -15,7 +20,7 @@ class EntityNodeType extends EntityConfigBase {
   /**
      * {@inheritdoc}
      */
-  public function import(Row $row, array $old_destination_id_values = []) {
+  public function import(Row $row, array $old_destination_id_values = array()) {
     $entity_ids = parent::import($row, $old_destination_id_values);
     if ($row->getDestinationProperty('create_body')) {
       $node_type = $this->storage->load(reset($entity_ids));

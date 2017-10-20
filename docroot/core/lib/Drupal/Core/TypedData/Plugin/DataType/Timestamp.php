@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\Plugin\DataType\Timestamp.
+ */
+
 namespace Drupal\Core\TypedData\Plugin\DataType;
 
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -10,7 +15,7 @@ use Drupal\Core\TypedData\Type\DateTimeInterface;
  *
  * @DataType(
  *   id = "timestamp",
- *   label = @Translation("Timestamp")
+ *   label = @Translation("String")
  * )
  */
 class Timestamp extends IntegerData implements DateTimeInterface {
@@ -18,7 +23,7 @@ class Timestamp extends IntegerData implements DateTimeInterface {
   /**
    * The data value as a UNIX timestamp.
    *
-   * @var int
+   * @var integer
    */
   protected $value;
 
@@ -41,5 +46,4 @@ class Timestamp extends IntegerData implements DateTimeInterface {
       $this->parent->onChange($this->name);
     }
   }
-
 }

@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\locale\LocaleDefaultConfigStorage.
+ */
+
 namespace Drupal\locale;
 
-use Drupal\Core\Config\ExtensionInstallStorage;
+use Drupal\Core\Config\InstallStorage;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\language\ConfigurableLanguageManagerInterface;
 
@@ -57,12 +62,12 @@ class LocaleDefaultConfigStorage {
    * @param \Drupal\language\ConfigurableLanguageManagerInterface $language_manager
    *   The language manager.
    */
-  public function __construct(StorageInterface $config_storage, ConfigurableLanguageManagerInterface $language_manager, $install_profile) {
+  public function __construct(StorageInterface $config_storage, ConfigurableLanguageManagerInterface $language_manager) {
     $this->configStorage = $config_storage;
     $this->languageManager = $language_manager;
 
-    $this->requiredInstallStorage = new ExtensionInstallStorage($this->configStorage, ExtensionInstallStorage::CONFIG_INSTALL_DIRECTORY, ExtensionInstallStorage::DEFAULT_COLLECTION, TRUE, $install_profile);
-    $this->optionalInstallStorage = new ExtensionInstallStorage($this->configStorage, ExtensionInstallStorage::CONFIG_OPTIONAL_DIRECTORY, ExtensionInstallStorage::DEFAULT_COLLECTION, TRUE, $install_profile);
+    $this->requiredInstallStorage = new InstallStorage();
+    $this->optionalInstallStorage = new InstallStorage(InstallStorage::CONFIG_OPTIONAL_DIRECTORY);
   }
 
   /**
@@ -157,3 +162,4 @@ class LocaleDefaultConfigStorage {
   }
 
 }
+

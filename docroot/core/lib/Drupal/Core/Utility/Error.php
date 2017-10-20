@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Utility\Error.
+ */
+
 namespace Drupal\Core\Utility;
 
 use Drupal\Component\Utility\SafeMarkup;
@@ -23,7 +28,7 @@ class Error {
    *
    * @var array
    */
-  protected static $blacklistFunctions = ['debug', '_drupal_error_handler', '_drupal_exception_handler'];
+  protected static $blacklistFunctions = array('debug', '_drupal_error_handler', '_drupal_exception_handler');
 
   /**
    * Decodes an exception and retrieves the correct caller.
@@ -39,7 +44,7 @@ class Error {
 
     $backtrace = $exception->getTrace();
     // Add the line throwing the exception to the backtrace.
-    array_unshift($backtrace, ['line' => $exception->getLine(), 'file' => $exception->getFile()]);
+    array_unshift($backtrace, array('line' => $exception->getLine(), 'file' => $exception->getFile()));
 
     // For PDOException errors, we try to return the initial caller,
     // skipping internal functions of the database layer.
@@ -47,7 +52,7 @@ class Error {
       // The first element in the stack is the call, the second element gives us
       // the caller. We skip calls that occurred in one of the classes of the
       // database layer or in one of its global functions.
-      $db_functions = ['db_query', 'db_query_range'];
+      $db_functions = array('db_query',  'db_query_range');
       while (!empty($backtrace[1]) && ($caller = $backtrace[1]) &&
         ((isset($caller['class']) && (strpos($caller['class'], 'Query') !== FALSE || strpos($caller['class'], 'Database') !== FALSE || strpos($caller['class'], 'PDO') !== FALSE)) ||
           in_array($caller['function'], $db_functions))) {
@@ -61,7 +66,7 @@ class Error {
 
     $caller = static::getLastCaller($backtrace);
 
-    return [
+    return array(
       '%type' => get_class($exception),
       // The standard PHP exception handler considers that the exception message
       // is plain-text. We mimic this behavior here.
@@ -71,8 +76,7 @@ class Error {
       '%line' => $caller['line'],
       'severity_level' => static::ERROR,
       'backtrace' => $backtrace,
-      '@backtrace_string' => $exception->getTraceAsString(),
-    ];
+    );
   }
 
   /**
@@ -152,7 +156,7 @@ class Error {
     $return = '';
 
     foreach ($backtrace as $trace) {
-      $call = ['function' => '', 'args' => []];
+      $call = array('function' => '', 'args' => array());
 
       if (isset($trace['class'])) {
         $call['function'] = $trace['class'] . $trace['type'] . $trace['function'];
@@ -175,12 +179,7 @@ class Error {
         }
       }
 
-      $line = '';
-      if (isset($trace['line'])) {
-        $line = " (Line: {$trace['line']})";
-      }
-
-      $return .= $call['function'] . '(' . implode(', ', $call['args']) . ")$line\n";
+      $return .= $call['function'] . '(' . implode(', ', $call['args']) . ")\n";
     }
 
     return $return;

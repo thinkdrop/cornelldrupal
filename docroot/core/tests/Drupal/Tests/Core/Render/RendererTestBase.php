@@ -11,6 +11,7 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\Context\ContextCacheKeys;
 use Drupal\Core\Cache\MemoryBackend;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Render\PlaceholderGenerator;
 use Drupal\Core\Render\PlaceholderingRenderCache;
 use Drupal\Core\Render\Renderer;
@@ -22,7 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 /**
  * Base class for the actual unit tests testing \Drupal\Core\Render\Renderer.
  */
-abstract class RendererTestBase extends UnitTestCase {
+class RendererTestBase extends UnitTestCase {
 
   /**
    * The tested renderer.
@@ -106,7 +107,7 @@ abstract class RendererTestBase extends UnitTestCase {
     'auto_placeholder_conditions' => [
       'max-age' => 0,
       'contexts' => ['session', 'user'],
-      'tags' => ['current-temperature'],
+      'tags' =>  ['current-temperature'],
     ],
   ];
 
@@ -208,7 +209,7 @@ abstract class RendererTestBase extends UnitTestCase {
    * Sets up a memory-based render cache back-end.
    */
   protected function setupMemoryCache() {
-    $this->memoryCache = $this->memoryCache ?: new MemoryBackend();
+    $this->memoryCache = $this->memoryCache ?: new MemoryBackend('render');
 
     $this->cacheFactory->expects($this->atLeastOnce())
       ->method('get')
@@ -258,7 +259,7 @@ class PlaceholdersTest {
    * #lazy_builder callback; attaches setting, generates markup.
    *
    * @param string $animal
-   *   An animal.
+   *  An animal.
    *
    * @return array
    *   A renderable array.
@@ -282,7 +283,7 @@ class PlaceholdersTest {
    * #lazy_builder callback; attaches setting, generates markup, user-specific.
    *
    * @param string $animal
-   *   An animal.
+   *  An animal.
    *
    * @return array
    *   A renderable array.
@@ -297,7 +298,7 @@ class PlaceholdersTest {
    * #lazy_builder callback; attaches setting, generates markup, cache tag.
    *
    * @param string $animal
-   *   An animal.
+   *  An animal.
    *
    * @return array
    *   A renderable array.

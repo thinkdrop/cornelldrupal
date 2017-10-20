@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\Derivative\ViewsMenuLink.
+ */
+
 namespace Drupal\views\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
@@ -46,7 +51,7 @@ class ViewsMenuLink extends DeriverBase implements ContainerDeriverInterface {
    * {@inheritdoc}
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
-    $links = [];
+    $links = array();
     $views = Views::getApplicableViews('uses_menu_links');
 
     foreach ($views as $data) {

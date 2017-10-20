@@ -1,56 +1,20 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\migrate\Plugin\migrate\process\Route.
+ */
 
 namespace Drupal\migrate\Plugin\migrate\process;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\migrate\Entity\MigrationInterface;
+use Drupal\Core\Path\PathValidatorInterface;
 use Drupal\migrate\MigrateExecutableInterface;
-use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\Row;
 
 /**
- * Sets the destination route information based on the source link_path.
- *
- * The source value is an array of two values:
- * - link_path: The path or URL of the route.
- * - options: An array of URL options, e.g. query string, attributes, etc.
- *
- * Example:
- *
- * @code
- * process:
- *   new_route_field:
- *     plugin: route
- *     source:
- *       - 'https://www.drupal.org'
- *       -
- *         attributes:
- *           title: Drupal
- * @endcode
- *
- * This will set new_route_field to be a route with the URL
- * "https://www.drupal.org" and title attribute "Drupal".
- *
- * Example:
- *
- * @code
- * process:
- *   another_route_field:
- *     plugin: route
- *     source:
- *       - 'user/login'
- *       -
- *         query:
- *           destination: 'node/1'
- * @endcode
- *
- * This will set another_route_field to be a route to the user login page
- * (user/login) with a query string of "destination=node/1".
- *
- * @see \Drupal\migrate\Plugin\MigrateProcessInterface
- *
  * @MigrateProcessPlugin(
  *   id = "route"
  * )
@@ -58,8 +22,6 @@ use Drupal\migrate\Row;
 class Route extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The path validator service.
-   *
    * @var \Drupal\Core\Path\PathValidatorInterface
    */
   protected $pathValidator;
@@ -67,10 +29,10 @@ class Route extends ProcessPluginBase implements ContainerFactoryPluginInterface
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, PathValidatorInterface $path_validator) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration, PathValidatorInterface $pathValidator) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->migration = $migration;
-    $this->pathValidator = $path_validator;
+    $this->pathValidator = $pathValidator;
   }
 
   /**
@@ -92,21 +54,14 @@ class Route extends ProcessPluginBase implements ContainerFactoryPluginInterface
    * Set the destination route information based on the source link_path.
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    if (is_string($value)) {
-      $link_path = $value;
-      $options = [];
-    }
-    else {
-      list($link_path, $options) = $value;
-    }
-
+    list($link_path, $options) = $value;
     $extracted = $this->pathValidator->getUrlIfValidWithoutAccessCheck($link_path);
-    $route = [];
+    $route = array();
 
     if ($extracted) {
       if ($extracted->isExternal()) {
-        $route['route_name'] = NULL;
-        $route['route_parameters'] = [];
+        $route['route_name'] = null;
+        $route['route_parameters'] = array();
         $route['options'] = $options;
         $route['url'] = $extracted->getUri();
       }
@@ -128,7 +83,7 @@ class Route extends ProcessPluginBase implements ContainerFactoryPluginInterface
           unset($route['options']['query']);
         }
         $route['options'] = $route['options'] + $options;
-        $route['url'] = NULL;
+        $route['url'] = null;
       }
     }
 
@@ -136,3 +91,4 @@ class Route extends ProcessPluginBase implements ContainerFactoryPluginInterface
   }
 
 }
+

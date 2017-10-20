@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityChangedInterface.
+ */
+
 namespace Drupal\Core\Entity;
 
 /**
@@ -42,5 +47,4 @@ interface EntityChangedInterface {
    *   translations.
    */
   public function getChangedTimeAcrossTranslations();
-
 }

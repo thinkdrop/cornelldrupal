@@ -1,21 +1,40 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate_drupal\Annotation\MigrateCckField.
+ */
+
 namespace Drupal\migrate_drupal\Annotation;
 
-@trigger_error('MigrateCckField is deprecated in Drupal 8.3.x and will be
-removed before Drupal 9.0.x. Use \Drupal\migrate_drupal\Annotation\MigrateField
-instead.', E_USER_DEPRECATED);
+use Drupal\Component\Annotation\Plugin;
 
 /**
- * Deprecated: Defines a cckfield plugin annotation object.
+ * Defines a cckfield plugin annotation object.
  *
- * @deprecated in Drupal 8.3.x, to be removed before Drupal 9.0.x. Use
- * \Drupal\migrate_drupal\Annotation\MigrateField instead.
+ * cckfield plugins are variously responsible for handling the migration of
+ * CCK fields from Drupal 6 to Drupal 8. They are allowed to alter CCK-related
+ * migrations when migrations are being generated, and can compute destination
+ * field types for individual fields during the actual migration process.
  *
  * Plugin Namespace: Plugin\migrate\cckfield
  *
  * @Annotation
  */
-class MigrateCckField extends MigrateField {
+class MigrateCckField extends Plugin {
+
+  /**
+   * The plugin ID.
+   *
+   * @var string
+   */
+  public $id;
+
+  /**
+   * Map of D6 and D7 field types to D8 field type plugin IDs.
+   *
+   * @var string[]
+   */
+  public $type_map = [];
 
 }

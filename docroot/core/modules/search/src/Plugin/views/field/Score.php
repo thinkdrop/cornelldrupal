@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\Plugin\views\field\Score.
+ */
+
 namespace Drupal\search\Plugin\views\field;
 
 use Drupal\views\Plugin\views\field\NumericField;
@@ -43,5 +48,4 @@ class Score extends NumericField {
       return parent::render($values);
     }
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\RoleListBuilder.
+ */
+
 namespace Drupal\user;
 
 use Drupal\Core\Config\Entity\DraggableListBuilder;
@@ -43,11 +48,11 @@ class RoleListBuilder extends DraggableListBuilder {
     $operations = parent::getDefaultOperations($entity);
 
     if ($entity->hasLinkTemplate('edit-permissions-form')) {
-      $operations['permissions'] = [
+      $operations['permissions'] = array(
         'title' => t('Edit permissions'),
         'weight' => 20,
         'url' => $entity->urlInfo('edit-permissions-form'),
-      ];
+      );
     }
     return $operations;
   }

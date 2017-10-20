@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Plugin\Context\ContextAwarePluginManagerTrait.
+ */
+
 namespace Drupal\Core\Plugin\Context;
 
 /**
@@ -19,7 +24,7 @@ trait ContextAwarePluginManagerTrait {
   /**
    * See \Drupal\Core\Plugin\Context\ContextAwarePluginManagerInterface::getDefinitionsForContexts().
    */
-  public function getDefinitionsForContexts(array $contexts = []) {
+  public function getDefinitionsForContexts(array $contexts = array()) {
     return $this->contextHandler()->filterPluginDefinitionsByContexts($contexts, $this->getDefinitions());
   }
 

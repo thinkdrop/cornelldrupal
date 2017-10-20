@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityResolverManager.
+ */
+
 namespace Drupal\Core\Entity;
 
 use Drupal\Core\DependencyInjection\ClassResolverInterface;
@@ -70,13 +75,13 @@ class EntityResolverManager {
       // Check if the class exists and if so use the buildForm() method from the
       // interface.
       if (class_exists($controller)) {
-        return [$controller, 'buildForm'];
+        return array($controller, 'buildForm');
       }
     }
 
     if (strpos($controller, ':') === FALSE) {
       if (method_exists($controller, '__invoke')) {
-        return [$controller, '__invoke'];
+        return array($controller, '__invoke');
       }
       if (function_exists($controller)) {
         return $controller;
@@ -91,7 +96,7 @@ class EntityResolverManager {
       // that could not exist at this point. There is however no other way to
       // do it, as the container does not allow static introspection.
       list($class_or_service, $method) = explode(':', $controller, 2);
-      return [$this->classResolver->getInstanceFromDefinition($class_or_service), $method];
+      return array($this->classResolver->getInstanceFromDefinition($class_or_service), $method);
     }
     elseif (strpos($controller, '::') !== FALSE) {
       // Controller in the class::method notation.
@@ -114,7 +119,7 @@ class EntityResolverManager {
    */
   protected function setParametersFromReflection($controller, Route $route) {
     $entity_types = $this->getEntityTypes();
-    $parameter_definitions = $route->getOption('parameters') ?: [];
+    $parameter_definitions = $route->getOption('parameters') ?: array();
 
     $result = FALSE;
 
@@ -136,10 +141,10 @@ class EntityResolverManager {
         $entity_type = $entity_types[$parameter_name];
         $entity_class = $entity_type->getClass();
         if (($reflection_class = $parameter->getClass()) && (is_subclass_of($entity_class, $reflection_class->name) || $entity_class == $reflection_class->name)) {
-          $parameter_definitions += [$parameter_name => []];
-          $parameter_definitions[$parameter_name] += [
+          $parameter_definitions += array($parameter_name => array());
+          $parameter_definitions[$parameter_name] += array(
             'type' => 'entity:' . $parameter_name,
-          ];
+          );
           $result = TRUE;
         }
       }
@@ -166,16 +171,13 @@ class EntityResolverManager {
       list($entity_type) = explode('.', $entity_form, 2);
     }
 
-    // Do not add parameter information if the route does not declare a
-    // parameter in the first place. This is the case for add forms, for
-    // example.
-    if (isset($entity_type) && isset($this->getEntityTypes()[$entity_type]) && (strpos($route->getPath(), '{' . $entity_type . '}') !== FALSE)) {
-      $parameter_definitions = $route->getOption('parameters') ?: [];
+    if (isset($entity_type) && isset($this->getEntityTypes()[$entity_type])) {
+      $parameter_definitions = $route->getOption('parameters') ?: array();
 
       // First try to figure out whether there is already a parameter upcasting
       // the same entity type already.
       foreach ($parameter_definitions as $info) {
-        if (isset($info['type']) && (strpos($info['type'], 'entity:') === 0)) {
+        if (isset($info['type'])) {
           // The parameter types are in the form 'entity:$entity_type'.
           list(, $parameter_entity_type) = explode(':', $info['type'], 2);
           if ($parameter_entity_type == $entity_type) {
@@ -185,11 +187,11 @@ class EntityResolverManager {
       }
 
       if (!isset($parameter_definitions[$entity_type])) {
-        $parameter_definitions[$entity_type] = [];
+        $parameter_definitions[$entity_type] = array();
       }
-      $parameter_definitions[$entity_type] += [
+      $parameter_definitions[$entity_type] += array(
         'type' => 'entity:' . $entity_type,
-      ];
+      );
       if (!empty($parameter_definitions)) {
         $route->setOption('parameters', $parameter_definitions);
       }

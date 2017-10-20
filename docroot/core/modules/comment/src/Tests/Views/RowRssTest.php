@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Tests\Views\RowRssTest.
+ */
+
 namespace Drupal\comment\Tests\Views;
 
 /**
@@ -15,7 +20,7 @@ class RowRssTest extends CommentTestBase {
    *
    * @var array
    */
-  public static $testViews = ['test_comment_rss'];
+  public static $testViews = array('test_comment_rss');
 
   /**
    * Test comment rss output.

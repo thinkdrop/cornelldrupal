@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\KernelTests\KernelTestBaseTest.
+ */
+
 namespace Drupal\KernelTests;
 
 use Drupal\Component\FileCache\FileCacheFactory;
@@ -10,8 +15,6 @@ use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 /**
  * @coversDefaultClass \Drupal\KernelTests\KernelTestBase
  * @group PHPUnit
- * @group Test
- * @group KernelTests
  */
 class KernelTestBaseTest extends KernelTestBase {
 
@@ -27,23 +30,23 @@ class KernelTestBaseTest extends KernelTestBase {
    * @covers ::bootEnvironment
    */
   public function testBootEnvironment() {
-    $this->assertRegExp('/^test\d{8}$/', $this->databasePrefix);
+    $this->assertRegExp('/^simpletest\d{6}$/', $this->databasePrefix);
     $this->assertStringStartsWith('vfs://root/sites/simpletest/', $this->siteDirectory);
-    $this->assertEquals([
-      'root' => [
-        'sites' => [
-          'simpletest' => [
-            substr($this->databasePrefix, 4) => [
-              'files' => [
-                'config' => [
-                  'sync' => [],
-                ],
-              ],
-            ],
-          ],
-        ],
-      ],
-    ], vfsStream::inspect(new vfsStreamStructureVisitor())->getStructure());
+    $this->assertEquals(array(
+      'root' => array(
+        'sites' => array(
+          'simpletest' => array(
+            substr($this->databasePrefix, 10) => array(
+              'files' => array(
+                'config' => array(
+                  'sync' => array(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ), vfsStream::inspect(new vfsStreamStructureVisitor())->getStructure());
   }
 
   /**
@@ -72,15 +75,15 @@ class KernelTestBaseTest extends KernelTestBase {
     $this->assertArrayHasKey('destroy-me', $GLOBALS);
 
     $database = $this->container->get('database');
-    $database->schema()->createTable('foo', [
-      'fields' => [
-        'number' => [
+    $database->schema()->createTable('foo', array(
+      'fields' => array(
+        'number' => array(
           'type' => 'int',
           'unsigned' => TRUE,
           'not null' => TRUE,
-        ],
-      ],
-    ]);
+        ),
+      ),
+    ));
     $this->assertTrue($database->schema()->tableExists('foo'));
 
     // Ensure that the database tasks have been run during set up. Neither MySQL
@@ -122,7 +125,7 @@ class KernelTestBaseTest extends KernelTestBase {
     $this->assertSame($request, \Drupal::request());
 
     // Trigger a container rebuild.
-    $this->enableModules(['system']);
+    $this->enableModules(array('system'));
 
     // Verify that this container is identical to the actual container.
     $this->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerInterface', $this->container);
@@ -139,21 +142,22 @@ class KernelTestBaseTest extends KernelTestBase {
   }
 
   /**
-   * Tests whether the fixture allows us to install modules and configuration.
+   * @covers ::getCompiledContainerBuilder
    *
-   * @see ::testSubsequentContainerIsolation()
+   * The point of this test is to have integration level testing.
    */
-  public function testContainerIsolation() {
+  public function testCompiledContainer() {
     $this->enableModules(['system', 'user']);
     $this->assertNull($this->installConfig('user'));
   }
 
   /**
-   * Tests whether the fixture can re-install modules and configuration.
+   * @covers ::getCompiledContainerBuilder
+   * @depends testCompiledContainer
    *
-   * @depends testContainerIsolation
+   * The point of this test is to have integration level testing.
    */
-  public function testSubsequentContainerIsolation() {
+  public function testCompiledContainerIsDestructed() {
     $this->enableModules(['system', 'user']);
     $this->assertNull($this->installConfig('user'));
   }
@@ -166,16 +170,16 @@ class KernelTestBaseTest extends KernelTestBase {
     $element_info = $this->container->get('element_info');
     $this->assertSame(['#defaults_loaded' => TRUE], $element_info->getInfo($type));
 
-    $this->enableModules(['filter']);
+    $this->enableModules(array('filter'));
 
     $this->assertNotSame($element_info, $this->container->get('element_info'));
     $this->assertNotEmpty($this->container->get('element_info')->getInfo($type));
 
-    $build = [
+    $build = array(
       '#type' => 'html_tag',
       '#tag' => 'h3',
       '#value' => 'Inner',
-    ];
+    );
     $expected = "<h3>Inner</h3>\n";
 
     $this->assertEquals('core', \Drupal::theme()->getActiveTheme()->getName());
@@ -190,12 +194,12 @@ class KernelTestBaseTest extends KernelTestBase {
    * @covers ::render
    */
   public function testRenderWithTheme() {
-    $this->enableModules(['system']);
+    $this->enableModules(array('system'));
 
-    $build = [
+    $build = array(
       '#type' => 'textfield',
       '#name' => 'test',
-    ];
+    );
     $expected = '/' . preg_quote('<input type="text" name="test"', '/') . '/';
 
     $this->assertArrayNotHasKey('theme', $GLOBALS);
@@ -204,22 +208,6 @@ class KernelTestBaseTest extends KernelTestBase {
 
     $this->assertRegExp($expected, (string) $build['#children']);
     $this->assertRegExp($expected, (string) $output);
-  }
-
-  /**
-   * @covers ::bootKernel
-   */
-  public function testFileDefaultScheme() {
-    $this->assertEquals('public', file_default_scheme());
-    $this->assertEquals('public', \Drupal::config('system.file')->get('default_scheme'));
-  }
-
-  /**
-   * Tests the assumption that local time is in 'Australia/Sydney'.
-   */
-  public function testLocalTimeZone() {
-    // The 'Australia/Sydney' time zone is set in core/tests/bootstrap.php
-    $this->assertEquals('Australia/Sydney', date_default_timezone_get());
   }
 
   /**
@@ -237,13 +225,13 @@ class KernelTestBaseTest extends KernelTestBase {
       $this->assertTrue(empty($tables), 'All test tables have been removed.');
     }
     else {
-      $result = $connection->query("SELECT name FROM " . $this->databasePrefix . ".sqlite_master WHERE type = :type AND name LIKE :table_name AND name NOT LIKE :pattern", [
+      $result = $connection->query("SELECT name FROM " . $this->databasePrefix . ".sqlite_master WHERE type = :type AND name LIKE :table_name AND name NOT LIKE :pattern", array(
         ':type' => 'table',
         ':table_name' => '%',
         ':pattern' => 'sqlite_%',
-      ])->fetchAllKeyed(0, 0);
+      ))->fetchAllKeyed(0, 0);
 
-      $this->assertTrue(empty($result), 'All test tables have been removed.');
+     $this->assertTrue(empty($result), 'All test tables have been removed.');
     }
   }
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Form\ElementsLabelsTest.
+ */
+
 namespace Drupal\system\Tests\Form;
 
 use Drupal\simpletest\WebTestBase;
@@ -16,13 +21,13 @@ class ElementsLabelsTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['form_test'];
+  public static $modules = array('form_test');
 
   /**
    * Test form elements, labels, title attributes and required marks output
    * correctly and have the correct label option class if needed.
    */
-  public function testFormLabels() {
+  function testFormLabels() {
     $this->drupalGet('form_test/form-labels');
 
     // Check that the checkbox/radio processing is not interfering with
@@ -88,18 +93,12 @@ class ElementsLabelsTest extends WebTestBase {
     $this->assertEqual($elements[0]['title'], 'Checkboxes test' . ' (' . t('Required') . ')', 'Title attribute found.');
     $elements = $this->xpath('//div[@id="edit-form-radios-title-attribute"]');
     $this->assertEqual($elements[0]['title'], 'Radios test' . ' (' . t('Required') . ')', 'Title attribute found.');
-
-    $elements = $this->xpath('//fieldset[@id="edit-form-checkboxes-title-invisible--wrapper"]/legend/span[contains(@class, "visually-hidden")]');
-    $this->assertTrue(!empty($elements), "Title/Label not displayed when 'visually-hidden' attribute is set in checkboxes.");
-
-    $elements = $this->xpath('//fieldset[@id="edit-form-radios-title-invisible--wrapper"]/legend/span[contains(@class, "visually-hidden")]');
-    $this->assertTrue(!empty($elements), "Title/Label not displayed when 'visually-hidden' attribute is set in radios.");
   }
 
   /**
    * Tests different display options for form element descriptions.
    */
-  public function testFormDescriptions() {
+  function testFormDescriptions() {
     $this->drupalGet('form_test/form-descriptions');
 
     // Check #description placement with #description_display='after'.
@@ -121,30 +120,6 @@ class ElementsLabelsTest extends WebTestBase {
     $description_id = $field_id . '--description';
     $elements = $this->xpath('//input[@id="' . $field_id . '" and @aria-describedby="' . $description_id . '"]/following-sibling::div[contains(@class, "visually-hidden")]');
     $this->assertTrue(isset($elements[0]), t('Properly renders the #description element visually-hidden.'));
-  }
-
-  /**
-   * Test forms in theme-less environments.
-   */
-  public function testFormsInThemeLessEnvironments() {
-    $form = $this->getFormWithLimitedProperties();
-    $render_service = $this->container->get('renderer');
-    // This should not throw any notices.
-    $render_service->renderPlain($form);
-  }
-
-  /**
-   * Return a form with element with not all properties defined.
-   */
-  protected function getFormWithLimitedProperties() {
-    $form = [];
-
-    $form['fieldset'] = [
-      '#type' => 'fieldset',
-      '#title' => 'Fieldset',
-    ];
-
-    return $form;
   }
 
 }

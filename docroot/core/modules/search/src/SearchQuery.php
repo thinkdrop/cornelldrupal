@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\SearchQuery.
+ *
+ * Search query extender and helper functions.
+ */
+
 namespace Drupal\search;
 
 use Drupal\Component\Utility\Unicode;
@@ -7,8 +14,6 @@ use Drupal\Core\Database\Query\SelectExtender;
 use Drupal\Core\Database\Query\SelectInterface;
 
 /**
- * Search query extender and helper functions.
- *
  * Performs a query on the full-text search index for a word or words.
  *
  * This query is used by search plugins that use the search index (not all
@@ -96,7 +101,7 @@ class SearchQuery extends SelectExtender {
    *
    * @var array
    */
-  protected $keys = ['positive' => [], 'negative' => []];
+  protected $keys = array('positive' => array(), 'negative' => array());
 
   /**
    * Indicates whether the query conditions are simple or complex (LIKE).
@@ -129,7 +134,7 @@ class SearchQuery extends SelectExtender {
    *
    * @var array
    */
-  protected $words = [];
+  protected $words = array();
 
   /**
    * Multiplier to normalize the keyword score.
@@ -164,14 +169,14 @@ class SearchQuery extends SelectExtender {
    *
    * @see SearchQuery::addScore()
    */
-  protected $scores = [];
+  protected $scores = array();
 
   /**
    * Arguments for the score expressions.
    *
    * @var array
    */
-  protected $scoresArguments = [];
+  protected $scoresArguments = array();
 
   /**
    * The number of 'i.relevance' occurrences in score expressions.
@@ -185,7 +190,7 @@ class SearchQuery extends SelectExtender {
    *
    * @var array
    */
-  protected $multiply = [];
+  protected $multiply = array();
 
   /**
    * Sets the search query expression.
@@ -224,9 +229,9 @@ class SearchQuery extends SelectExtender {
   protected function parseSearchExpression() {
     // Matches words optionally prefixed by a - sign. A word in this case is
     // something between two spaces, optionally quoted.
-    preg_match_all('/ (-?)("[^"]+"|[^" ]+)/i', ' ' . $this->searchExpression, $keywords, PREG_SET_ORDER);
+    preg_match_all('/ (-?)("[^"]+"|[^" ]+)/i', ' ' .  $this->searchExpression , $keywords, PREG_SET_ORDER);
 
-    if (count($keywords) == 0) {
+    if (count($keywords) ==  0) {
       return;
     }
 
@@ -258,7 +263,7 @@ class SearchQuery extends SelectExtender {
       $words = search_simplify($match[2]);
       // Re-explode in case simplification added more words, except when
       // matching a phrase.
-      $words = $phrase ? [$words] : preg_split('/ /', $words, -1, PREG_SPLIT_NO_EMPTY);
+      $words = $phrase ? array($words) : preg_split('/ /', $words, -1, PREG_SPLIT_NO_EMPTY);
       // Negative matches.
       if ($match[1] == '-') {
         $this->keys['negative'] = array_merge($this->keys['negative'], $words);
@@ -269,7 +274,7 @@ class SearchQuery extends SelectExtender {
         $last = array_pop($this->keys['positive']);
         // Starting a new OR?
         if (!is_array($last)) {
-          $last = [$last];
+          $last = array($last);
         }
         $this->keys['positive'][] = $last;
         $in_or = TRUE;
@@ -373,7 +378,7 @@ class SearchQuery extends SelectExtender {
     }
 
     // Return matching snippet and number of added words.
-    return [$num_new_scores, $num_valid_words];
+    return array($num_new_scores, $num_valid_words);
   }
 
   /**
@@ -419,7 +424,7 @@ class SearchQuery extends SelectExtender {
     // simple queries, this condition could lead to incorrectly deciding not
     // to continue with the full query.
     if ($this->simple) {
-      $this->having('COUNT(*) >= :matches', [':matches' => $this->matches]);
+      $this->having('COUNT(*) >= :matches', array(':matches' => $this->matches));
     }
 
     // Clone the query object to calculate normalization.
@@ -498,7 +503,7 @@ class SearchQuery extends SelectExtender {
    *
    * @return $this
    */
-  public function addScore($score, $arguments = [], $multiply = FALSE) {
+  public function addScore($score, $arguments = array(), $multiply = FALSE) {
     if ($multiply) {
       $i = count($this->multiply);
       // Modify the score expression so it is multiplied by the multiplier,
@@ -589,7 +594,7 @@ class SearchQuery extends SelectExtender {
     // Add query metadata.
     $this
       ->addMetaData('normalize', $this->normalize)
-      ->fields('i', ['type', 'sid']);
+      ->fields('i', array('type', 'sid'));
     return $this->query->execute();
   }
 
@@ -617,12 +622,12 @@ class SearchQuery extends SelectExtender {
     // Remove existing fields and expressions, they are not needed for a count
     // query.
     $fields =& $inner->getFields();
-    $fields = [];
+    $fields = array();
     $expressions =& $inner->getExpressions();
-    $expressions = [];
+    $expressions = array();
 
     // Add sid as the only field and count them as a subquery.
-    $count = db_select($inner->fields('i', ['sid']), NULL, ['target' => 'replica']);
+    $count = db_select($inner->fields('i', array('sid')), NULL, array('target' => 'replica'));
 
     // Add the COUNT() expression.
     $count->addExpression('COUNT(*)');

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityFormBuilderInterface.
+ */
+
 namespace Drupal\Core\Entity;
 
 /**
@@ -53,6 +58,6 @@ interface EntityFormBuilderInterface {
    * @see \Drupal\Core\Entity\EntityTypeInterface::setFormClass()
    * @see system_entity_type_build()
    */
-  public function getForm(EntityInterface $entity, $operation = 'default', array $form_state_additions = []);
+  public function getForm(EntityInterface $entity, $operation = 'default', array $form_state_additions = array());
 
 }

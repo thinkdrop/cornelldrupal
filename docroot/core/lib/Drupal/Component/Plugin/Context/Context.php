@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Plugin\Context\Context.
+ */
+
 namespace Drupal\Component\Plugin\Context;
 
 use Drupal\Component\Plugin\Exception\ContextException;
@@ -79,7 +84,7 @@ class Context implements ContextInterface {
     if (empty($this->contextDefinition['class'])) {
       throw new ContextException("An error was encountered while trying to validate the context.");
     }
-    return [new Type($this->contextDefinition['class'])];
+    return array(new Type($this->contextDefinition['class']));
   }
 
   /**

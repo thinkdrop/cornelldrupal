@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\language\Plugin\Condition\Language.
+ */
+
 namespace Drupal\language\Plugin\Condition;
 
 use Drupal\Core\Condition\ConditionPluginBase;
@@ -19,6 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     "language" = @ContextDefinition("language", label = @Translation("Language"))
  *   }
  * )
+ *
  */
 class Language extends ConditionPluginBase implements ContainerFactoryPluginInterface {
 
@@ -68,23 +74,23 @@ class Language extends ConditionPluginBase implements ContainerFactoryPluginInte
     if ($this->languageManager->isMultilingual()) {
       // Fetch languages.
       $languages = $this->languageManager->getLanguages();
-      $langcodes_options = [];
+      $langcodes_options = array();
       foreach ($languages as $language) {
         $langcodes_options[$language->getId()] = $language->getName();
       }
-      $form['langcodes'] = [
+      $form['langcodes'] = array(
         '#type' => 'checkboxes',
         '#title' => $this->t('Language selection'),
         '#default_value' => $this->configuration['langcodes'],
         '#options' => $langcodes_options,
         '#description' => $this->t('Select languages to enforce. If none are selected, all languages will be allowed.'),
-      ];
+      );
     }
     else {
-      $form['langcodes'] = [
+      $form['langcodes'] = array(
         '#type' => 'value',
         '#default_value' => $this->configuration['langcodes'],
-      ];
+      );
     }
     return parent::buildConfigurationForm($form, $form_state);
   }
@@ -111,7 +117,7 @@ class Language extends ConditionPluginBase implements ContainerFactoryPluginInte
         $result[$item->getId()] = $item->getName();
       }
       return $result;
-    }, []);
+    }, array());
 
     // If we have more than one language selected, separate them by commas.
     if (count($this->configuration['langcodes']) > 1) {
@@ -122,9 +128,9 @@ class Language extends ConditionPluginBase implements ContainerFactoryPluginInte
       $languages = array_pop($language_names);
     }
     if (!empty($this->configuration['negate'])) {
-      return t('The language is not @languages.', ['@languages' => $languages]);
+      return t('The language is not @languages.', array('@languages' => $languages));
     }
-    return t('The language is @languages.', ['@languages' => $languages]);
+    return t('The language is @languages.', array('@languages' => $languages));
   }
 
   /**
@@ -144,7 +150,7 @@ class Language extends ConditionPluginBase implements ContainerFactoryPluginInte
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return ['langcodes' => []] + parent::defaultConfiguration();
+    return array('langcodes' => array()) + parent::defaultConfiguration();
   }
 
 }

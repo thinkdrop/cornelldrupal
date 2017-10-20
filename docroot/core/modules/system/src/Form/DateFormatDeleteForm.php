@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Form\DateFormatDeleteForm.
+ */
+
 namespace Drupal\system\Form;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
@@ -41,9 +46,9 @@ class DateFormatDeleteForm extends EntityDeleteForm {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return t('Are you sure you want to delete the format %name : %format?', [
+    return t('Are you sure you want to delete the format %name : %format?', array(
       '%name' => $this->entity->label(),
-      '%format' => $this->dateFormatter->format(REQUEST_TIME, $this->entity->id())]
+      '%format' => $this->dateFormatter->format(REQUEST_TIME, $this->entity->id()))
     );
   }
 

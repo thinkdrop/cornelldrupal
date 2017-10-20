@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\MetadataBubblingUrlGenerator.
+ */
+
 namespace Drupal\Core\Render;
 
 use Drupal\Core\GeneratedUrl;
@@ -64,7 +69,7 @@ class MetadataBubblingUrlGenerator implements UrlGeneratorInterface {
   /**
    * {@inheritdoc}
    */
-  public function getPathFromRoute($name, $parameters = []) {
+  public function getPathFromRoute($name, $parameters = array()) {
     return $this->urlGenerator->getPathFromRoute($name, $parameters);
   }
 
@@ -91,8 +96,8 @@ class MetadataBubblingUrlGenerator implements UrlGeneratorInterface {
   /**
    * {@inheritdoc}
    */
-  public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH) {
-    $options['absolute'] = is_bool($referenceType) ? $referenceType : $referenceType === self::ABSOLUTE_URL;
+  public function generate($name, $parameters = array(), $absolute = FALSE) {
+    $options['absolute'] = $absolute;
     $generated_url = $this->generateFromRoute($name, $parameters, $options, TRUE);
     $this->bubble($generated_url);
     return $generated_url->getGeneratedUrl();
@@ -101,7 +106,7 @@ class MetadataBubblingUrlGenerator implements UrlGeneratorInterface {
   /**
    * {@inheritdoc}
    */
-  public function generateFromRoute($name, $parameters = [], $options = [], $collect_bubbleable_metadata = FALSE) {
+  public function generateFromRoute($name, $parameters = array(), $options = array(), $collect_bubbleable_metadata = FALSE) {
     $generated_url = $this->urlGenerator->generateFromRoute($name, $parameters, $options, TRUE);
     if (!$collect_bubbleable_metadata) {
       $this->bubble($generated_url, $options);
@@ -119,7 +124,7 @@ class MetadataBubblingUrlGenerator implements UrlGeneratorInterface {
   /**
    * {@inheritdoc}
    */
-  public function getRouteDebugMessage($name, array $parameters = []) {
+  public function getRouteDebugMessage($name, array $parameters = array()) {
     return $this->urlGenerator->getRouteDebugMessage($name, $parameters);
   }
 

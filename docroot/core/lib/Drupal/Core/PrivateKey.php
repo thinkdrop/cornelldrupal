@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\PrivateKey.
+ */
+
 namespace Drupal\Core;
 
 use Drupal\Core\State\StateInterface;
@@ -23,7 +28,7 @@ class PrivateKey {
    * @param \Drupal\Core\State\StateInterface $state
    *   The state service.
    */
-  public function __construct(StateInterface $state) {
+  function __construct(StateInterface $state) {
     $this->state = $state;
   }
 
@@ -46,7 +51,7 @@ class PrivateKey {
    * Sets the private key.
    *
    * @param string $key
-   *   The private key to set.
+   *  The private key to set.
    */
   public function set($key) {
     return $this->state->set('system.private_key', $key);

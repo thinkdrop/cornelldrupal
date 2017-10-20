@@ -18,7 +18,7 @@
  * @param $MULTIPLE_PARAMS
  *   Additional parameters specific to the batch. These are specified in the
  *   array passed to batch_set().
- * @param array|\ArrayAccess $context
+ * @param $context
  *   The batch context array, passed by reference. This contains the following
  *   properties:
  *   - 'finished': A float number between 0 and 1 informing the processing
@@ -51,17 +51,14 @@
  *     all operations have finished, this is passed to callback_batch_finished()
  *     where results may be referenced to display information to the end-user,
  *     such as how many total items were processed.
- *   It is discouraged to typehint this parameter as an array, to allow an
- *   object implement \ArrayAccess to be passed.
  */
 function callback_batch_operation($MULTIPLE_PARAMS, &$context) {
-  $node_storage = \Drupal::entityTypeManager()->getStorage('node');
-  $database = \Drupal::database();
+  $node_storage = $this->container->get('entity.manager')->getStorage('node');
 
   if (!isset($context['sandbox']['progress'])) {
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['current_node'] = 0;
-    $context['sandbox']['max'] = $database->query('SELECT COUNT(DISTINCT nid) FROM {node}')->fetchField();
+    $context['sandbox']['max'] = db_query('SELECT COUNT(DISTINCT nid) FROM {node}')->fetchField();
   }
 
   // For this example, we decide that we can safely process
@@ -69,11 +66,11 @@ function callback_batch_operation($MULTIPLE_PARAMS, &$context) {
   $limit = 5;
 
   // With each pass through the callback, retrieve the next group of nids.
-  $result = $database->queryRange("SELECT nid FROM {node} WHERE nid > :nid ORDER BY nid ASC", 0, $limit, [':nid' => $context['sandbox']['current_node']]);
-  foreach ($result as $row) {
+  $result = db_query_range("SELECT nid FROM {node} WHERE nid > %d ORDER BY nid ASC", $context['sandbox']['current_node'], 0, $limit);
+  while ($row = db_fetch_array($result)) {
 
     // Here we actually perform our processing on the current node.
-    $node_storage->resetCache([$row['nid']]);
+    $node_storage->resetCache(array($row['nid']));
     $node = $node_storage->load($row['nid']);
     $node->value1 = $options1;
     $node->value2 = $options2;
@@ -85,7 +82,7 @@ function callback_batch_operation($MULTIPLE_PARAMS, &$context) {
     // Update our progress information.
     $context['sandbox']['progress']++;
     $context['sandbox']['current_node'] = $node->nid;
-    $context['message'] = t('Now processing %node', ['%node' => $node->title]);
+    $context['message'] = t('Now processing %node', array('%node' => $node->title));
   }
 
   // Inform the batch engine that we are not finished,
@@ -113,13 +110,13 @@ function callback_batch_operation($MULTIPLE_PARAMS, &$context) {
 function callback_batch_finished($success, $results, $operations) {
   if ($success) {
     // Here we do something meaningful with the results.
-    $message = t("@count items were processed.", [
+    $message = t("@count items were processed.", array(
       '@count' => count($results),
-      ]);
-    $list = [
+      ));
+    $list = array(
       '#theme' => 'item_list',
       '#items' => $results,
-    ];
+    );
     $message .= drupal_render($list);
     drupal_set_message($message);
   }
@@ -127,10 +124,10 @@ function callback_batch_finished($success, $results, $operations) {
     // An error occurred.
     // $operations contains the operations that remained unprocessed.
     $error_operation = reset($operations);
-    $message = t('An error occurred while processing %error_operation with arguments: @arguments', [
+    $message = t('An error occurred while processing %error_operation with arguments: @arguments', array(
       '%error_operation' => $error_operation[0],
       '@arguments' => print_r($error_operation[1], TRUE)
-    ]);
+    ));
     drupal_set_message($message, 'error');
   }
 }
@@ -149,10 +146,12 @@ function callback_batch_finished($success, $results, $operations) {
  *
  * @param \Drupal\Core\Ajax\CommandInterface[] $data
  *   An array of all the rendered commands that will be sent to the client.
+ *
+ * @see \Drupal\Core\Ajax\AjaxResponse::ajaxRender()
  */
 function hook_ajax_render_alter(array &$data) {
   // Inject any new status messages into the content area.
-  $status_messages = ['#type' => 'status_messages'];
+  $status_messages = array('#type' => 'status_messages');
   $command = new \Drupal\Core\Ajax\PrependCommand('#block-system-main .content', \Drupal::service('renderer')->renderRoot($status_messages));
   $data[] = $command->render();
 }
@@ -163,9 +162,6 @@ function hook_ajax_render_alter(array &$data) {
  * One popular use of this hook is to add form elements to the node form. When
  * altering a node form, the node entity can be retrieved by invoking
  * $form_state->getFormObject()->getEntity().
- *
- * Implementations are responsible for adding cache contexts/tags/max-age as
- * needed. See https://www.drupal.org/developing/api/8/cache.
  *
  * In addition to hook_form_alter(), which is called for all forms, there are
  * two more specific form hooks available. The first,
@@ -195,18 +191,17 @@ function hook_ajax_render_alter(array &$data) {
  *
  * @see hook_form_BASE_FORM_ID_alter()
  * @see hook_form_FORM_ID_alter()
- *
- * @ingroup form_api
+ * @see forms_api_reference.html
  */
 function hook_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   if (isset($form['type']) && $form['type']['#value'] . '_node_settings' == $form_id) {
     $upload_enabled_types = \Drupal::config('mymodule.settings')->get('upload_enabled_types');
-    $form['workflow']['upload_' . $form['type']['#value']] = [
+    $form['workflow']['upload_' . $form['type']['#value']] = array(
       '#type' => 'radios',
       '#title' => t('Attachments'),
       '#default_value' => in_array($form['type']['#value'], $upload_enabled_types) ? 1 : 0,
-      '#options' => [t('Disabled'), t('Enabled')],
-    ];
+      '#options' => array(t('Disabled'), t('Enabled')),
+    );
     // Add a custom submit handler to save the array of types back to the config file.
     $form['actions']['submit']['#submit'][] = 'mymodule_upload_enabled_types_submit';
   }
@@ -214,9 +209,6 @@ function hook_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_stat
 
 /**
  * Provide a form-specific alteration instead of the global hook_form_alter().
- *
- * Implementations are responsible for adding cache contexts/tags/max-age as
- * needed. See https://www.drupal.org/developing/api/8/cache.
  *
  * Modules can implement hook_form_FORM_ID_alter() to modify a specific form,
  * rather than implementing hook_form_alter() and checking the form ID, or
@@ -239,8 +231,7 @@ function hook_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_stat
  * @see hook_form_alter()
  * @see hook_form_BASE_FORM_ID_alter()
  * @see \Drupal\Core\Form\FormBuilderInterface::prepareForm()
- *
- * @ingroup form_api
+ * @see forms_api_reference.html
  */
 function hook_form_FORM_ID_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   // Modification for the form with the given form ID goes here. For example, if
@@ -248,18 +239,15 @@ function hook_form_FORM_ID_alter(&$form, \Drupal\Core\Form\FormStateInterface $f
   // registration form.
 
   // Add a checkbox to registration form about agreeing to terms of use.
-  $form['terms_of_use'] = [
+  $form['terms_of_use'] = array(
     '#type' => 'checkbox',
     '#title' => t("I agree with the website's terms and conditions."),
     '#required' => TRUE,
-  ];
+  );
 }
 
 /**
  * Provide a form-specific alteration for shared ('base') forms.
- *
- * Implementations are responsible for adding cache contexts/tags/max-age as
- * needed. See https://www.drupal.org/developing/api/8/cache.
  *
  * By default, when \Drupal::formBuilder()->getForm() is called, Drupal looks
  * for a function with the same name as the form ID, and uses that function to
@@ -289,8 +277,6 @@ function hook_form_FORM_ID_alter(&$form, \Drupal\Core\Form\FormStateInterface $f
  * @see hook_form_alter()
  * @see hook_form_FORM_ID_alter()
  * @see \Drupal\Core\Form\FormBuilderInterface::prepareForm()
- *
- * @ingroup form_api
  */
 function hook_form_BASE_FORM_ID_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   // Modification for the form with the given BASE_FORM_ID goes here. For
@@ -298,11 +284,11 @@ function hook_form_BASE_FORM_ID_alter(&$form, \Drupal\Core\Form\FormStateInterfa
   // node form, regardless of node type.
 
   // Add a checkbox to the node form about agreeing to terms of use.
-  $form['terms_of_use'] = [
+  $form['terms_of_use'] = array(
     '#type' => 'checkbox',
     '#title' => t("I agree with the website's terms and conditions."),
     '#required' => TRUE,
-  ];
+  );
 }
 
 /**

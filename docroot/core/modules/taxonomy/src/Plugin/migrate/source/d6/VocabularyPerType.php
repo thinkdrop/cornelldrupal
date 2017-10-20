@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Plugin\migrate\source\d6\VocabularyPerType.
+ */
+
 namespace Drupal\taxonomy\Plugin\migrate\source\d6;
 
 /**
@@ -18,7 +23,7 @@ class VocabularyPerType extends Vocabulary {
   public function query() {
     $query = parent::query();
     $query->join('vocabulary_node_types', 'nt', 'v.vid = nt.vid');
-    $query->fields('nt', ['type']);
+    $query->fields('nt', array('type'));
     return $query;
   }
 

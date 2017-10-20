@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Plugin\views\field\Depth.
+ */
+
 namespace Drupal\comment\Plugin\views\field;
 
-use Drupal\views\Plugin\views\field\EntityField;
+use Drupal\views\Plugin\views\field\Field;
 use Drupal\views\ResultRow;
 
 /**
@@ -12,7 +17,7 @@ use Drupal\views\ResultRow;
  *
  * @ViewsField("comment_depth")
  */
-class Depth extends EntityField {
+class Depth extends Field {
 
   /**
    * {@inheritdoc}
@@ -23,7 +28,7 @@ class Depth extends EntityField {
     foreach ($items as &$item) {
       // Work out the depth of this comment.
       $comment_thread = $item['rendered']['#markup'];
-      $item['rendered']['#markup'] = count(explode('.', $comment_thread)) - 1;
+      $item['rendered']['#markup'] =  count(explode('.', $comment_thread)) - 1;
     }
     return $items;
   }

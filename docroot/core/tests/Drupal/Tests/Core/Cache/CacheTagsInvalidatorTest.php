@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Cache\CacheTagsInvalidatorTest.
+ */
+
 namespace Drupal\Tests\Core\Cache;
 
 use Drupal\Core\Cache\CacheTagsInvalidator;
@@ -14,10 +19,11 @@ class CacheTagsInvalidatorTest extends UnitTestCase {
 
   /**
    * @covers ::invalidateTags
+   *
+   * @expectedException \AssertionError
    */
   public function testInvalidateTagsWithInvalidTags() {
     $cache_tags_invalidator = new CacheTagsInvalidator();
-    $this->setExpectedException(\AssertionError::class);
     $cache_tags_invalidator->invalidateTags(['node' => [2, 3, 5, 8, 13]]);
   }
 
@@ -34,7 +40,7 @@ class CacheTagsInvalidatorTest extends UnitTestCase {
     $invalidator_cache_bin = $this->getMock('\Drupal\Core\Cache\CacheTagsInvalidator');
     $invalidator_cache_bin->expects($this->once())
       ->method('invalidateTags')
-      ->with(['node:1']);
+      ->with(array('node:1'));
 
     // We do not have to define that invalidateTags() is never called as the
     // interface does not define that method, trying to call it would result in
@@ -44,17 +50,17 @@ class CacheTagsInvalidatorTest extends UnitTestCase {
     $container = new Container();
     $container->set('cache.invalidator_cache_bin', $invalidator_cache_bin);
     $container->set('cache.non_invalidator_cache_bin', $non_invalidator_cache_bin);
-    $container->setParameter('cache_bins', ['cache.invalidator_cache_bin' => 'invalidator_cache_bin', 'cache.non_invalidator_cache_bin' => 'non_invalidator_cache_bin']);
+    $container->setParameter('cache_bins', array('cache.invalidator_cache_bin' => 'invalidator_cache_bin', 'cache.non_invalidator_cache_bin' => 'non_invalidator_cache_bin'));
     $cache_tags_invalidator->setContainer($container);
 
     $invalidator = $this->getMock('\Drupal\Core\Cache\CacheTagsInvalidator');
     $invalidator->expects($this->once())
       ->method('invalidateTags')
-      ->with(['node:1']);
+      ->with(array('node:1'));
 
     $cache_tags_invalidator->addInvalidator($invalidator);
 
-    $cache_tags_invalidator->invalidateTags(['node:1']);
+    $cache_tags_invalidator->invalidateTags(array('node:1'));
   }
 
 }

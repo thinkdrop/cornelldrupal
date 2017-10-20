@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\ExceptionTestSiteSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Core\Utility\Error;
@@ -18,7 +23,7 @@ class ExceptionTestSiteSubscriber extends HttpExceptionSubscriberBase {
   }
 
   /**
-   * {@inheritdoc}
+   * {@inheritDoc}
    */
   protected function getHandledFormats() {
     return ['html'];
@@ -37,7 +42,7 @@ class ExceptionTestSiteSubscriber extends HttpExceptionSubscriberBase {
     $exception = $event->getException();
     $error = Error::decodeException($exception);
 
-    $headers = [];
+    $headers = array();
 
     // When running inside the testing framework, we relay the errors
     // to the tested site by the way of HTTP headers.
@@ -45,15 +50,15 @@ class ExceptionTestSiteSubscriber extends HttpExceptionSubscriberBase {
       // $number does not use drupal_static as it should not be reset
       // as it uniquely identifies each PHP error.
       static $number = 0;
-      $assertion = [
+      $assertion = array(
         $error['@message'],
         $error['%type'],
-        [
+        array(
           'function' => $error['%function'],
           'file' => $error['%file'],
           'line' => $error['%line'],
-        ],
-      ];
+        ),
+      );
       $headers['X-Drupal-Assertion-' . $number] = rawurlencode(serialize($assertion));
       $number++;
     }

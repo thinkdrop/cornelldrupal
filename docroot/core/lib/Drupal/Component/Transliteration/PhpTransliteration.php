@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Transliteration\PhpTransliteration.
+ *
+ * Some parts of this code were derived from the MediaWiki project's UtfNormal
+ * class, Copyright © 2004 Brion Vibber <brion@pobox.com>,
+ * http://www.mediawiki.org/
+ */
+
 namespace Drupal\Component\Transliteration;
 
 /**
@@ -16,10 +25,6 @@ namespace Drupal\Component\Transliteration;
  * PhpTransliteration::readGenericData()). If looking up the character in the
  * generic table results in a NULL value, or an illegal character is
  * encountered, then a substitute character is returned.
- *
- * Some parts of this code were derived from the MediaWiki project's UtfNormal
- * class, Copyright © 2004 Brion Vibber <brion@pobox.com>,
- * http://www.mediawiki.org/
  */
 class PhpTransliteration implements TransliterationInterface {
 
@@ -44,7 +49,7 @@ class PhpTransliteration implements TransliterationInterface {
    *
    * @var array
    */
-  protected $languageOverrides = [];
+  protected $languageOverrides = array();
 
   /**
    * Non-language-specific transliteration tables.
@@ -56,7 +61,7 @@ class PhpTransliteration implements TransliterationInterface {
    *
    * @var array
    */
-  protected $genericMap = [];
+  protected $genericMap = array();
 
   /**
    * Constructs a transliteration object.
@@ -83,14 +88,14 @@ class PhpTransliteration implements TransliterationInterface {
       // few characters that aren't accented letters mixed in. So define the
       // ranges and the excluded characters.
       $range1 = $code > 0x00bf && $code < 0x017f;
-      $exclusions_range1 = [0x00d0, 0x00d7, 0x00f0, 0x00f7, 0x0138, 0x014a, 0x014b];
+      $exclusions_range1 = array(0x00d0, 0x00d7, 0x00f0, 0x00f7, 0x0138, 0x014a, 0x014b);
       $range2 = $code > 0x01cc && $code < 0x0250;
-      $exclusions_range2 = [0x01DD, 0x01f7, 0x021c, 0x021d, 0x0220, 0x0221, 0x0241, 0x0242, 0x0245];
+      $exclusions_range2 = array(0x01DD, 0x01f7, 0x021c, 0x021d, 0x0220, 0x0221, 0x0241, 0x0242, 0x0245);
 
       $replacement = $character;
       if (($range1 && !in_array($code, $exclusions_range1)) || ($range2 && !in_array($code, $exclusions_range2))) {
         $to_add = $this->lookupReplacement($code, 'xyz');
-        if (strlen($to_add) === 1) {
+        if(strlen($to_add) === 1) {
           $replacement = $to_add;
         }
       }
@@ -246,7 +251,7 @@ class PhpTransliteration implements TransliterationInterface {
       include $file;
     }
     if (!isset($overrides) || !is_array($overrides)) {
-      $overrides = [$langcode => []];
+      $overrides = array($langcode => array());
     }
     $this->languageOverrides[$langcode] = $overrides[$langcode];
   }
@@ -274,11 +279,10 @@ class PhpTransliteration implements TransliterationInterface {
       include $file;
     }
     if (!isset($base) || !is_array($base)) {
-      $base = [];
+      $base = array();
     }
 
     // Save this data.
     $this->genericMap[$bank] = $base;
   }
-
 }

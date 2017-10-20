@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Updater\Module.
+ */
+
 namespace Drupal\Core\Updater;
 
 use Drupal\Core\Url;
@@ -49,7 +54,7 @@ class Module extends Updater implements UpdaterInterface {
   public function isInstalled() {
     // Check if the module exists in the file system, regardless of whether it
     // is enabled or not.
-    $modules = \Drupal::state()->get('system.module.files', []);
+    $modules = \Drupal::state()->get('system.module.files', array());
     return isset($modules[$this->name]);
   }
 
@@ -84,12 +89,12 @@ class Module extends Updater implements UpdaterInterface {
     require_once DRUPAL_ROOT . '/core/includes/update.inc';
 
     if (!self::canUpdate($this->name)) {
-      return [];
+      return array();
     }
     module_load_include('install', $this->name);
 
     if (!$updates = drupal_get_schema_versions($this->name)) {
-      return [];
+      return array();
     }
     $modules_with_updates = update_get_update_list();
     if ($updates = $modules_with_updates[$this->name]) {
@@ -97,7 +102,7 @@ class Module extends Updater implements UpdaterInterface {
         return $updates['pending'];
       }
     }
-    return [];
+    return array();
   }
 
   /**
@@ -138,5 +143,4 @@ class Module extends Updater implements UpdaterInterface {
     // We don't want to check for DB updates here, we do that once for all
     // updated modules on the landing page.
   }
-
 }

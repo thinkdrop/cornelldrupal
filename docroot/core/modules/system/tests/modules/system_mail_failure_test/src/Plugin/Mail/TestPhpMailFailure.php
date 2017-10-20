@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system_mail_failure_test\Plugin\Mail\TestPhpMailFailure.
+ */
+
 namespace Drupal\system_mail_failure_test\Plugin\Mail;
 
 use Drupal\Core\Mail\Plugin\Mail\PhpMail;
@@ -29,5 +34,4 @@ class TestPhpMailFailure extends PhpMail implements MailInterface {
     // Simulate a failed mail send by returning FALSE.
     return FALSE;
   }
-
 }

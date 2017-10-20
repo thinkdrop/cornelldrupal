@@ -1,8 +1,30 @@
 <?php
-// @codingStandardsIgnoreFile
-// This class is intentionally empty so that it overwrites when sites are
-// updated from a zip/tarball without deleting the /core folder first.
-// @todo: remove in 8.3.x
-//
+
+/**
+ * @file
+ * Contains \Drupal\user\UserServiceProvider.
+ */
+
 namespace Drupal\user;
-class UserServiceProvider {}
+
+use Drupal\Core\DependencyInjection\ServiceModifierInterface;
+use Drupal\Core\DependencyInjection\ContainerBuilder;
+
+/**
+ * Swaps the original 'password' service in order to handle password hashing for
+ * user migrations that have passwords hashed to MD5.
+ *
+ * @see \Drupal\migrate\MigratePassword
+ * @see \Drupal\Core\Password\PhpassHashedPassword
+ */
+class UserServiceProvider implements ServiceModifierInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function alter(ContainerBuilder $container) {
+    $container->setDefinition('password_original', $container->getDefinition('password'));
+    $container->setDefinition('password', $container->getDefinition('password_migrate'));
+  }
+
+}

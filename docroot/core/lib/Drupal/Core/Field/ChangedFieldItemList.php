@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\ChangedFieldItemList.
+ */
+
 namespace Drupal\Core\Field;
 
 use Drupal\Core\Access\AccessResult;
@@ -17,5 +22,4 @@ class ChangedFieldItemList extends FieldItemList {
     // It is not possible to edit the changed field.
     return AccessResult::allowedIf($operation !== 'edit');
   }
-
 }

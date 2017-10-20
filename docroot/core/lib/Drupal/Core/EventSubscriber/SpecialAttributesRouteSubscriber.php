@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\SpecialAttributesRouteSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Core\Routing\RouteBuildEvent;
@@ -16,7 +21,7 @@ class SpecialAttributesRouteSubscriber extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
-    $special_variables = [
+    $special_variables = array(
       'system_path',
       '_legacy',
       '_raw_variables',
@@ -25,7 +30,7 @@ class SpecialAttributesRouteSubscriber extends RouteSubscriberBase {
       '_content',
       '_controller',
       '_form',
-    ];
+    );
     foreach ($collection->all() as $name => $route) {
       if ($not_allowed_variables = array_intersect($route->compile()->getVariables(), $special_variables)) {
         $reserved = implode(', ', $not_allowed_variables);

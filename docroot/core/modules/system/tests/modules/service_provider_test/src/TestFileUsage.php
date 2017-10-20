@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\service_provider_test\TestFileUsage.
+ */
+
 namespace Drupal\service_provider_test;
 
 use Drupal\file\FileInterface;
@@ -24,5 +29,4 @@ class TestFileUsage extends FileUsageBase {
    */
   public function listUsage(FileInterface $file) {
   }
-
 }

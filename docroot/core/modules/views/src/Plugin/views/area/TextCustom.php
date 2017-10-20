@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\area\TextCustom.
+ */
+
 namespace Drupal\views\Plugin\views\area;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -18,7 +23,7 @@ class TextCustom extends TokenizeAreaPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['content'] = ['default' => ''];
+    $options['content'] = array('default' => '');
     return $options;
   }
 
@@ -28,12 +33,12 @@ class TextCustom extends TokenizeAreaPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['content'] = [
+    $form['content'] = array(
       '#title' => $this->t('Content'),
       '#type' => 'textarea',
       '#default_value' => $this->options['content'],
       '#rows' => 6,
-    ];
+    );
   }
 
   /**
@@ -41,12 +46,12 @@ class TextCustom extends TokenizeAreaPluginBase {
    */
   public function render($empty = FALSE) {
     if (!$empty || !empty($this->options['empty'])) {
-      return [
+      return array(
         '#markup' => $this->renderTextarea($this->options['content']),
-      ];
+      );
     }
 
-    return [];
+    return array();
   }
 
   /**

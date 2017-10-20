@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Form.
+ */
+
 namespace Drupal\Core\Render\Element;
+
+use Drupal\Core\Render\Element;
 
 /**
  * Provides a render element for a form.
@@ -13,10 +20,10 @@ class Form extends RenderElement {
    * {@inheritdoc}
    */
   public function getInfo() {
-    return [
+    return array(
       '#method' => 'post',
-      '#theme_wrappers' => ['form'],
-    ];
+      '#theme_wrappers' => array('form'),
+    );
   }
 
 }

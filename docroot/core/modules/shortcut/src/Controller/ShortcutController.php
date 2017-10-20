@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\shortcut\Controller\ShortcutController.
+ */
+
 namespace Drupal\shortcut\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -21,7 +26,7 @@ class ShortcutController extends ControllerBase {
    *   The shortcut add form.
    */
   public function addForm(ShortcutSetInterface $shortcut_set) {
-    $shortcut = $this->entityManager()->getStorage('shortcut')->create(['shortcut_set' => $shortcut_set->id()]);
+    $shortcut = $this->entityManager()->getStorage('shortcut')->create(array('shortcut_set' => $shortcut_set->id()));
     return $this->entityFormBuilder()->getForm($shortcut, 'add');
   }
 
@@ -40,10 +45,10 @@ class ShortcutController extends ControllerBase {
 
     try {
       $shortcut->delete();
-      drupal_set_message($this->t('The shortcut %title has been deleted.', ['%title' => $label]));
+      drupal_set_message($this->t('The shortcut %title has been deleted.', array('%title' => $label)));
     }
     catch (\Exception $e) {
-      drupal_set_message($this->t('Unable to delete the shortcut for %title.', ['%title' => $label]), 'error');
+      drupal_set_message($this->t('Unable to delete the shortcut for %title.', array('%title' => $label)), 'error');
     }
 
     return $this->redirect('<front>');

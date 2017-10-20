@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\style\HtmlList.
+ */
+
 namespace Drupal\views\Plugin\views\style;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -20,7 +25,9 @@ use Drupal\Core\Form\FormStateInterface;
 class HtmlList extends StylePluginBase {
 
   /**
-   * {@inheritdoc}
+   * Does the style plugin allows to use style plugins.
+   *
+   * @var bool
    */
   protected $usesRowPlugin = TRUE;
 
@@ -37,9 +44,9 @@ class HtmlList extends StylePluginBase {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['type'] = ['default' => 'ul'];
-    $options['class'] = ['default' => ''];
-    $options['wrapper_class'] = ['default' => 'item-list'];
+    $options['type'] = array('default' => 'ul');
+    $options['class'] = array('default' => '');
+    $options['wrapper_class'] = array('default' => 'item-list');
 
     return $options;
   }
@@ -49,26 +56,26 @@ class HtmlList extends StylePluginBase {
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
-    $form['type'] = [
+    $form['type'] = array(
       '#type' => 'radios',
       '#title' => $this->t('List type'),
-      '#options' => ['ul' => $this->t('Unordered list'), 'ol' => $this->t('Ordered list')],
+      '#options' => array('ul' => $this->t('Unordered list'), 'ol' => $this->t('Ordered list')),
       '#default_value' => $this->options['type'],
-    ];
-    $form['wrapper_class'] = [
+    );
+    $form['wrapper_class'] = array(
       '#title' => $this->t('Wrapper class'),
       '#description' => $this->t('The class to provide on the wrapper, outside the list.'),
       '#type' => 'textfield',
       '#size' => '30',
       '#default_value' => $this->options['wrapper_class'],
-    ];
-    $form['class'] = [
+    );
+    $form['class'] = array(
       '#title' => $this->t('List class'),
       '#description' => $this->t('The class to provide on the list element itself.'),
       '#type' => 'textfield',
       '#size' => '30',
       '#default_value' => $this->options['class'],
-    ];
+    );
   }
 
 }

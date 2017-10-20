@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Database\Driver\pgsql\Insert.
+ */
+
 namespace Drupal\Core\Database\Driver\pgsql;
 
 use Drupal\Core\Database\Database;
@@ -26,7 +31,7 @@ class Insert extends QueryInsert {
     $table_information = $this->connection->schema()->queryTableInformation($this->table);
 
     $max_placeholder = 0;
-    $blobs = [];
+    $blobs = array();
     $blob_count = 0;
     foreach ($this->insertValues as $insert_values) {
       foreach ($this->insertFields as $idx => $field) {
@@ -66,7 +71,7 @@ class Insert extends QueryInsert {
             // used twice. However, trying to insert a value into a serial
             // column should only be done in very rare cases and is not thread
             // safe by definition.
-            $this->connection->query("SELECT setval('" . $table_information->sequences[$index] . "', GREATEST(MAX(" . $serial_field . "), :serial_value)) FROM {" . $this->table . "}", [':serial_value' => (int)$serial_value]);
+            $this->connection->query("SELECT setval('" . $table_information->sequences[$index] . "', GREATEST(MAX(" . $serial_field . "), :serial_value)) FROM {" . $this->table . "}", array(':serial_value' => (int)$serial_value));
           }
         }
       }
@@ -94,29 +99,16 @@ class Insert extends QueryInsert {
     elseif ($options['return'] == Database::RETURN_INSERT_ID) {
       $options['return'] = Database::RETURN_NULL;
     }
-
-    // Create a savepoint so we can rollback a failed query. This is so we can
-    // mimic MySQL and SQLite transactions which don't fail if a single query
-    // fails. This is important for tables that are created on demand. For
-    // example, \Drupal\Core\Cache\DatabaseBackend.
-    $this->connection->addSavepoint();
-    try {
-      // Only use the returned last_insert_id if it is not already set.
-      if (!empty($last_insert_id)) {
-        $this->connection->query($stmt, [], $options);
-      }
-      else {
-        $last_insert_id = $this->connection->query($stmt, [], $options);
-      }
-      $this->connection->releaseSavepoint();
+    // Only use the returned last_insert_id if it is not already set.
+    if (!empty($last_insert_id)) {
+      $this->connection->query($stmt, array(), $options);
     }
-    catch (\Exception $e) {
-      $this->connection->rollbackSavepoint();
-      throw $e;
+    else {
+      $last_insert_id = $this->connection->query($stmt, array(), $options);
     }
 
     // Re-initialize the values array so that we can re-use this query.
-    $this->insertValues = [];
+    $this->insertValues = array();
 
     return $last_insert_id;
   }

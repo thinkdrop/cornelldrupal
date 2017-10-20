@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Form\NodeDeleteForm.
+ */
+
 namespace Drupal\node\Form;
 
 use Drupal\Core\Entity\ContentEntityDeleteForm;
@@ -27,10 +32,10 @@ class NodeDeleteForm extends ContentEntityDeleteForm {
       ]);
     }
 
-    return $this->t('The @type %title has been deleted.', [
+    return $this->t('The @type %title has been deleted.', array(
       '@type' => $node_type,
       '%title' => $this->getEntity()->label(),
-    ]);
+    ));
   }
 
   /**

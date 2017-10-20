@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\field\Markup.
+ */
+
 namespace Drupal\views\Plugin\views\field;
 
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
@@ -29,7 +34,7 @@ class Markup extends FieldPluginBase {
 
     $this->format = $this->definition['format'];
 
-    $this->additional_fields = [];
+    $this->additional_fields = array();
     if (is_array($this->format)) {
       $this->additional_fields['format'] = $this->format;
     }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\serialization\Normalizer\ContentEntityNormalizer.
+ */
+
 namespace Drupal\serialization\Normalizer;
 
 /**
@@ -8,17 +13,19 @@ namespace Drupal\serialization\Normalizer;
 class ContentEntityNormalizer extends EntityNormalizer {
 
   /**
-   * {@inheritdoc}
+   * The interface or class that this Normalizer supports.
+   *
+   * @var array
    */
   protected $supportedInterfaceOrClass = ['Drupal\Core\Entity\ContentEntityInterface'];
 
   /**
    * {@inheritdoc}
    */
-  public function normalize($object, $format = NULL, array $context = []) {
-    $context += [
+  public function normalize($object, $format = NULL, array $context = array()) {
+    $context += array(
       'account' => NULL,
-    ];
+    );
 
     $attributes = [];
     foreach ($object as $name => $field) {

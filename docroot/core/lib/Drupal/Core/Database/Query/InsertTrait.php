@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Database\Query\InsertTrait.
+ */
+
 namespace Drupal\Core\Database\Query;
 
 /**
@@ -21,14 +26,14 @@ trait InsertTrait {
    *
    * @var array
    */
-  protected $insertFields = [];
+  protected $insertFields = array();
 
   /**
    * An array of fields that should be set to their database-defined defaults.
    *
    * @var array
    */
-  protected $defaultFields = [];
+  protected $defaultFields = array();
 
   /**
    * A nested array of values to insert.
@@ -45,7 +50,7 @@ trait InsertTrait {
    *
    * @var array
    */
-  protected $insertValues = [];
+  protected $insertValues = array();
 
   /**
    * Adds a set of field->value pairs to be inserted.
@@ -67,7 +72,7 @@ trait InsertTrait {
    * @return $this
    *   The called object.
    */
-  public function fields(array $fields, array $values = []) {
+  public function fields(array $fields, array $values = array()) {
     if (empty($this->insertFields)) {
       if (empty($values)) {
         if (!is_numeric(key($fields))) {
@@ -150,10 +155,10 @@ trait InsertTrait {
    */
   protected function getInsertPlaceholderFragment(array $nested_insert_values, array $default_fields) {
     $max_placeholder = 0;
-    $values = [];
+    $values = array();
     if ($nested_insert_values) {
       foreach ($nested_insert_values as $insert_values) {
-        $placeholders = [];
+        $placeholders = array();
 
         // Default fields aren't really placeholders, but this is the most convenient
         // way to handle them.
@@ -174,13 +179,6 @@ trait InsertTrait {
     }
 
     return $values;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function count() {
-    return count($this->insertValues);
   }
 
 }

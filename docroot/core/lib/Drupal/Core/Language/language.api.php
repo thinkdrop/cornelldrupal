@@ -29,8 +29,7 @@ use Drupal\Core\Language\LanguageInterface;
  * - Any time UI text is displayed using PHP code, it should be passed through
  *   either the global t() function or a t() method on the class. If it
  *   involves plurals, it should be passed through either the global
- *   \Drupal\Core\StringTranslation\PluralTranslatableMarkup::createFromTranslatedString()
- *   or a formatPlural() method on the class. Use
+ *   formatPlural() function or a formatPlural() method on the class. Use
  *   \Drupal\Core\StringTranslation\StringTranslationTrait to get these methods
  *   into a class.
  * - Dates displayed in the UI should be passed through the 'date' service
@@ -111,8 +110,8 @@ use Drupal\Core\Language\LanguageInterface;
  * @code
  * // PHP code
  * t('May', array(), array('context' => 'Long month name');
- * \Drupal::translation()->formatPlural($count, '1 something',
- *   '@count somethings', array(), array('context' => 'My context'));
+ * format_plural($count, '1 something', '@count somethings',
+ *   array(), array('context' => 'My context'));
  *
  * // JavaScript code
  * Drupal.t('May', {}, {'context': 'Long month name'});
@@ -147,6 +146,7 @@ use Drupal\Core\Language\LanguageInterface;
  *
  * @see transliteration
  * @see t()
+ * @see format_plural()
  * @}
  */
 
@@ -162,14 +162,14 @@ use Drupal\Core\Language\LanguageInterface;
  * translated link text before going through the link generator, which will
  * just handle the path aliases.
  *
- * @param array $links
+ * @param $links
  *   Nested array of links keyed by language code.
- * @param string $type
+ * @param $type
  *   The language type the links will switch.
- * @param \Drupal\Core\Url $url
- *   The URL the switch links will be relative to.
+ * @param $path
+ *   The current path.
  */
-function hook_language_switch_links_alter(array &$links, $type, \Drupal\Core\Url $url) {
+function hook_language_switch_links_alter(array &$links, $type, $path) {
   $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
   if ($type == LanguageInterface::TYPE_CONTENT && isset($links[$language_interface->getId()])) {

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\filter\FilterPluginCollection.
+ */
+
 namespace Drupal\filter;
 
 use Drupal\Component\Utility\NestedArray;
@@ -114,7 +119,7 @@ class FilterPluginCollection extends DefaultLazyPluginCollection {
     // Because filters are disabled by default, this will never remove the
     // configuration of an enabled filter.
     foreach ($configuration as $instance_id => $instance_config) {
-      $default_config = [];
+      $default_config = array();
       $default_config['id'] = $instance_id;
       $default_config += $this->get($instance_id)->defaultConfiguration();
       if ($default_config === $instance_config) {

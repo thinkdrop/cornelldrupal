@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Updater\UpdaterInterface.
+ */
+
 namespace Drupal\Core\Updater;
 
 /**
@@ -25,7 +30,7 @@ interface UpdaterInterface {
    * Returns the system name of the project.
    *
    * @param string $directory
-   *   A directory containing a project.
+   *  A directory containing a project.
    */
   public static function getProjectName($directory);
 
@@ -64,5 +69,4 @@ interface UpdaterInterface {
    * Actions to run after an update has occurred.
    */
   public function postUpdate();
-
 }

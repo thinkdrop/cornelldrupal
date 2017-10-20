@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\style\DefaultStyle.
+ */
+
 namespace Drupal\views\Plugin\views\style;
 
 /**
@@ -19,7 +24,9 @@ namespace Drupal\views\Plugin\views\style;
 class DefaultStyle extends StylePluginBase {
 
   /**
-   * {@inheritdoc}
+   * Does the style plugin allows to use style plugins.
+   *
+   * @var bool
    */
   protected $usesRowPlugin = TRUE;
 

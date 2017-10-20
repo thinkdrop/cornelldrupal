@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\SharedTempStoreFactory.
+ */
+
 namespace Drupal\user;
 
 use Drupal\Core\KeyValueStore\KeyValueExpirableFactoryInterface;
@@ -42,18 +47,18 @@ class SharedTempStoreFactory {
   /**
    * Constructs a Drupal\user\SharedTempStoreFactory object.
    *
-   * @param \Drupal\Core\KeyValueStore\KeyValueExpirableFactoryInterface $storage_factory
-   *   The key/value store factory.
-   * @param \Drupal\Core\Lock\LockBackendInterface $lock_backend
+   * @param \Drupal\Core\Database\Connection $connection
+   *   The connection object used for this data.
+   * @param \Drupal\Core\Lock\LockBackendInterface $lockBackend
    *   The lock object used for this data.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The request stack.
    * @param int $expire
    *   The time to live for items, in seconds.
    */
-  public function __construct(KeyValueExpirableFactoryInterface $storage_factory, LockBackendInterface $lock_backend, RequestStack $request_stack, $expire = 604800) {
+  function __construct(KeyValueExpirableFactoryInterface $storage_factory, LockBackendInterface $lockBackend, RequestStack $request_stack, $expire = 604800) {
     $this->storageFactory = $storage_factory;
-    $this->lockBackend = $lock_backend;
+    $this->lockBackend = $lockBackend;
     $this->requestStack = $request_stack;
     $this->expire = $expire;
   }
@@ -72,7 +77,7 @@ class SharedTempStoreFactory {
    * @return \Drupal\user\SharedTempStore
    *   An instance of the key/value store.
    */
-  public function get($collection, $owner = NULL) {
+  function get($collection, $owner = NULL) {
     // Use the currently authenticated user ID or the active user ID unless
     // the owner is overridden.
     if (!isset($owner)) {

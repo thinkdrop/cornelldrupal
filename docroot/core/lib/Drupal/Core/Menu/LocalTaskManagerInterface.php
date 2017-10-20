@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Menu\LocalTaskManagerInterface.
+ */
 namespace Drupal\Core\Menu;
 
 use Drupal\Component\Plugin\PluginManagerInterface;
@@ -53,7 +57,7 @@ interface LocalTaskManagerInterface extends PluginManagerInterface {
   public function getTasksBuild($current_route_name, RefinableCacheableDependencyInterface &$cacheability);
 
   /**
-   * Renders the local tasks (tabs) for the given route.
+   * Collects the local tasks (tabs) for the current route.
    *
    * @param string $route_name
    *   The route for which to make renderable local tasks.

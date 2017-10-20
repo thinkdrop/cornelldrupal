@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\comment\Tests\Views\CommentRowTest.
+ */
+
 namespace Drupal\comment\Tests\Views;
 
 /**
@@ -14,7 +19,7 @@ class CommentRowTest extends CommentTestBase {
    *
    * @var array
    */
-  public static $testViews = ['test_comment_row'];
+  public static $testViews = array('test_comment_row');
 
   /**
    * Test comment row.

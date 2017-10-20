@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Diff\DiffFormatter.
+ */
+
 namespace Drupal\Component\Diff;
 
 use Drupal\Component\Diff\Engine\DiffOpCopy;
@@ -18,7 +23,7 @@ class DiffFormatter {
   /**
    * Should a block header be shown?
    */
-  public $show_header = TRUE;
+  var $show_header = TRUE;
 
   /**
    * Number of leading context "lines" to preserve.
@@ -26,7 +31,7 @@ class DiffFormatter {
    * This should be left at zero for this class, but subclasses
    * may want to set this to other values.
    */
-  public $leading_context_lines = 0;
+  var $leading_context_lines = 0;
 
   /**
    * Number of trailing context "lines" to preserve.
@@ -34,17 +39,7 @@ class DiffFormatter {
    * This should be left at zero for this class, but subclasses
    * may want to set this to other values.
    */
-  public $trailing_context_lines = 0;
-
-  /**
-   * The line stats.
-   *
-   * @var array
-   */
-  protected $line_stats = [
-    'counter' => ['x' => 0, 'y' => 0],
-    'offset' => ['x' => 0, 'y' => 0],
-  ];
+  var $trailing_context_lines = 0;
 
   /**
    * Format a diff.
@@ -58,7 +53,7 @@ class DiffFormatter {
   public function format(Diff $diff) {
     $xi = $yi = 1;
     $block = FALSE;
-    $context = [];
+    $context = array();
 
     $nlead = $this->leading_context_lines;
     $ntrail = $this->trailing_context_lines;
@@ -83,11 +78,11 @@ class DiffFormatter {
         $context = $edit->orig;
       }
       else {
-        if (!is_array($block)) {
+        if (! is_array($block)) {
           $context = array_slice($context, sizeof($context) - $nlead);
           $x0 = $xi - sizeof($context);
           $y0 = $yi - sizeof($context);
-          $block = [];
+          $block = array();
           if ($context) {
             $block[] = new DiffOpCopy($context);
           }

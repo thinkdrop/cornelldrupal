@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Menu\MenuLinkTreeElement.
+ */
+
 namespace Drupal\Core\Menu;
 
 /**
@@ -68,7 +73,7 @@ class MenuLinkTreeElement {
    * If the value is NULL the access was not determined yet, if an access result
    * object, it was determined already.
    *
-   * @var \Drupal\Core\Access\AccessResultInterface|null
+   * @var \Drupal\Core\Access\AccessResultInterface|NULL
    */
   public $access;
 
@@ -79,7 +84,7 @@ class MenuLinkTreeElement {
    * \Drupal\Core\Menu\MenuLinkInterface::getOptions(), to allow menu link tree
    * manipulators to add or override link options.
    */
-  public $options = [];
+  public $options = array();
 
   /**
    * Constructs a new \Drupal\Core\Menu\MenuLinkTreeElement.
@@ -93,7 +98,7 @@ class MenuLinkTreeElement {
    *   The depth of this element relative to the tree root.
    * @param bool $in_active_trail
    *   A flag as to whether this link was included in the list of active trail
-   *   IDs used to build the tree.
+   *  IDs used to build the tree.
    * @param \Drupal\Core\Menu\MenuLinkTreeElement[] $subtree
    *   The children of this element in the menu link tree.
    */

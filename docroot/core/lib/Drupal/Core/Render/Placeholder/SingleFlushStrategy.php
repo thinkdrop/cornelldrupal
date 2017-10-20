@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Placeholder\SingleFlushStrategy.
+ */
+
 namespace Drupal\Core\Render\Placeholder;
 
 /**
@@ -18,5 +23,4 @@ class SingleFlushStrategy implements PlaceholderStrategyInterface {
     // Return all placeholders as is; they should be rendered directly.
     return $placeholders;
   }
-
 }

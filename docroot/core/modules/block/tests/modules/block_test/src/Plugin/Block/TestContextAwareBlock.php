@@ -1,10 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block_test\Plugin\Block\TestContextAwareBlock.
+ */
+
 namespace Drupal\block_test\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\user\UserInterface;
 
 /**
  * Provides a context-aware block.
@@ -25,22 +28,11 @@ class TestContextAwareBlock extends BlockBase {
   public function build() {
     /** @var $user \Drupal\user\UserInterface */
     $user = $this->getContextValue('user');
-    return [
+    return array(
       '#prefix' => '<div id="' . $this->getPluginId() . '--username">',
       '#suffix' => '</div>',
       '#markup' => $user ? $user->getUsername() : 'No context mapping selected.' ,
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function blockAccess(AccountInterface $account) {
-    if ($this->getContextValue('user') instanceof UserInterface) {
-      drupal_set_message('User context found.');
-    }
-
-    return parent::blockAccess($account);
+    );
   }
 
 }

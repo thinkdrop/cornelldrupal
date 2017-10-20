@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Form\ResponseTest.
+ */
+
 namespace Drupal\system\Tests\Form;
 
 use Drupal\Component\Serialization\Json;
@@ -17,7 +22,7 @@ class ResponseTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['form_test'];
+  public static $modules = array('form_test');
 
   /**
    * Tests that enforced responses propagate through subscribers and middleware.

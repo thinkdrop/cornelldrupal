@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Access\CsrfAccessCheck.
+ */
+
 namespace Drupal\Core\Access;
 
 use Drupal\Core\Routing\Access\AccessInterface as RoutingAccessInterface;
@@ -54,11 +59,11 @@ class CsrfAccessCheck implements RoutingAccessInterface {
       $path = str_replace("{{$param}}", $value, $path);
     }
 
-    if ($this->csrfToken->validate($request->query->get('token', ''), $path)) {
+    if ($this->csrfToken->validate($request->query->get('token'), $path)) {
       $result = AccessResult::allowed();
     }
     else {
-      $result = AccessResult::forbidden($request->query->has('token') ? "'csrf_token' URL query argument is invalid." : "'csrf_token' URL query argument is missing.");
+      $result = AccessResult::forbidden();
     }
     // Not cacheable because the CSRF token is highly dynamic.
     return $result->setCacheMaxAge(0);

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\ConfigBase.
+ */
+
 namespace Drupal\Core\Config;
 
 use Drupal\Component\Utility\NestedArray;
@@ -40,7 +45,7 @@ abstract class ConfigBase implements RefinableCacheableDependencyInterface {
    *
    * @var array
    */
-  protected $data = [];
+  protected $data = array();
 
   /**
    * The maximum length of a configuration object name.
@@ -50,7 +55,7 @@ abstract class ConfigBase implements RefinableCacheableDependencyInterface {
    * incompatible with this limitation are created, we enforce a maximum name
    * length of 250 characters (leaving 5 characters for the file extension).
    *
-   * @see http://wikipedia.org/wiki/Comparison_of_file_systems
+   * @see http://en.wikipedia.org/wiki/Comparison_of_file_systems
    *
    * Configuration objects not stored on the filesystem should still be
    * restricted in name length so name can be used as a cache key.
@@ -71,7 +76,7 @@ abstract class ConfigBase implements RefinableCacheableDependencyInterface {
    * Sets the name of this configuration object.
    *
    * @param string $name
-   *   The name of the configuration object.
+   *  The name of the configuration object.
    *
    * @return $this
    *   The configuration object.
@@ -85,7 +90,7 @@ abstract class ConfigBase implements RefinableCacheableDependencyInterface {
    * Validates the configuration object name.
    *
    * @param string $name
-   *   The name of the configuration object.
+   *  The name of the configuration object.
    *
    * @throws \Drupal\Core\Config\ConfigNameException
    *
@@ -247,7 +252,7 @@ abstract class ConfigBase implements RefinableCacheableDependencyInterface {
    */
   public function merge(array $data_to_merge) {
     // Preserve integer keys so that configuration keys are not changed.
-    $this->setData(NestedArray::mergeDeepArray([$this->data, $data_to_merge], TRUE));
+    $this->setData(NestedArray::mergeDeepArray(array($this->data, $data_to_merge), TRUE));
     return $this;
   }
 
@@ -285,7 +290,7 @@ abstract class ConfigBase implements RefinableCacheableDependencyInterface {
     if ($data instanceof MarkupInterface) {
       $data = (string) $data;
     }
-    elseif (is_array($data)) {
+    else if (is_array($data)) {
       array_walk_recursive($data, function (&$value) {
         if ($value instanceof MarkupInterface) {
           $value = (string) $value;

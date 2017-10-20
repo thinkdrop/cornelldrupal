@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Plugin\migrate\source\d7\Vocabulary.
+ */
+
 namespace Drupal\taxonomy\Plugin\migrate\source\d7;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -19,7 +24,7 @@ class Vocabulary extends DrupalSqlBase {
    */
   public function query() {
     $query = $this->select('taxonomy_vocabulary', 'v')
-      ->fields('v', [
+      ->fields('v', array(
         'vid',
         'name',
         'description',
@@ -27,7 +32,7 @@ class Vocabulary extends DrupalSqlBase {
         'module',
         'weight',
         'machine_name',
-      ]);
+      ));
     return $query;
   }
 
@@ -35,15 +40,15 @@ class Vocabulary extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'vid' => $this->t('The vocabulary ID.'),
       'name' => $this->t('The name of the vocabulary.'),
       'description' => $this->t('The description of the vocabulary.'),
       'hierarchy' => $this->t('The type of hierarchy allowed within the vocabulary. (0 = disabled, 1 = single, 2 = multiple)'),
       'module' => $this->t('Module responsible for the vocabulary.'),
       'weight' => $this->t('The weight of the vocabulary in relation to other vocabularies.'),
-      'machine_name' => $this->t('Unique machine name of the vocabulary.')
-    ];
+      'machine_name' => $this->t('Unique achine name of the vocabulary.')
+    );
   }
 
   /**

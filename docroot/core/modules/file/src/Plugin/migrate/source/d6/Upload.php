@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\Plugin\migrate\source\d6\Upload.
+ */
+
 namespace Drupal\file\Plugin\migrate\source\d6;
 
 use Drupal\migrate\Row;
@@ -26,7 +31,7 @@ class Upload extends DrupalSqlBase {
   public function query() {
     $query = $this->select('upload', 'u')
       ->distinct()
-      ->fields('u', ['nid', 'vid']);
+      ->fields('u', array('nid', 'vid'));
     $query->innerJoin('node', 'n', static::JOIN);
     $query->addField('n', 'type');
     return $query;
@@ -37,7 +42,7 @@ class Upload extends DrupalSqlBase {
    */
   public function prepareRow(Row $row) {
     $query = $this->select('upload', 'u')
-      ->fields('u', ['fid', 'description', 'list'])
+      ->fields('u', array('fid', 'description', 'list'))
       ->condition('u.nid', $row->getSourceProperty('nid'))
       ->orderBy('u.weight');
     $query->innerJoin('node', 'n', static::JOIN);
@@ -49,7 +54,7 @@ class Upload extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'fid' => $this->t('The file Id.'),
       'nid' => $this->t('The node Id.'),
       'vid' => $this->t('The version Id.'),
@@ -57,7 +62,7 @@ class Upload extends DrupalSqlBase {
       'description' => $this->t('The file description.'),
       'list' => $this->t('Whether the list should be visible on the node page.'),
       'weight' => $this->t('The file weight.'),
-    ];
+    );
   }
 
   /**

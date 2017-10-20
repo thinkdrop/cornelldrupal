@@ -3,7 +3,7 @@
  * A Backbone View acting as a controller for CKEditor toolbar configuration.
  */
 
-(function ($, Drupal, Backbone, CKEDITOR, _) {
+(function (Drupal, Backbone, $) {
 
   'use strict';
 
@@ -144,7 +144,7 @@
       };
 
       // Create hidden CKEditor with all features enabled, retrieve metadata.
-      // @see \Drupal\ckeditor\Plugin\Editor\CKEditor::buildConfigurationForm().
+      // @see \Drupal\ckeditor\Plugin\Editor\CKEditor::settingsForm.
       var hiddenCKEditorID = 'ckeditor-hidden';
       if (CKEDITOR.instances[hiddenCKEditorID]) {
         CKEDITOR.instances[hiddenCKEditorID].destroy(true);
@@ -380,4 +380,4 @@
     }
   });
 
-})(jQuery, Drupal, Backbone, CKEDITOR, _);
+})(Drupal, Backbone, jQuery);

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Validation\Plugin\Validation\Constraint\EmailConstraint.
+ */
+
 namespace Drupal\Core\Validation\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraints\Email;
@@ -24,5 +29,4 @@ class EmailConstraint extends Email {
   public function validatedBy() {
     return '\Symfony\Component\Validator\Constraints\EmailValidator';
   }
-
 }

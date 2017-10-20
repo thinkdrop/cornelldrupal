@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\responsive_image\ResponsiveImageStyleListBuilder.
+ */
+
 namespace Drupal\responsive_image;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
@@ -33,11 +38,11 @@ class ResponsiveImageStyleListBuilder extends ConfigEntityListBuilder {
    */
   public function getDefaultOperations(EntityInterface $entity) {
     $operations = parent::getDefaultOperations($entity);
-    $operations['duplicate'] = [
+    $operations['duplicate'] = array(
       'title' => t('Duplicate'),
       'weight' => 15,
       'url' => $entity->urlInfo('duplicate-form'),
-    ];
+    );
     return $operations;
   }
 

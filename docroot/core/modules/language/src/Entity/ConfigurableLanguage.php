@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\language\Entity\ConfigurableLanguage.
+ */
+
 namespace Drupal\language\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -58,14 +63,14 @@ class ConfigurableLanguage extends ConfigEntityBase implements ConfigurableLangu
   /**
    * The direction of language, either DIRECTION_LTR or DIRECTION_RTL.
    *
-   * @var int
+   * @var integer
    */
   protected $direction = self::DIRECTION_LTR;
 
   /**
    * The weight of the language, used in lists of languages.
    *
-   * @var int
+   * @var integer
    */
   protected $weight = 0;
 
@@ -246,18 +251,18 @@ class ConfigurableLanguage extends ConfigEntityBase implements ConfigurableLangu
     if (!isset($standard_languages[$langcode])) {
       // Drupal does not know about this language, so we set its values with the
       // best guess. The user will be able to edit afterwards.
-      return static::create([
+      return static::create(array(
         'id' => $langcode,
         'label' => $langcode,
-      ]);
+      ));
     }
     else {
       // A known predefined language, details will be filled in properly.
-      return static::create([
+      return static::create(array(
         'id' => $langcode,
         'label' => $standard_languages[$langcode][0],
         'direction' => isset($standard_languages[$langcode][2]) ? $standard_languages[$langcode][2] : static::DIRECTION_LTR,
-      ]);
+      ));
     }
   }
 

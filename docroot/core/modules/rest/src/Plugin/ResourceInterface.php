@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\rest\Plugin\ResourceInterface.
+ */
+
 namespace Drupal\rest\Plugin;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
@@ -32,10 +37,6 @@ interface ResourceInterface extends PluginInspectionInterface {
    *
    * A resource plugin can define a set of user permissions that are used on the
    * routes for this resource or for other purposes.
-   *
-   * It is not required for a resource plugin to specify permissions: if they
-   * have their own access control mechanism, they can use that, and return the
-   * empty array.
    *
    * @return array
    *   The permission array.

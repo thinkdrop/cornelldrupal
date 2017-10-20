@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\dblog\Plugin\views\field\DblogMessage.
+ */
+
 namespace Drupal\dblog\Plugin\views\field;
 
 use Drupal\Component\Utility\SafeMarkup;
@@ -34,7 +39,7 @@ class DblogMessage extends FieldPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['replace_variables'] = ['default' => TRUE];
+    $options['replace_variables'] = array('default' => TRUE);
 
     return $options;
   }
@@ -45,11 +50,11 @@ class DblogMessage extends FieldPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['replace_variables'] = [
+    $form['replace_variables'] = array(
       '#title' => $this->t('Replace variables'),
       '#type' => 'checkbox',
       '#default_value' => $this->options['replace_variables'],
-    ];
+    );
   }
 
   /**

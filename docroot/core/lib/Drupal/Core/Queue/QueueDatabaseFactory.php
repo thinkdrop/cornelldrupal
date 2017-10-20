@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Queue\QueueDatabaseFactory.
+ */
+
 namespace Drupal\Core\Queue;
 
 use Drupal\Core\Database\Connection;
@@ -22,7 +27,7 @@ class QueueDatabaseFactory {
    * @param \Drupal\Core\Database\Connection $connection
    *   The Connection object containing the key-value tables.
    */
-  public function __construct(Connection $connection) {
+  function __construct(Connection $connection) {
     $this->connection = $connection;
   }
 
@@ -38,5 +43,4 @@ class QueueDatabaseFactory {
   public function get($name) {
     return new DatabaseQueue($name, $this->connection);
   }
-
 }

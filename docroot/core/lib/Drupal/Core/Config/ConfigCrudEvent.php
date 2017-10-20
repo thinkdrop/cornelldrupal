@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\ConfigCrudEvent.
+ */
+
 namespace Drupal\Core\Config;
 
 use Symfony\Component\EventDispatcher\Event;
@@ -19,7 +24,7 @@ class ConfigCrudEvent extends Event {
   /**
    * Constructs a configuration event object.
    *
-   * @param \Drupal\Core\Config\Config $config
+   * @param \Drupal\Core\Config\Config
    *   Configuration object.
    */
   public function __construct(Config $config) {
@@ -49,3 +54,4 @@ class ConfigCrudEvent extends Event {
   }
 
 }
+

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views_ui\Tests\ViewsUITourTest.
+ */
+
 namespace Drupal\views_ui\Tests;
 
 use Drupal\tour\Tests\TourTestBase;
@@ -31,11 +36,11 @@ class ViewsUITourTest extends TourTestBase {
    *
    * @var array
    */
-  public static $modules = ['views_ui', 'tour', 'language', 'locale'];
+  public static $modules = array('views_ui', 'tour', 'language', 'locale');
 
   protected function setUp() {
     parent::setUp();
-    $this->adminUser = $this->drupalCreateUser(['administer views', 'access tour']);
+    $this->adminUser = $this->drupalCreateUser(array('administer views', 'access tour'));
     $this->drupalLogin($this->adminUser);
   }
 
@@ -66,18 +71,18 @@ class ViewsUITourTest extends TourTestBase {
     ConfigurableLanguage::createFromLangcode($langcode)->save();
 
     // Handler titles that need translations.
-    $handler_titles = [
+    $handler_titles = array(
       'Format',
       'Fields',
       'Sort criteria',
       'Filter criteria',
-    ];
+    );
 
     foreach ($handler_titles as $handler_title) {
       // Create source string.
-      $source = $this->localeStorage->createString([
+      $source = $this->localeStorage->createString(array(
         'source' => $handler_title
-      ]);
+      ));
       $source->save();
       $this->createTranslation($source, $langcode);
     }
@@ -101,11 +106,11 @@ class ViewsUITourTest extends TourTestBase {
    * Creates single translation for source string.
    */
   public function createTranslation($source, $langcode) {
-    return $this->localeStorage->createTranslation([
+    return $this->localeStorage->createTranslation(array(
         'lid' => $source->lid,
         'language' => $langcode,
         'translation' => $this->randomMachineName(100),
-      ])->save();
+      ))->save();
   }
 
 }

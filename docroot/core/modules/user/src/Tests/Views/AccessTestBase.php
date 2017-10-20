@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Tests\Views\AccessTestBase.
+ */
+
 namespace Drupal\user\Tests\Views;
 
 /**
@@ -12,7 +17,7 @@ abstract class AccessTestBase extends UserTestBase {
    *
    * @var array
    */
-  public static $modules = ['block'];
+  public static $modules = array('block');
 
   /**
    * Contains a user object that has no special permissions.
@@ -55,12 +60,11 @@ abstract class AccessTestBase extends UserTestBase {
     $roles = $this->webUser->getRoles();
     $this->webRole = $roles[0];
 
-    $this->normalRole = $this->drupalCreateRole([]);
-    $this->normalUser = $this->drupalCreateUser(['views_test_data test permission']);
+    $this->normalRole = $this->drupalCreateRole(array());
+    $this->normalUser = $this->drupalCreateUser(array('views_test_data test permission'));
     $this->normalUser->addRole($this->normalRole);
     $this->normalUser->save();
     // @todo when all the plugin information is cached make a reset function and
     // call it here.
   }
-
 }

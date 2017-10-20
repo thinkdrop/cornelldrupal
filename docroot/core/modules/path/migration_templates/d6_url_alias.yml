@@ -17,20 +17,6 @@ process:
     source:
       - constants/slash
       - dst
-  langcode:
-    plugin: d6_url_alias_language
-    source: language
-  node_translation:
-    -
-      plugin: explode
-      source: src
-      delimiter: /
-    -
-      plugin: extract
-      index:
-        - 1
-    -
-      plugin: migration_lookup
-      migration: d6_node_translation
+  langcode: language
 destination:
   plugin: url_alias

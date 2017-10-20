@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\ajax_forms_test\Form\AjaxFormsTestLazyLoadForm.
+ */
+
 namespace Drupal\ajax_forms_test\Form;
 
 use Drupal\Core\Form\FormBase;
@@ -26,20 +31,20 @@ class AjaxFormsTestLazyLoadForm extends FormBase {
     // command to ensure that the 'currentPath' setting is not part
     // of the Ajax response.
     $form['#attached']['drupalSettings']['test'] = 'currentPathUpdate';
-    $form['add_files'] = [
+    $form['add_files'] = array(
       '#title' => $this->t('Add files'),
       '#type' => 'checkbox',
       '#default_value' => FALSE,
-    ];
-    $form['submit'] = [
+    );
+    $form['submit'] = array(
       '#type' => 'submit',
       '#value' => $this->t('Submit'),
-      '#ajax' => [
+      '#ajax' => array(
         'wrapper' => 'ajax-forms-test-lazy-load-ajax-wrapper',
         'callback' => 'ajax_forms_test_lazy_load_form_ajax',
-      ],
+      ),
       '#prefix' => '<div id="ajax-forms-test-lazy-load-ajax-wrapper"></div>',
-    ];
+    );
 
     return $form;
   }

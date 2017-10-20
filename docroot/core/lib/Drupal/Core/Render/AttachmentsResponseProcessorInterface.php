@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\Core\Render\AttachmentsResponseProcessorInterface.
+ */
 
 namespace Drupal\Core\Render;
 
@@ -25,7 +29,7 @@ interface AttachmentsResponseProcessorInterface {
    * $build['#attached']['library'][] = [
    *   'library' => ['core/jquery']
    * ];
-   * $build['#attached']['http_header'] = [
+   * $build['#attached']['http_header'][] = [
    *   ['Content-Type', 'application/rss+xml; charset=utf-8'],
    * ];
    * @endcode

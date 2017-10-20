@@ -1,8 +1,11 @@
 <?php
 
-namespace Drupal\views\Plugin\views\argument_validator;
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\argument_validator\NumericArgumentValidator.
+ */
 
-use Drupal\Core\Plugin\Context\ContextDefinition;
+namespace Drupal\views\Plugin\views\argument_validator;
 
 /**
  * Validate whether an argument is numeric or not.
@@ -18,13 +21,6 @@ class NumericArgumentValidator extends ArgumentValidatorPluginBase {
 
   public function validateArgument($argument) {
     return is_numeric($argument);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getContextDefinition() {
-    return new ContextDefinition('integer', $this->argument->adminLabel(), FALSE);
   }
 
 }

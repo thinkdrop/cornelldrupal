@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\form_test\EventSubscriber\FormTestEventSubscriber.
+ */
+
 namespace Drupal\form_test\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -39,8 +44,8 @@ class FormTestEventSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[KernelEvents::REQUEST][] = ['onKernelRequest'];
-    $events[KernelEvents::RESPONSE][] = ['onKernelResponse'];
+    $events[KernelEvents::REQUEST][] = array('onKernelRequest');
+    $events[KernelEvents::RESPONSE][] = array('onKernelResponse');
     return $events;
   }
 

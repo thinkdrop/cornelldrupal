@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\access\AccessPluginBase.
+ */
+
 namespace Drupal\views\Plugin\views\access;
 
 use Drupal\Core\Session\AccountInterface;
@@ -58,7 +63,7 @@ abstract class AccessPluginBase extends PluginBase {
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The user who wants to access this view.
    *
-   * @return bool
+   * @return TRUE
    *   Returns whether the user has access to the view.
    */
   abstract public function access(AccountInterface $account);

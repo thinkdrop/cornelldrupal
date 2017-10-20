@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Form\DateFormatFormBase.
+ */
+
 namespace Drupal\system\Form;
 
 use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
@@ -76,43 +81,43 @@ abstract class DateFormatFormBase extends EntityForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
-    $form['label'] = [
+    $form['label'] = array(
       '#type' => 'textfield',
       '#title' => 'Name',
       '#maxlength' => 100,
       '#description' => t('Name of the date format'),
       '#default_value' => $this->entity->label(),
-    ];
+    );
 
-    $form['id'] = [
+    $form['id'] = array(
       '#type' => 'machine_name',
       '#description' => t('A unique machine-readable name. Can only contain lowercase letters, numbers, and underscores.'),
       '#disabled' => !$this->entity->isNew(),
       '#default_value' => $this->entity->id(),
-      '#machine_name' => [
-        'exists' => [$this, 'exists'],
-        'replace_pattern' => '([^a-z0-9_]+)|(^custom$)',
+      '#machine_name' => array(
+        'exists' => array($this, 'exists'),
+        'replace_pattern' =>'([^a-z0-9_]+)|(^custom$)',
         'error' => $this->t('The machine-readable name must be unique, and can only contain lowercase letters, numbers, and underscores. Additionally, it can not be the reserved word "custom".'),
-      ],
-    ];
-    $form['date_format_pattern'] = [
+      ),
+    );
+    $form['date_format_pattern'] = array(
       '#type' => 'textfield',
       '#title' => t('Format string'),
       '#maxlength' => 100,
-      '#description' => $this->t('A user-defined date format. See the <a href="http://php.net/manual/function.date.php">PHP manual</a> for available options.'),
+      '#description' => $this->t('A user-defined date format. See the <a href=":url">PHP manual</a> for available options.', array(':url' => 'http://php.net/manual/function.date.php')),
       '#required' => TRUE,
       '#attributes' => [
         'data-drupal-date-formatter' => 'source',
       ],
       '#field_suffix' => ' <small class="js-hide" data-drupal-date-formatter="preview">' . $this->t('Displayed as %date_format', ['%date_format' => '']) . '</small>',
-    ];
+    );
 
-    $form['langcode'] = [
+    $form['langcode'] = array(
       '#type' => 'language_select',
       '#title' => t('Language'),
       '#languages' => LanguageInterface::STATE_ALL,
       '#default_value' => $this->entity->language()->getId(),
-    ];
+    );
     $form['#attached']['drupalSettings']['dateFormats'] = $this->dateFormatter->getSampleDateFormats();
     $form['#attached']['library'][] = 'system/drupal.system.date';
     return parent::form($form, $form_state);

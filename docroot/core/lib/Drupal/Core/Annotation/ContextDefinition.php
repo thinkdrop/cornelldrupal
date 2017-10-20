@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Annotation\ContextDefinition.
+ */
+
 namespace Drupal\Core\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
@@ -18,6 +23,8 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  *     "node" = @ContextDefinition("entity:node")
  *   }
  * @endcode
+ * Remove spaces after @ in your actual plugin - these are put into this sample
+ * code so that it is not recognized as an annotation.
  *
  * To add a label to a context definition use the "label" key:
  * @code
@@ -97,11 +104,11 @@ class ContextDefinition extends Plugin {
    *   ContextDefinitionInterface implementing class.
    */
   public function __construct(array $values) {
-    $values += [
+    $values += array(
       'required' => TRUE,
       'multiple' => FALSE,
       'default_value' => NULL,
-    ];
+    );
     // Annotation classes extract data from passed annotation classes directly
     // used in the classes they pass to.
     foreach (['label', 'description'] as $key) {

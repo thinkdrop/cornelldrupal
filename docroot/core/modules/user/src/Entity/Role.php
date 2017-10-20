@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Entity\Role.
+ */
+
 namespace Drupal\user\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -72,7 +77,7 @@ class Role extends ConfigEntityBase implements RoleInterface {
    *
    * @var array
    */
-  protected $permissions = [];
+  protected $permissions = array();
 
   /**
    * An indicator whether the role has all permissions.
@@ -136,7 +141,7 @@ class Role extends ConfigEntityBase implements RoleInterface {
     if ($this->isAdmin()) {
       return $this;
     }
-    $this->permissions = array_diff($this->permissions, [$permission]);
+    $this->permissions = array_diff($this->permissions, array($permission));
     return $this;
   }
 
@@ -177,12 +182,6 @@ class Role extends ConfigEntityBase implements RoleInterface {
         return $max > $role->weight ? $max : $role->weight;
       });
       $this->weight = $max + 1;
-    }
-
-    if (!$this->isSyncing()) {
-      // Permissions are always ordered alphabetically to avoid conflicts in the
-      // exported configuration.
-      sort($this->permissions);
     }
   }
 

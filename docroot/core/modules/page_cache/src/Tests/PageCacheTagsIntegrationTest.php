@@ -1,12 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\page_cache\Tests\PageCacheTagsIntegrationTest.
+ */
+
 namespace Drupal\page_cache\Tests;
 
-use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\simpletest\WebTestBase;
 use Drupal\system\Tests\Cache\AssertPageCacheContextsAndTagsTrait;
-use Drupal\node\NodeInterface;
 
 /**
  * Enables the page cache and tests its cache tags in various scenarios.
@@ -36,35 +39,35 @@ class PageCacheTagsIntegrationTest extends WebTestBase {
   /**
    * Test that cache tags are properly bubbled up to the page level.
    */
-  public function testPageCacheTags() {
+  function testPageCacheTags() {
     // Create two nodes.
     $author_1 = $this->drupalCreateUser();
-    $node_1 = $this->drupalCreateNode([
+    $node_1 = $this->drupalCreateNode(array(
       'uid' => $author_1->id(),
       'title' => 'Node 1',
-      'body' => [
-        0 => ['value' => 'Body 1', 'format' => 'basic_html'],
-      ],
-      'promote' => NodeInterface::PROMOTED,
-    ]);
+      'body' => array(
+        0 => array('value' => 'Body 1', 'format' => 'basic_html'),
+      ),
+      'promote' => NODE_PROMOTED,
+    ));
     $author_2 = $this->drupalCreateUser();
-    $node_2 = $this->drupalCreateNode([
+    $node_2 = $this->drupalCreateNode(array(
       'uid' => $author_2->id(),
       'title' => 'Node 2',
-      'body' => [
-        0 => ['value' => 'Body 2', 'format' => 'full_html'],
-      ],
-      'promote' => NodeInterface::PROMOTED,
-    ]);
+      'body' => array(
+        0 => array('value' => 'Body 2', 'format' => 'full_html'),
+      ),
+      'promote' => NODE_PROMOTED,
+    ));
 
     // Place a block, but only make it visible on full node page 2.
-    $block = $this->drupalPlaceBlock('views_block:comments_recent-block_1', [
-      'visibility' => [
-        'request_path' => [
+    $block = $this->drupalPlaceBlock('views_block:comments_recent-block_1', array(
+      'visibility' => array(
+        'request_path' => array(
           'pages' => '/node/' . $node_2->id(),
-        ],
-      ],
-    ]);
+        ),
+      ),
+    ));
 
     $cache_contexts = [
       'languages:' . LanguageInterface::TYPE_INTERFACE,
@@ -74,13 +77,11 @@ class PageCacheTagsIntegrationTest extends WebTestBase {
       'user',
       // The placed block is only visible on certain URLs through a visibility
       // condition.
-      'url.path',
-      'url.query_args:' . MainContentViewSubscriber::WRAPPER_FORMAT,
+      'url',
     ];
 
     // Full node page 1.
-    $this->assertPageCacheContextsAndTags($node_1->urlInfo(), $cache_contexts, [
-      'http_response',
+    $this->assertPageCacheContextsAndTags($node_1->urlInfo(), $cache_contexts, array(
       'rendered',
       'block_view',
       'config:block_list',
@@ -104,7 +105,6 @@ class PageCacheTagsIntegrationTest extends WebTestBase {
       'user:0',
       'user:' . $author_1->id(),
       'config:filter.format.basic_html',
-      'config:color.theme.bartik',
       'config:search.settings',
       'config:system.menu.account',
       'config:system.menu.tools',
@@ -114,14 +114,13 @@ class PageCacheTagsIntegrationTest extends WebTestBase {
       // FinishResponseSubscriber adds this cache tag to responses that have the
       // 'user.permissions' cache context for anonymous users.
       'config:user.role.anonymous',
-    ]);
+    ));
 
     // Render the view block adds the languages cache context.
     $cache_contexts[] = 'languages:' . LanguageInterface::TYPE_CONTENT;
 
     // Full node page 2.
-    $this->assertPageCacheContextsAndTags($node_2->urlInfo(), $cache_contexts, [
-      'http_response',
+    $this->assertPageCacheContextsAndTags($node_2->urlInfo(), $cache_contexts, array(
       'rendered',
       'block_view',
       'config:block_list',
@@ -143,7 +142,6 @@ class PageCacheTagsIntegrationTest extends WebTestBase {
       'node_view',
       'node:' . $node_2->id(),
       'user:' . $author_2->id(),
-      'config:color.theme.bartik',
       'config:filter.format.full_html',
       'config:search.settings',
       'config:system.menu.account',
@@ -158,7 +156,7 @@ class PageCacheTagsIntegrationTest extends WebTestBase {
       // 'user.permissions' cache context for anonymous users.
       'config:user.role.anonymous',
       'user:0',
-    ]);
+    ));
   }
 
 }

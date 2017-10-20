@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\search\Unit\SearchPluginCollectionTest.
+ */
+
 namespace Drupal\Tests\search\Unit;
 
 use Drupal\search\Plugin\SearchPluginCollection;
@@ -37,7 +42,7 @@ class SearchPluginCollectionTest extends UnitTestCase {
    */
   protected function setUp() {
     $this->pluginManager = $this->getMock('Drupal\Component\Plugin\PluginManagerInterface');
-    $this->searchPluginCollection = new SearchPluginCollection($this->pluginManager, 'banana', ['id' => 'banana', 'color' => 'yellow'], 'fruit_stand');
+    $this->searchPluginCollection = new SearchPluginCollection($this->pluginManager, 'banana', array('id' => 'banana', 'color' => 'yellow'), 'fruit_stand');
   }
 
   /**

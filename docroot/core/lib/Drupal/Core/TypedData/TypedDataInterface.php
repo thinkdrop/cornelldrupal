@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\TypedDataInterface.
+ */
+
 namespace Drupal\Core\TypedData;
+
+use Drupal\user;
 
 /**
  * Interface for typed data objects.
@@ -157,5 +164,4 @@ interface TypedDataInterface {
    *   root of a typed data tree. Defaults to NULL.
    */
   public function setContext($name = NULL, TraversableTypedDataInterface $parent = NULL);
-
 }

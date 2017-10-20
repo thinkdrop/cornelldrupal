@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\aggregator\FeedStorage.
+ */
+
 namespace Drupal\aggregator;
 
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
@@ -16,10 +21,10 @@ class FeedStorage extends SqlContentEntityStorage implements FeedStorageInterfac
    * {@inheritdoc}
    */
   public function getFeedIdsToRefresh() {
-    return $this->database->query('SELECT fid FROM {aggregator_feed} WHERE queued = 0 AND checked + refresh < :time AND refresh <> :never', [
+    return $this->database->query('SELECT fid FROM {aggregator_feed} WHERE queued = 0 AND checked + refresh < :time AND refresh <> :never', array(
       ':time' => REQUEST_TIME,
       ':never' => AGGREGATOR_CLEAR_NEVER,
-    ])->fetchCol();
+    ))->fetchCol();
   }
 
 }

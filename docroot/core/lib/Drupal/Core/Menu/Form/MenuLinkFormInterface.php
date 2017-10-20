@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Menu\Form\MenuLinkFormInterface.
+ */
+
 namespace Drupal\Core\Menu\Form;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -33,8 +38,7 @@ interface MenuLinkFormInterface extends PluginFormInterface {
    *   The current state of the form.
    *
    * @return array
-   *   The new plugin definition values taken from the form values. The plugin
-   *   ID must be returned as part of the definition.
+   *   The new plugin definition values taken from the form values.
    */
   public function extractFormValues(array &$form, FormStateInterface $form_state);
 

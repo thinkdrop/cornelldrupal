@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\language_elements_test\Form\LanguageConfigurationElement.
+ */
 
 namespace Drupal\language_elements_test\Form;
 
@@ -24,19 +28,19 @@ class LanguageConfigurationElement extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $conf = ContentLanguageSettings::loadByEntityTypeBundle('entity_test', 'some_bundle');
 
-    $form['lang_configuration'] = [
+    $form['lang_configuration'] = array(
       '#type' => 'language_configuration',
-      '#entity_information' => [
+      '#entity_information' => array(
         'entity_type' => 'entity_test',
         'bundle' => 'some_bundle',
-      ],
+      ),
       '#default_value' => $conf,
-    ];
+    );
 
-    $form['submit'] = [
+    $form['submit'] = array(
       '#type' => 'submit',
       '#value' => 'Save',
-    ];
+    );
     $form['#submit'][] = 'language_configuration_element_submit';
     return $form;
   }
@@ -46,5 +50,4 @@ class LanguageConfigurationElement extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
   }
-
 }

@@ -1,8 +1,12 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\history\Plugin\views\filter\HistoryUserTimestamp.
+ */
+
 namespace Drupal\history\Plugin\views\filter;
 
-use Drupal\Core\Cache\UncacheableDependencyTrait;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
 
@@ -18,10 +22,8 @@ use Drupal\views\Plugin\views\filter\FilterPluginBase;
  */
 class HistoryUserTimestamp extends FilterPluginBase {
 
-  use UncacheableDependencyTrait;
-
   // Don't display empty space where the operator would be.
-  public $no_operator = TRUE;
+  var $no_operator = TRUE;
 
   /**
    * {@inheritdoc}
@@ -49,11 +51,11 @@ class HistoryUserTimestamp extends FilterPluginBase {
       else {
         $label = $this->t('Has new content');
       }
-      $form['value'] = [
+      $form['value'] = array(
         '#type' => 'checkbox',
         '#title' => $label,
         '#default_value' => $this->value,
-      ];
+      );
     }
   }
 
@@ -94,6 +96,14 @@ class HistoryUserTimestamp extends FilterPluginBase {
     if (!empty($this->options['exposed'])) {
       return $this->t('exposed');
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheMaxAge() {
+    // This filter depends on the current time and therefore is never cacheable.
+    return 0;
   }
 
 }

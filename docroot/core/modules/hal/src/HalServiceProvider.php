@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\hal\HalServiceProvider.
+ */
+
 namespace Drupal\hal;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
@@ -20,3 +25,4 @@ class HalServiceProvider implements ServiceModifierInterface {
   }
 
 }
+

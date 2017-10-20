@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Block\BlockManager.
+ */
+
 namespace Drupal\Core\Block;
 
 use Drupal\Component\Plugin\FallbackPluginManagerInterface;
@@ -20,6 +25,7 @@ class BlockManager extends DefaultPluginManager implements BlockManagerInterface
 
   use CategorizingPluginManagerTrait {
     getSortedDefinitions as traitGetSortedDefinitions;
+    getGroupedDefinitions as traitGetGroupedDefinitions;
   }
   use ContextAwarePluginManagerTrait;
 
@@ -53,7 +59,7 @@ class BlockManager extends DefaultPluginManager implements BlockManagerInterface
    * {@inheritdoc}
    */
   public function getSortedDefinitions(array $definitions = NULL) {
-    // Sort the plugins first by category, then by admin label.
+    // Sort the plugins first by category, then by label.
     $definitions = $this->traitGetSortedDefinitions($definitions, 'admin_label');
     // Do not display the 'broken' plugin in the UI.
     unset($definitions['broken']);
@@ -63,7 +69,17 @@ class BlockManager extends DefaultPluginManager implements BlockManagerInterface
   /**
    * {@inheritdoc}
    */
-  public function getFallbackPluginId($plugin_id, array $configuration = []) {
+  public function getGroupedDefinitions(array $definitions = NULL) {
+    $definitions = $this->traitGetGroupedDefinitions($definitions, 'admin_label');
+    // Do not display the 'broken' plugin in the UI.
+    unset($definitions[$this->t('Block')]['broken']);
+    return $definitions;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFallbackPluginId($plugin_id, array $configuration = array()) {
     return 'broken';
   }
 

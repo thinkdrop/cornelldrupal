@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\TermBreadcrumbBuilder.
+ */
+
 namespace Drupal\taxonomy;
 
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
@@ -68,7 +73,7 @@ class TermBreadcrumbBuilder implements BreadcrumbBuilderInterface {
     foreach (array_reverse($parents) as $term) {
       $term = $this->entityManager->getTranslationFromContext($term);
       $breadcrumb->addCacheableDependency($term);
-      $breadcrumb->addLink(Link::createFromRoute($term->getName(), 'entity.taxonomy_term.canonical', ['taxonomy_term' => $term->id()]));
+      $breadcrumb->addLink(Link::createFromRoute($term->getName(), 'entity.taxonomy_term.canonical', array('taxonomy_term' => $term->id())));
     }
 
     // This breadcrumb builder is based on a route parameter, and hence it

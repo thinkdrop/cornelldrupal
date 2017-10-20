@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\book\BookManager.
+ */
+
 namespace Drupal\book;
 
 use Drupal\Component\Utility\Unicode;
@@ -92,7 +97,7 @@ class BookManager implements BookManagerInterface {
    * Loads Books Array.
    */
   protected function loadBooks() {
-    $this->books = [];
+    $this->books = array();
     $nids = $this->bookOutlineStorage->getBooks();
 
     if ($nids) {
@@ -117,15 +122,15 @@ class BookManager implements BookManagerInterface {
    * {@inheritdoc}
    */
   public function getLinkDefaults($nid) {
-    return [
+    return array(
       'original_bid' => 0,
       'nid' => $nid,
       'bid' => 0,
       'pid' => 0,
       'has_children' => 0,
       'weight' => 0,
-      'options' => [],
-    ];
+      'options' => array(),
+    );
   }
 
   /**
@@ -138,7 +143,7 @@ class BookManager implements BookManagerInterface {
   /**
    * Determine the relative depth of the children of a given book link.
    *
-   * @param array $book_link
+   * @param array
    *   The book link.
    *
    * @return int
@@ -159,40 +164,40 @@ class BookManager implements BookManagerInterface {
     if ($form_state->hasValue('book')) {
       $node->book = $form_state->getValue('book');
     }
-    $form['book'] = [
+    $form['book'] = array(
       '#type' => 'details',
       '#title' => $this->t('Book outline'),
       '#weight' => 10,
       '#open' => !$collapsed,
       '#group' => 'advanced',
-      '#attributes' => [
-        'class' => ['book-outline-form'],
-      ],
-      '#attached' => [
-        'library' => ['book/drupal.book'],
-      ],
+      '#attributes' => array(
+        'class' => array('book-outline-form'),
+      ),
+      '#attached' => array(
+        'library' => array('book/drupal.book'),
+      ),
       '#tree' => TRUE,
-    ];
-    foreach (['nid', 'has_children', 'original_bid', 'parent_depth_limit'] as $key) {
-      $form['book'][$key] = [
+    );
+    foreach (array('nid', 'has_children', 'original_bid', 'parent_depth_limit') as $key) {
+      $form['book'][$key] = array(
         '#type' => 'value',
         '#value' => $node->book[$key],
-      ];
+      );
     }
 
     $form['book']['pid'] = $this->addParentSelectFormElements($node->book);
 
     // @see \Drupal\book\Form\BookAdminEditForm::bookAdminTableTree(). The
     // weight may be larger than 15.
-    $form['book']['weight'] = [
+    $form['book']['weight'] = array(
       '#type' => 'weight',
       '#title' => $this->t('Weight'),
       '#default_value' => $node->book['weight'],
       '#delta' => max(15, abs($node->book['weight'])),
       '#weight' => 5,
       '#description' => $this->t('Pages at a given level are ordered first by weight and then by title.'),
-    ];
-    $options = [];
+    );
+    $options = array();
     $nid = !$node->isNew() ? $node->id() : 'new';
     if ($node->id() && ($nid == $node->book['original_bid']) && ($node->book['parent_depth_limit'] == 0)) {
       // This is the top level node in a maximum depth book and thus cannot be
@@ -207,15 +212,15 @@ class BookManager implements BookManagerInterface {
 
     if ($account->hasPermission('create new books') && ($nid == 'new' || ($nid != $node->book['original_bid']))) {
       // The node can become a new book, if it is not one already.
-      $options = [$nid => $this->t('- Create a new book -')] + $options;
+      $options = array($nid => $this->t('- Create a new book -')) + $options;
     }
     if (!$node->book['bid']) {
       // The node is not currently in the hierarchy.
-      $options = [0 => $this->t('- None -')] + $options;
+      $options = array(0 => $this->t('- None -')) + $options;
     }
 
     // Add a drop-down to select the destination book.
-    $form['book']['bid'] = [
+    $form['book']['bid'] = array(
       '#type' => 'select',
       '#title' => $this->t('Book'),
       '#default_value' => $node->book['bid'],
@@ -223,14 +228,14 @@ class BookManager implements BookManagerInterface {
       '#access' => (bool) $options,
       '#description' => $this->t('Your page will be a part of the selected book.'),
       '#weight' => -5,
-      '#attributes' => ['class' => ['book-title-select']],
-      '#ajax' => [
+      '#attributes' => array('class' => array('book-title-select')),
+      '#ajax' => array(
         'callback' => 'book_form_update',
         'wrapper' => 'edit-book-plid-wrapper',
         'effect' => 'fade',
         'speed' => 'fast',
-      ],
-    ];
+      ),
+    );
     return $form;
   }
 
@@ -281,8 +286,8 @@ class BookManager implements BookManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function getBookParents(array $item, array $parent = []) {
-    $book = [];
+  public function getBookParents(array $item, array $parent = array()) {
+    $book = array();
     if ($item['pid'] == 0) {
       $book['p1'] = $item['nid'];
       for ($i = 2; $i <= static::BOOK_MAX_DEPTH; $i++) {
@@ -325,15 +330,15 @@ class BookManager implements BookManagerInterface {
   protected function addParentSelectFormElements(array $book_link) {
     $config = $this->configFactory->get('book.settings');
     if ($config->get('override_parent_selector')) {
-      return [];
+      return array();
     }
     // Offer a message or a drop-down to choose a different parent page.
-    $form = [
+    $form = array(
       '#type' => 'hidden',
       '#value' => -1,
       '#prefix' => '<div id="edit-book-plid-wrapper">',
       '#suffix' => '</div>',
-    ];
+    );
 
     if ($book_link['nid'] === $book_link['bid']) {
       // This is a book - at the top level.
@@ -348,16 +353,16 @@ class BookManager implements BookManagerInterface {
       $form['#prefix'] .= '<em>' . $this->t('No book selected.') . '</em>';
     }
     else {
-      $form = [
+      $form = array(
         '#type' => 'select',
         '#title' => $this->t('Parent item'),
         '#default_value' => $book_link['pid'],
-        '#description' => $this->t('The parent page in the book. The maximum depth for a book and all child pages is @maxdepth. Some pages in the selected book may not be available as parents if selecting them would exceed this limit.', ['@maxdepth' => static::BOOK_MAX_DEPTH]),
-        '#options' => $this->getTableOfContents($book_link['bid'], $book_link['parent_depth_limit'], [$book_link['nid']]),
-        '#attributes' => ['class' => ['book-title-select']],
+        '#description' => $this->t('The parent page in the book. The maximum depth for a book and all child pages is @maxdepth. Some pages in the selected book may not be available as parents if selecting them would exceed this limit.', array('@maxdepth' => static::BOOK_MAX_DEPTH)),
+        '#options' => $this->getTableOfContents($book_link['bid'], $book_link['parent_depth_limit'], array($book_link['nid'])),
+        '#attributes' => array('class' => array('book-title-select')),
         '#prefix' => '<div id="edit-book-plid-wrapper">',
         '#suffix' => '</div>',
-      ];
+      );
     }
     $this->renderer->addCacheableDependency($form, $config);
 
@@ -388,11 +393,11 @@ class BookManager implements BookManagerInterface {
    *   children).
    */
   protected function recurseTableOfContents(array $tree, $indent, array &$toc, array $exclude, $depth_limit) {
-    $nids = [];
+    $nids = array();
     foreach ($tree as $data) {
       if ($data['link']['depth'] > $depth_limit) {
         // Don't iterate through any links on this level.
-        return;
+        break;
       }
       if (!in_array($data['link']['nid'], $exclude)) {
         $nids[] = $data['link']['nid'];
@@ -403,8 +408,7 @@ class BookManager implements BookManagerInterface {
 
     foreach ($tree as $data) {
       $nid = $data['link']['nid'];
-      // Check for excluded or missing node.
-      if (empty($nodes[$nid])) {
+      if (in_array($nid, $exclude)) {
         continue;
       }
       $toc[$nid] = $indent . ' ' . Unicode::truncate($nodes[$nid]->label(), 30, TRUE, TRUE);
@@ -417,9 +421,9 @@ class BookManager implements BookManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function getTableOfContents($bid, $depth_limit, array $exclude = []) {
+  public function getTableOfContents($bid, $depth_limit, array $exclude = array()) {
     $tree = $this->bookTreeAllData($bid);
-    $toc = [];
+    $toc = array();
     $this->recurseTableOfContents($tree, '', $toc, $exclude, $depth_limit);
 
     return $toc;
@@ -435,22 +439,22 @@ class BookManager implements BookManagerInterface {
     if ($nid == $original['bid']) {
       // Handle deletion of a top-level post.
       $result = $this->bookOutlineStorage->loadBookChildren($nid);
-      $children = $this->entityManager->getStorage('node')->loadMultiple(array_keys($result));
-      foreach ($children as $child) {
-        $child->book['bid'] = $child->id();
+
+      foreach ($result as $child) {
+        $child['bid'] = $child['nid'];
         $this->updateOutline($child);
       }
     }
     $this->updateOriginalParent($original);
     $this->books = NULL;
-    Cache::invalidateTags(['bid:' . $original['bid']]);
+    Cache::invalidateTags(array('bid:' . $original['bid']));
   }
 
   /**
    * {@inheritdoc}
    */
   public function bookTreeAllData($bid, $link = NULL, $max_depth = NULL) {
-    $tree = &drupal_static(__METHOD__, []);
+    $tree = &drupal_static(__METHOD__, array());
     $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
     // Use $nid as a flag for whether the data being loaded is for the whole
@@ -462,10 +466,10 @@ class BookManager implements BookManagerInterface {
 
     if (!isset($tree[$cid])) {
       // If the tree data was not in the static cache, build $tree_parameters.
-      $tree_parameters = [
+      $tree_parameters = array(
         'min_depth' => 1,
         'max_depth' => $max_depth,
-      ];
+      );
       if ($nid) {
         $active_trail = $this->getActiveTrailIds($bid, $link);
         $tree_parameters['expanded'] = $active_trail;
@@ -486,7 +490,7 @@ class BookManager implements BookManagerInterface {
   public function getActiveTrailIds($bid, $link) {
     // The tree is for a single item, so we need to match the values in its
     // p columns and 0 (the top level) with the plid values of other links.
-    $active_trail = [0];
+    $active_trail = array(0);
     for ($i = 1; $i < static::BOOK_MAX_DEPTH; $i++) {
       if (!empty($link["p$i"])) {
         $active_trail[] = $link["p$i"];
@@ -582,25 +586,23 @@ class BookManager implements BookManagerInterface {
    *   The Book ID to find links for.
    * @param array $parameters
    *   (optional) An associative array of build parameters. Possible keys:
-   *   - expanded: An array of parent link IDs to return only book links that
-   *     are children of one of the parent link IDs in this list. If empty,
-   *     the whole outline is built, unless 'only_active_trail' is TRUE.
-   *   - active_trail: An array of node IDs, representing the currently active
-   *     book link.
+   *   - expanded: An array of parent link ids to return only book links that
+   *     are children of one of the plids in this list. If empty, the whole
+   *     outline is built, unless 'only_active_trail' is TRUE.
+   *   - active_trail: An array of nids, representing the coordinates of the
+   *     currently active book link.
    *   - only_active_trail: Whether to only return links that are in the active
-   *     trail. This option is ignored if 'expanded' is non-empty.
+   *     trail. This option is ignored, if 'expanded' is non-empty.
    *   - min_depth: The minimum depth of book links in the resulting tree.
-   *     Defaults to 1, which is to build the whole tree for the book.
+   *     Defaults to 1, which is the default to build a whole tree for a book.
    *   - max_depth: The maximum depth of book links in the resulting tree.
    *   - conditions: An associative array of custom database select query
-   *     condition key/value pairs; see
-   *     \Drupal\book\BookOutlineStorage::getBookMenuTree() for the actual
-   *     query.
+   *     condition key/value pairs; see _menu_build_tree() for the actual query.
    *
    * @return array
    *   A fully built book tree.
    */
-  protected function bookTreeBuild($bid, array $parameters = []) {
+  protected function bookTreeBuild($bid, array $parameters = array()) {
     // Build the book tree.
     $data = $this->doBookTreeBuild($bid, $parameters);
     // Check access for the current user to each item in the tree.
@@ -615,33 +617,11 @@ class BookManager implements BookManagerInterface {
    * to further massage the data manually before further processing happens.
    * _menu_tree_check_access() needs to be invoked afterwards.
    *
-   * @param int $bid
-   *   The book ID to find links for.
-   * @param array $parameters
-   *   (optional) An associative array of build parameters. Possible keys:
-   *   - expanded: An array of parent link IDs to return only book links that
-   *     are children of one of the parent link IDs in this list. If empty,
-   *     the whole outline is built, unless 'only_active_trail' is TRUE.
-   *   - active_trail: An array of node IDs, representing the currently active
-   *     book link.
-   *   - only_active_trail: Whether to only return links that are in the active
-   *     trail. This option is ignored if 'expanded' is non-empty.
-   *   - min_depth: The minimum depth of book links in the resulting tree.
-   *     Defaults to 1, which is to build the whole tree for the book.
-   *   - max_depth: The maximum depth of book links in the resulting tree.
-   *   - conditions: An associative array of custom database select query
-   *     condition key/value pairs; see
-   *     \Drupal\book\BookOutlineStorage::getBookMenuTree() for the actual
-   *     query.
-   *
-   * @return array
-   *   An array with links representing the tree structure of the book.
-   *
-   * @see \Drupal\book\BookOutlineStorageInterface::getBookMenuTree()
+   * @see menu_build_tree()
    */
-  protected function doBookTreeBuild($bid, array $parameters = []) {
+  protected function doBookTreeBuild($bid, array $parameters = array()) {
     // Static cache of already built menu trees.
-    $trees = &drupal_static(__METHOD__, []);
+    $trees = &drupal_static(__METHOD__, array());
     $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
     // Build the cache id; sort parents to prevent duplicate storage and remove
@@ -664,18 +644,18 @@ class BookManager implements BookManagerInterface {
       $result = $this->bookOutlineStorage->getBookMenuTree($bid, $parameters, $min_depth, static::BOOK_MAX_DEPTH);
 
       // Build an ordered array of links using the query result object.
-      $links = [];
+      $links = array();
       foreach ($result as $link) {
         $link = (array) $link;
         $links[$link['nid']] = $link;
       }
-      $active_trail = (isset($parameters['active_trail']) ? $parameters['active_trail'] : []);
+      $active_trail = (isset($parameters['active_trail']) ? $parameters['active_trail'] : array());
       $data['tree'] = $this->buildBookOutlineData($links, $active_trail, $min_depth);
-      $data['node_links'] = [];
+      $data['node_links'] = array();
       $this->bookTreeCollectNodeLinks($data['tree'], $data['node_links']);
 
       // Cache the data, if it is not already in the cache.
-      \Drupal::cache('data')->set($tree_cid, $data, Cache::PERMANENT, ['bid:' . $bid]);
+      \Drupal::cache('data')->set($tree_cid, $data, Cache::PERMANENT, array('bid:' . $bid));
       $trees[$tree_cid] = $data;
     }
 
@@ -705,7 +685,7 @@ class BookManager implements BookManagerInterface {
     if (!isset($this->bookTreeFlattened[$book_link['nid']])) {
       // Call $this->bookTreeAllData() to take advantage of caching.
       $tree = $this->bookTreeAllData($book_link['bid'], $book_link, $book_link['depth'] + 1);
-      $this->bookTreeFlattened[$book_link['nid']] = [];
+      $this->bookTreeFlattened[$book_link['nid']] = array();
       $this->flatBookTree($tree, $this->bookTreeFlattened[$book_link['nid']]);
     }
 
@@ -720,7 +700,7 @@ class BookManager implements BookManagerInterface {
    * @param array $flat
    *   A flat array of the menu links from $tree, passed by reference.
    *
-   * @see static::bookTreeGetFlat()
+   * @see static::bookTreeGetFlat().
    */
   protected function flatBookTree(array $tree, array &$flat) {
     foreach ($tree as $data) {
@@ -735,7 +715,7 @@ class BookManager implements BookManagerInterface {
    * {@inheritdoc}
    */
   public function loadBookLink($nid, $translate = TRUE) {
-    $links = $this->loadBookLinks([$nid], $translate);
+    $links = $this->loadBookLinks(array($nid), $translate);
     return isset($links[$nid]) ? $links[$nid] : FALSE;
   }
 
@@ -744,7 +724,7 @@ class BookManager implements BookManagerInterface {
    */
   public function loadBookLinks($nids, $translate = TRUE) {
     $result = $this->bookOutlineStorage->loadMultiple($nids, $translate);
-    $links = [];
+    $links = array();
     foreach ($result as $link) {
       if ($translate) {
         $this->bookLinkTranslate($link);
@@ -779,7 +759,7 @@ class BookManager implements BookManagerInterface {
         // Update the bid for this page and all children.
         if ($link['pid'] == 0) {
           $link['depth'] = 1;
-          $parent = [];
+          $parent = array();
         }
         // In case the form did not specify a proper PID we use the BID as new
         // parent.
@@ -801,11 +781,11 @@ class BookManager implements BookManagerInterface {
         $this->updateParent($link);
       }
       // Update the weight and pid.
-      $this->bookOutlineStorage->update($link['nid'], [
+      $this->bookOutlineStorage->update($link['nid'], array(
         'weight' => $link['weight'],
         'pid' => $link['pid'],
         'bid' => $link['bid'],
-      ]);
+      ));
     }
     $cache_tags = [];
     foreach ($affected_bids as $bid) {
@@ -825,16 +805,16 @@ class BookManager implements BookManagerInterface {
    */
   protected function moveChildren(array $link, array $original) {
     $p = 'p1';
-    $expressions = [];
+    $expressions = array();
     for ($i = 1; $i <= $link['depth']; $p = 'p' . ++$i) {
-      $expressions[] = [$p, ":p_$i", [":p_$i" => $link[$p]]];
+      $expressions[] = array($p, ":p_$i", array(":p_$i" => $link[$p]));
     }
     $j = $original['depth'] + 1;
     while ($i <= static::BOOK_MAX_DEPTH && $j <= static::BOOK_MAX_DEPTH) {
-      $expressions[] = ['p' . $i++, 'p' . $j++, []];
+      $expressions[] = array('p' . $i++, 'p' . $j++, array());
     }
     while ($i <= static::BOOK_MAX_DEPTH) {
-      $expressions[] = ['p' . $i++, 0, []];
+      $expressions[] = array('p' . $i++, 0, array());
     }
 
     $shift = $link['depth'] - $original['depth'];
@@ -868,7 +848,7 @@ class BookManager implements BookManagerInterface {
       // Nothing to update.
       return TRUE;
     }
-    return $this->bookOutlineStorage->update($link['pid'], ['has_children' => 1]);
+    return $this->bookOutlineStorage->update($link['pid'], array('has_children' => 1));
   }
 
   /**
@@ -897,14 +877,14 @@ class BookManager implements BookManagerInterface {
     // Update the parent. If the original link did not have children, then the
     // parent now does not have children. If the original had children, then the
     // the parent has children now (still).
-    return $this->bookOutlineStorage->update($original['pid'], ['has_children' => $parent_has_children]);
+    return $this->bookOutlineStorage->update($original['pid'], array('has_children' => $parent_has_children));
   }
 
   /**
    * Sets the p1 through p9 properties for a book link being saved.
    *
    * @param array $link
-   *   The book link to update, passed by reference.
+   *   The book link to update.
    * @param array $parent
    *   The parent values to set.
    */
@@ -926,7 +906,7 @@ class BookManager implements BookManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function bookTreeCheckAccess(&$tree, $node_links = []) {
+  public function bookTreeCheckAccess(&$tree, $node_links = array()) {
     if ($node_links) {
       // @todo Extract that into its own method.
       $nids = array_keys($node_links);
@@ -949,12 +929,9 @@ class BookManager implements BookManagerInterface {
 
   /**
    * Sorts the menu tree and recursively checks access for each item.
-   *
-   * @param array $tree
-   *   The book tree to operate on.
    */
   protected function doBookTreeCheckAccess(&$tree) {
-    $new_tree = [];
+    $new_tree = array();
     foreach ($tree as $key => $v) {
       $item = &$tree[$key]['link'];
       $this->bookLinkTranslate($item);
@@ -993,7 +970,7 @@ class BookManager implements BookManagerInterface {
       }
       // The node label will be the value for the current user's language.
       $link['title'] = $node->label();
-      $link['options'] = [];
+      $link['options'] = array();
     }
     return $link;
   }
@@ -1021,7 +998,7 @@ class BookManager implements BookManagerInterface {
    *     array will be empty if the book link has no items in its sub-tree
    *     having a depth greater than or equal to $depth.
    */
-  protected function buildBookOutlineData(array $links, array $parents = [], $depth = 1) {
+  protected function buildBookOutlineData(array $links, array $parents = array(), $depth = 1) {
     // Reverse the array so we can use the more efficient array_pop() function.
     $links = array_reverse($links);
     return $this->buildBookOutlineRecursive($links, $parents, $depth);
@@ -1032,31 +1009,18 @@ class BookManager implements BookManagerInterface {
    *
    * The function is a bit complex because the rendering of a link depends on
    * the next book link.
-   *
-   * @param array $links
-   *   A flat array of book links that are part of the book. Each array element
-   *   is an associative array of information about the book link, containing
-   *   the fields from the {book} table. This array must be ordered depth-first.
-   * @param array $parents
-   *   An array of the node ID values that are in the path from the current page
-   *   to the root of the book tree.
-   * @param int $depth
-   *   The minimum depth to include in the returned book tree.
-   *
-   * @return array
-   *   Book tree.
    */
   protected function buildBookOutlineRecursive(&$links, $parents, $depth) {
-    $tree = [];
+    $tree = array();
     while ($item = array_pop($links)) {
       // We need to determine if we're on the path to root so we can later build
       // the correct active trail.
       $item['in_active_trail'] = in_array($item['nid'], $parents);
       // Add the current link to the tree.
-      $tree[$item['nid']] = [
+      $tree[$item['nid']] = array(
         'link' => $item,
-        'below' => [],
-      ];
+        'below' => array(),
+      );
       // Look ahead to the next link, but leave it on the array so it's
       // available to other recursive function calls if we return or build a
       // sub-tree.
@@ -1080,7 +1044,7 @@ class BookManager implements BookManagerInterface {
    * {@inheritdoc}
    */
   public function bookSubtreeData($link) {
-    $tree = &drupal_static(__METHOD__, []);
+    $tree = &drupal_static(__METHOD__, array());
 
     // Generate a cache ID (cid) specific for this $link.
     $cid = 'book-links:subtree-cid:' . $link['nid'];
@@ -1101,23 +1065,23 @@ class BookManager implements BookManagerInterface {
       // If the subtree data was not in the cache, $data will be NULL.
       if (!isset($data)) {
         $result = $this->bookOutlineStorage->getBookSubtree($link, static::BOOK_MAX_DEPTH);
-        $links = [];
+        $links = array();
         foreach ($result as $item) {
           $links[] = $item;
         }
-        $data['tree'] = $this->buildBookOutlineData($links, [], $link['depth']);
-        $data['node_links'] = [];
+        $data['tree'] = $this->buildBookOutlineData($links, array(), $link['depth']);
+        $data['node_links'] = array();
         $this->bookTreeCollectNodeLinks($data['tree'], $data['node_links']);
         // Compute the real cid for book subtree data.
         $tree_cid = 'book-links:subtree-data:' . hash('sha256', serialize($data));
         // Cache the data, if it is not already in the cache.
 
         if (!\Drupal::cache('data')->get($tree_cid)) {
-          \Drupal::cache('data')->set($tree_cid, $data, Cache::PERMANENT, ['bid:' . $link['bid']]);
+          \Drupal::cache('data')->set($tree_cid, $data, Cache::PERMANENT, array('bid:' . $link['bid']));
         }
         // Cache the cid of the (shared) data using the book and item-specific
         // cid.
-        \Drupal::cache('data')->set($cid, $tree_cid, Cache::PERMANENT, ['bid:' . $link['bid']]);
+        \Drupal::cache('data')->set($cid, $tree_cid, Cache::PERMANENT, array('bid:' . $link['bid']));
       }
       // Check access for the current user to each item in the tree.
       $this->bookTreeCheckAccess($data['tree'], $data['node_links']);

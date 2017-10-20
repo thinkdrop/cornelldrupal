@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Graph\Graph.
+ */
+
 namespace Drupal\Component\Graph;
 
 /**
@@ -56,13 +61,13 @@ class Graph {
    *     identifier.
    */
   public function searchAndSort() {
-    $state = [
+    $state = array(
       // The order of last visit of the depth first search. This is the reverse
       // of the topological order if the graph is acyclic.
-      'last_visit_order' => [],
+      'last_visit_order' => array(),
       // The components of the graph.
-      'components' => [],
-    ];
+      'components' => array(),
+    );
     // Perform the actual search.
     foreach ($this->graph as $start => $data) {
       $this->depthFirstSearch($state, $start);
@@ -71,7 +76,7 @@ class Graph {
     // We do such a numbering that every component starts with 0. This is useful
     // for module installs as we can install every 0 weighted module in one
     // request, and then every 1 weighted etc.
-    $component_weights = [];
+    $component_weights = array();
 
     foreach ($state['last_visit_order'] as $vertex) {
       $component = $this->graph[$vertex]['component'];
@@ -108,7 +113,7 @@ class Graph {
       return;
     }
     // Mark $start as visited.
-    $this->graph[$start]['paths'] = [];
+    $this->graph[$start]['paths'] = array();
 
     // Assign $start to the current component.
     $this->graph[$start]['component'] = $component;
@@ -154,5 +159,4 @@ class Graph {
     // topological order if the graph is acyclic.
     $state['last_visit_order'][] = $start;
   }
-
 }

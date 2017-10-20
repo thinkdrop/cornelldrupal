@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\config_translation\ConfigFieldMapper.
+ */
+
 namespace Drupal\config_translation;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
@@ -44,7 +49,7 @@ class ConfigFieldMapper extends ConfigEntityMapper {
    */
   public function getTypeLabel() {
     $base_entity_info = $this->entityManager->getDefinition($this->pluginDefinition['base_entity_type']);
-    return $this->t('@label fields', ['@label' => $base_entity_info->getLabel()]);
+    return $this->t('@label fields', array('@label' => $base_entity_info->getLabel()));
   }
 
   /**

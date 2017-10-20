@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Updater\Theme.
+ */
+
 namespace Drupal\Core\Updater;
 
 use Drupal\Core\Url;
@@ -49,14 +54,14 @@ class Theme extends Updater implements UpdaterInterface {
   public function isInstalled() {
     // Check if the theme exists in the file system, regardless of whether it
     // is enabled or not.
-    $themes = \Drupal::state()->get('system.theme.files', []);
+    $themes = \Drupal::state()->get('system.theme.files', array());
     return isset($themes[$this->name]);
   }
 
   /**
    * {@inheritdoc}
    */
-  public static function canUpdateDirectory($directory) {
+  static function canUpdateDirectory($directory) {
     $info = static::getExtensionInfo($directory);
 
     return (isset($info['type']) && $info['type'] == 'theme');
@@ -109,5 +114,4 @@ class Theme extends Updater implements UpdaterInterface {
       ],
     ];
   }
-
 }

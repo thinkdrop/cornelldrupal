@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Element\View.
+ */
+
 namespace Drupal\views\Element;
 
 use Drupal\Core\Render\Element\RenderElement;
@@ -17,16 +22,16 @@ class View extends RenderElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return [
-      '#pre_render' => [
-        [$class, 'preRenderViewElement'],
-      ],
+    return array(
+      '#pre_render' => array(
+        array($class, 'preRenderViewElement'),
+      ),
       '#name' => NULL,
       '#display_id' => 'default',
-      '#arguments' => [],
+      '#arguments' => array(),
       '#embed' => TRUE,
       '#cache' => [],
-    ];
+    );
   }
 
   /**
@@ -92,7 +97,7 @@ class View extends RenderElement {
       }
       if (empty($view->display_handler->getPluginDefinition()['returns_response'])) {
         $element['#attributes']['class'][] = 'views-element-container';
-        $element['#theme_wrappers'] = ['container'];
+        $element['#theme_wrappers'] = array('container');
       }
     }
 

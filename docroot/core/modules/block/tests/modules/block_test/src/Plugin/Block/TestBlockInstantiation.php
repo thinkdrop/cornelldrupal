@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block_test\Plugin\Block\TestBlockInstantiation.
+ */
+
 namespace Drupal\block_test\Plugin\Block;
 
 use Drupal\Core\Access\AccessResult;
@@ -21,9 +26,9 @@ class TestBlockInstantiation extends BlockBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return [
+    return array(
       'display_message' => 'no message set',
-    ];
+    );
   }
 
   /**
@@ -37,11 +42,11 @@ class TestBlockInstantiation extends BlockBase {
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
-    $form['display_message'] = [
+    $form['display_message'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Display message'),
       '#default_value' => $this->configuration['display_message'],
-    ];
+    );
     return $form;
   }
 
@@ -56,9 +61,9 @@ class TestBlockInstantiation extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    return [
+    return array(
       '#children' => $this->configuration['display_message'],
-    ];
+    );
   }
 
 }

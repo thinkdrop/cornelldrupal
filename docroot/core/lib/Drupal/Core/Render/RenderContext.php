@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\Core\Render\RenderContext.
+ */
 
 namespace Drupal\Core\Render;
 
@@ -10,6 +14,8 @@ namespace Drupal\Core\Render;
  * @see \Drupal\Core\Render\RendererInterface
  * @see \Drupal\Core\Render\Renderer
  * @see \Drupal\Core\Render\BubbleableMetadata
+ *
+ * @internal
  */
 class RenderContext extends \SplStack {
 

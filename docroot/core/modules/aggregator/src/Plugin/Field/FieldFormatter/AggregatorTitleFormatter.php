@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\aggregator\Plugin\Field\FieldFormatter\AggregatorTitleFormatter.
+ */
+
 namespace Drupal\aggregator\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -60,17 +65,17 @@ class AggregatorTitleFormatter extends FormatterBase {
     }
 
     foreach ($items as $delta => $item) {
-      if ($this->getSetting('display_as_link') && $url_string) {
-        $elements[$delta] = [
+        if ($this->getSetting('display_as_link') && $url_string) {
+          $elements[$delta] = [
             '#type' => 'link',
             '#title' => $item->value,
             '#url' => Url::fromUri($url_string),
-        ];
+          ];
+        }
+        else {
+          $elements[$delta] = ['#markup' => $item->value];
+        }
       }
-      else {
-        $elements[$delta] = ['#markup' => $item->value];
-      }
-    }
 
     return $elements;
   }

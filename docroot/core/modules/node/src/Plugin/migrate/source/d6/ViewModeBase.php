@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\migrate\source\d6\ViewModeBase.
+ */
+
 namespace Drupal\node\Plugin\migrate\source\d6;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -33,7 +38,7 @@ abstract class ViewModeBase extends DrupalSqlBase {
    *   The view mode names.
    */
   public function getViewModes() {
-    return [
+    return array(
       0,
       1,
       2,
@@ -42,7 +47,7 @@ abstract class ViewModeBase extends DrupalSqlBase {
       5,
       'teaser',
       'full',
-    ];
+    );
   }
 
 }

@@ -1,10 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate\Plugin\migrate\destination\EntityFieldInstance.
+ */
+
 namespace Drupal\migrate\Plugin\migrate\destination;
 
 /**
- * Provides entity field instance plugin.
- *
  * @MigrateDestination(
  *   id = "entity:field_config"
  * )
@@ -18,9 +21,6 @@ class EntityFieldInstance extends EntityConfigBase {
     $ids['entity_type']['type'] = 'string';
     $ids['bundle']['type'] = 'string';
     $ids['field_name']['type'] = 'string';
-    if ($this->isTranslationDestination()) {
-      $ids['langcode']['type'] = 'string';
-    }
     return $ids;
   }
 

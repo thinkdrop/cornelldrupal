@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\filter_test\Plugin\Filter\FilterTestAssets.
+ */
+
 namespace Drupal\filter_test\Plugin\Filter;
 
 use Drupal\filter\FilterProcessResult;
@@ -22,11 +27,11 @@ class FilterTestAssets extends FilterBase {
    */
   public function process($text, $langcode) {
     $result = new FilterProcessResult($text);
-    $result->addAttachments([
-      'library' => [
+    $result->addAttachments(array(
+      'library' => array(
         'filter/caption',
-      ],
-    ]);
+      ),
+    ));
     return $result;
   }
 

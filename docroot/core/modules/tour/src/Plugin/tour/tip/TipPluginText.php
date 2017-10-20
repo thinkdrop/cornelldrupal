@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\tour\Plugin\tour\tip\TipPluginText.
+ */
+
 namespace Drupal\tour\Plugin\tour\tip;
 
 use Drupal\Component\Utility\Html;
@@ -116,7 +121,7 @@ class TipPluginText extends TipPluginBase implements ContainerFactoryPluginInter
   public function getOutput() {
     $output = '<h2 class="tour-tip-label" id="tour-tip-' . $this->getAriaId() . '-label">' . Html::escape($this->getLabel()) . '</h2>';
     $output .= '<p class="tour-tip-body" id="tour-tip-' . $this->getAriaId() . '-contents">' . $this->token->replace($this->getBody()) . '</p>';
-    return ['#markup' => $output];
+    return array('#markup' => $output);
   }
 
 }

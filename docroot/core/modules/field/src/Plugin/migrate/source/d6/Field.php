@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\field\Plugin\migrate\source\d6\Field.
+ */
+
 namespace Drupal\field\Plugin\migrate\source\d6;
 
 use Drupal\migrate\Row;
@@ -20,7 +25,7 @@ class Field extends DrupalSqlBase {
    */
   public function query() {
     $query = $this->select('content_node_field', 'cnf')
-      ->fields('cnf', [
+      ->fields('cnf', array(
         'field_name',
         'type',
         'global_settings',
@@ -31,7 +36,7 @@ class Field extends DrupalSqlBase {
         'db_columns',
         'active',
         'locked',
-      ])
+      ))
       ->distinct();
     // Only import fields which are actually being used.
     $query->innerJoin('content_node_field_instance', 'cnfi', 'cnfi.field_name = cnf.field_name');
@@ -43,7 +48,7 @@ class Field extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'field_name' => $this->t('Field name'),
       'type' => $this->t('Type (text, integer, ....)'),
       'widget_type' => $this->t('An instance-specific widget type'),
@@ -55,7 +60,7 @@ class Field extends DrupalSqlBase {
       'db_columns' => $this->t('DB Columns'),
       'active' => $this->t('Active'),
       'locked' => $this->t('Locked'),
-    ];
+    );
   }
 
   /**
@@ -79,7 +84,7 @@ class Field extends DrupalSqlBase {
         ['field_name' => $row->getSourceProperty('field_name')],
         $this->t('Widget types @types are used in Drupal 6 field instances: widget type @selected_type applied to the Drupal 8 base field', [
           '@types' => implode(', ', $widget_types),
-          '@selected_type' => $widget_types[0],
+          '@selected_type' =>  $widget_types[0],
         ])
       );
     }
@@ -96,10 +101,10 @@ class Field extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function getIds() {
-    $ids['field_name'] = [
+    $ids['field_name'] = array(
       'type' => 'string',
       'alias' => 'cnf',
-    ];
+    );
     return $ids;
   }
 

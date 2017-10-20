@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\ListDataDefinition.
+ */
+
 namespace Drupal\Core\TypedData;
 
 /**
@@ -41,13 +46,13 @@ class ListDataDefinition extends DataDefinition implements ListDataDefinitionInt
    * {@inheritdoc}
    */
   public static function createFromItemType($item_type) {
-    return new static([], \Drupal::typedDataManager()->createDataDefinition($item_type));
+    return new static(array(), \Drupal::typedDataManager()->createDataDefinition($item_type));
   }
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $values = [], DataDefinitionInterface $item_definition = NULL) {
+  public function __construct(array $values = array(), DataDefinitionInterface $item_definition = NULL) {
     $this->definition = $values;
     $this->itemDefinition = $item_definition;
   }
@@ -107,5 +112,4 @@ class ListDataDefinition extends DataDefinition implements ListDataDefinitionInt
     $this->itemDefinition = $definition;
     return $this;
   }
-
 }

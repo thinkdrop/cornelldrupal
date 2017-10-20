@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Gettext\PoMetadataInterface.
+ */
+
 namespace Drupal\Component\Gettext;
 
 /**
@@ -37,7 +42,7 @@ interface PoMetadataInterface {
   /**
    * Get header metadata.
    *
-   * @return \Drupal\Component\Gettext\PoHeader
+   * @return \Drupal\Component\Gettext\PoHeader $header
    *   Header instance representing metadata in a PO header.
    */
   public function getHeader();

@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Tests\ViewResultAssertionTrait.
+ */
+
 namespace Drupal\views\Tests;
 
-use Drupal\views\Plugin\views\field\EntityField;
+use Drupal\views\Plugin\views\field\Field;
 
 /**
  * Provides a class for assertions to check for the expected result of a View.
@@ -30,7 +35,7 @@ trait ViewResultAssertionTrait {
    * @return bool
    *   TRUE if the assertion succeeded, or FALSE otherwise.
    */
-  protected function assertIdenticalResultset($view, $expected_result, $column_map = [], $message = NULL) {
+  protected function assertIdenticalResultset($view, $expected_result, $column_map = array(), $message = NULL) {
     return $this->assertIdenticalResultsetHelper($view, $expected_result, $column_map, 'assertIdentical', $message);
   }
 
@@ -45,7 +50,7 @@ trait ViewResultAssertionTrait {
    *   An expected result set.
    * @param array $column_map
    *   (optional) An associative array mapping the columns of the result set
-   *   from the view (as keys) and the expected result set (as values).
+   *  from the view (as keys) and the expected result set (as values).
    * @param string $message
    *   (optional) A custom message to display with the assertion. Defaults to
    *   'Non-identical result set.'
@@ -53,7 +58,7 @@ trait ViewResultAssertionTrait {
    * @return bool
    *   TRUE if the assertion succeeded, or FALSE otherwise.
    */
-  protected function assertNotIdenticalResultset($view, $expected_result, $column_map = [], $message = NULL) {
+  protected function assertNotIdenticalResultset($view, $expected_result, $column_map = array(), $message = NULL) {
     return $this->assertIdenticalResultsetHelper($view, $expected_result, $column_map, 'assertNotIdentical', $message);
   }
 
@@ -81,9 +86,9 @@ trait ViewResultAssertionTrait {
    */
   protected function assertIdenticalResultsetHelper($view, $expected_result, $column_map, $assert_method, $message = NULL) {
     // Convert $view->result to an array of arrays.
-    $result = [];
+    $result = array();
     foreach ($view->result as $key => $value) {
-      $row = [];
+      $row = array();
       foreach ($column_map as $view_column => $expected_column) {
         if (property_exists($value, $view_column)) {
           $row[$expected_column] = (string) $value->$view_column;
@@ -91,7 +96,7 @@ trait ViewResultAssertionTrait {
         // The comparison will be done on the string representation of the value.
         // For entity fields we don't have the raw value. Let's try to fetch it
         // using the entity itself.
-        elseif (empty($value->$view_column) && isset($view->field[$expected_column]) && ($field = $view->field[$expected_column]) && $field instanceof EntityField) {
+        elseif (empty($value->$view_column) && isset($view->field[$expected_column]) && ($field = $view->field[$expected_column]) && $field instanceof Field) {
           $column = NULL;
           if (count(explode(':', $view_column)) == 2) {
             $column = explode(':', $view_column)[1];
@@ -104,7 +109,7 @@ trait ViewResultAssertionTrait {
 
     // Remove the columns we don't need from the expected result.
     foreach ($expected_result as $key => $value) {
-      $row = [];
+      $row = array();
       foreach ($column_map as $expected_column) {
         // The comparison will be done on the string representation of the value.
         if (is_object($value)) {
@@ -125,7 +130,7 @@ trait ViewResultAssertionTrait {
 
     $this->verbose('<pre style="white-space: pre-wrap;">'
       . "\n\nQuery:\n" . $view->build_info['query']
-      . "\n\nQuery arguments:\n" . var_export($view->build_info['query']->getArguments(), TRUE)
+      . "\n\nQuery arguments:\n" . var_export($view->build_info['query_args'], TRUE)
       . "\n\nActual result:\n" . var_export($result, TRUE)
       . "\n\nExpected result:\n" . var_export($expected_result, TRUE));
 
@@ -136,10 +141,10 @@ trait ViewResultAssertionTrait {
     // Do the actual comparison.
     if (!isset($message)) {
       $not = (strpos($assert_method, 'Not') ? 'not' : '');
-      $message = format_string("Actual result <pre>\n@actual\n</pre> is $not identical to expected <pre>\n@expected\n</pre>", [
+      $message = format_string("Actual result <pre>\n@actual\n</pre> is $not identical to expected <pre>\n@expected\n</pre>", array(
         '@actual' => var_export($result, TRUE),
         '@expected' => var_export($expected_result, TRUE),
-      ]);
+      ));
     }
     return $this->$assert_method($result, $expected_result, $message);
   }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\area\Title.
+ */
+
 namespace Drupal\views\Plugin\views\area;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -18,7 +23,7 @@ class Title extends AreaPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['title'] = ['default' => ''];
+    $options['title'] = array('default' => '');
     return $options;
   }
 
@@ -28,12 +33,12 @@ class Title extends AreaPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['title'] = [
+    $form['title'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Overridden title'),
       '#default_value' => $this->options['title'],
       '#description' => $this->t('Override the title of this view when it is empty. The available global tokens below can be used here.'),
-    ];
+    );
 
     // Don't use the AreaPluginBase tokenForm method, we don't want row tokens.
     $this->globalTokenForm($form, $form_state);
@@ -57,7 +62,7 @@ class Title extends AreaPluginBase {
    */
   public function render($empty = FALSE) {
     // Do nothing for this handler by returning an empty render array.
-    return [];
+    return array();
   }
 
 }

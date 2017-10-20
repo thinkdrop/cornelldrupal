@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Queue\Memory.
+ */
+
 namespace Drupal\Core\Queue;
 
 /**
@@ -33,7 +38,7 @@ class Memory implements QueueInterface {
    *   An arbitrary string. The name of the queue to work with.
    */
   public function __construct($name) {
-    $this->queue = [];
+    $this->queue = array();
     $this->idSequence = 0;
   }
 
@@ -100,8 +105,7 @@ class Memory implements QueueInterface {
    * {@inheritdoc}
    */
   public function deleteQueue() {
-    $this->queue = [];
+    $this->queue = array();
     $this->idSequence = 0;
   }
-
 }

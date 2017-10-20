@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\EntityRouteProviderSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -68,3 +73,4 @@ class EntityRouteProviderSubscriber implements EventSubscriberInterface {
   }
 
 }
+

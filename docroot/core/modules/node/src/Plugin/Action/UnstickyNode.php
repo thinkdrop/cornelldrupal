@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\Action\UnstickyNode.
+ */
+
 namespace Drupal\node\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;
@@ -20,7 +25,8 @@ class UnstickyNode extends ActionBase {
    * {@inheritdoc}
    */
   public function execute($entity = NULL) {
-    $entity->setSticky(FALSE)->save();
+    $entity->sticky = NODE_NOT_STICKY;
+    $entity->save();
   }
 
   /**

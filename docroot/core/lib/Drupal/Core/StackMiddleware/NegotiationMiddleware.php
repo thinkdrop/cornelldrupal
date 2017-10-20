@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\StackMiddleware\NegotiationMiddleware.
+ */
+
 namespace Drupal\Core\StackMiddleware;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +44,7 @@ class NegotiationMiddleware implements HttpKernelInterface {
   /**
    * {@inheritdoc}
    */
-  public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = TRUE) {
+  public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
     // Register available mime types.
     foreach ($this->formats as $format => $mime_type) {
       $request->setFormat($format, $mime_type);
@@ -80,7 +85,7 @@ class NegotiationMiddleware implements HttpKernelInterface {
   protected function getContentType(Request $request) {
     // AJAX iframe uploads need special handling, because they contain a JSON
     // response wrapped in <textarea>.
-    if ($request->request->get('ajax_iframe_upload', FALSE)) {
+    if ($request->get('ajax_iframe_upload', FALSE)) {
       return 'iframeupload';
     }
 

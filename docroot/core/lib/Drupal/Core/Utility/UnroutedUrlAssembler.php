@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Utility\UnroutedUrlAssembler.
+ */
+
 namespace Drupal\Core\Utility;
 
 use Drupal\Component\Utility\UrlHelper;
@@ -29,7 +34,7 @@ class UnroutedUrlAssembler implements UnroutedUrlAssemblerInterface {
   protected $pathProcessor;
 
   /**
-   * Constructs a new unroutedUrlAssembler object.
+   *  Constructs a new unroutedUrlAssembler object.
    *
    * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   A request stack object.

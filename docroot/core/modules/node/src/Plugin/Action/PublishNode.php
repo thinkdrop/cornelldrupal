@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\Action\PublishNode.
+ */
+
 namespace Drupal\node\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;
@@ -20,7 +25,8 @@ class PublishNode extends ActionBase {
    * {@inheritdoc}
    */
   public function execute($entity = NULL) {
-    $entity->setPublished()->save();
+    $entity->status = NODE_PUBLISHED;
+    $entity->save();
   }
 
   /**

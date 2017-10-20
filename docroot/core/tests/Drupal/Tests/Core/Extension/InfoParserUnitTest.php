@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Extension\InfoParserUnitTest.
+ */
+
 namespace Drupal\Tests\Core\Extension;
 
 use Drupal\Core\Extension\InfoParser;
@@ -50,6 +55,9 @@ class InfoParserUnitTest extends UnitTestCase {
    * Test if correct exception is thrown for a broken info file.
    *
    * @covers ::parse
+   *
+   * @expectedException \Drupal\Core\Extension\InfoParserException
+   * @expectedExceptionMessageRegExp #broken\.info\.txt#
    */
   public function testInfoParserBroken() {
     $broken_info = <<<BROKEN_INFO
@@ -71,7 +79,6 @@ BROKEN_INFO;
       ],
     ]);
     $filename = vfsStream::url('modules/fixtures/broken.info.txt');
-    $this->setExpectedException('\Drupal\Core\Extension\InfoParserException', 'broken.info.txt');
     $this->infoParser->parse($filename);
   }
 
@@ -79,6 +86,9 @@ BROKEN_INFO;
    * Tests that missing required keys are detected.
    *
    * @covers ::parse
+   *
+   * @expectedException \Drupal\Core\Extension\InfoParserException
+   * @expectedExceptionMessageRegExp #Missing required keys \(type, core, name\) in .+?missing_keys\.info\.txt#
    */
   public function testInfoParserMissingKeys() {
     $missing_keys = <<<MISSINGKEYS
@@ -96,7 +106,6 @@ MISSINGKEYS;
       ],
     ]);
     $filename = vfsStream::url('modules/fixtures/missing_keys.info.txt');
-    $this->setExpectedException('\Drupal\Core\Extension\InfoParserException', 'Missing required keys (type, core, name) in vfs://modules/fixtures/missing_keys.info.txt');
     $this->infoParser->parse($filename);
   }
 
@@ -104,6 +113,9 @@ MISSINGKEYS;
    * Tests that missing required key is detected.
    *
    * @covers ::parse
+   *
+   * @expectedException \Drupal\Core\Extension\InfoParserException
+   * @expectedExceptionMessageRegExp #Missing required keys \(type\) in .+?missing_key\.info\.txt#
    */
   public function testInfoParserMissingKey() {
     $missing_key = <<<MISSINGKEY
@@ -124,7 +136,6 @@ MISSINGKEY;
       ],
     ]);
     $filename = vfsStream::url('modules/fixtures/missing_key.info.txt');
-    $this->setExpectedException('\Drupal\Core\Extension\InfoParserException', 'Missing required keys (type) in vfs://modules/fixtures/missing_key.info.txt');
     $this->infoParser->parse($filename);
   }
 
@@ -141,7 +152,7 @@ type: module
 description: 'testing info file parsing'
 simple_string: 'A simple string'
 version: "VERSION"
-double_colon: dummyClassName::method
+double_colon: dummyClassName::
 COMMONTEST;
 
     vfsStream::setup('modules');
@@ -153,7 +164,7 @@ COMMONTEST;
     $info_values = $this->infoParser->parse(vfsStream::url('modules/fixtures/common_test.info.txt'));
     $this->assertEquals($info_values['simple_string'], 'A simple string', 'Simple string value was parsed correctly.');
     $this->assertEquals($info_values['version'], \Drupal::VERSION, 'Constant value was parsed correctly.');
-    $this->assertEquals($info_values['double_colon'], 'dummyClassName::method', 'Value containing double-colon was parsed correctly.');
+    $this->assertEquals($info_values['double_colon'], 'dummyClassName::', 'Value containing double-colon was parsed correctly.');
   }
 
 }

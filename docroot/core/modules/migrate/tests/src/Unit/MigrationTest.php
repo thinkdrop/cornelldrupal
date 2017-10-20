@@ -7,18 +7,16 @@
 
 namespace Drupal\Tests\migrate\Unit;
 
-use Drupal\migrate\Plugin\MigrationInterface;
-use Drupal\migrate\Plugin\Migration;
+use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\migrate\Entity\Migration;
 use Drupal\migrate\Exception\RequirementsException;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateSourceInterface;
-use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Plugin\RequirementsInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
- * @coversDefaultClass \Drupal\migrate\Plugin\Migration
- *
+ * @coversDefaultClass \Drupal\migrate\Entity\Migration
  * @group Migration
  */
 class MigrationTest extends UnitTestCase {
@@ -27,6 +25,9 @@ class MigrationTest extends UnitTestCase {
    * Tests checking requirements for source plugins.
    *
    * @covers ::checkRequirements
+   *
+   * @expectedException \Drupal\migrate\Exception\RequirementsException
+   * @expectedExceptionMessage Missing source requirement
    */
   public function testRequirementsForSourcePlugin() {
     $migration = new TestMigration();
@@ -40,7 +41,6 @@ class MigrationTest extends UnitTestCase {
     $migration->setSourcePlugin($source_plugin);
     $migration->setDestinationPlugin($destination_plugin);
 
-    $this->setExpectedException(RequirementsException::class, 'Missing source requirement');
     $migration->checkRequirements();
   }
 
@@ -48,6 +48,9 @@ class MigrationTest extends UnitTestCase {
    * Tests checking requirements for destination plugins.
    *
    * @covers ::checkRequirements
+   *
+   * @expectedException \Drupal\migrate\Exception\RequirementsException
+   * @expectedExceptionMessage Missing destination requirement
    */
   public function testRequirementsForDestinationPlugin() {
     $migration = new TestMigration();
@@ -61,7 +64,6 @@ class MigrationTest extends UnitTestCase {
     $migration->setSourcePlugin($source_plugin);
     $migration->setDestinationPlugin($destination_plugin);
 
-    $this->setExpectedException(RequirementsException::class, 'Missing destination requirement');
     $migration->checkRequirements();
   }
 
@@ -69,6 +71,9 @@ class MigrationTest extends UnitTestCase {
    * Tests checking requirements for destination plugins.
    *
    * @covers ::checkRequirements
+   *
+   * @expectedException \Drupal\migrate\Exception\RequirementsException
+   * @expectedExceptionMessage Missing migrations test_a, test_c
    */
   public function testRequirementsForMigrations() {
     $migration = new TestMigration();
@@ -79,16 +84,16 @@ class MigrationTest extends UnitTestCase {
     $migration->setSourcePlugin($source_plugin);
     $migration->setDestinationPlugin($destination_plugin);
 
-    $plugin_manager = $this->getMock('Drupal\migrate\Plugin\MigrationPluginManagerInterface');
-    $migration->setMigrationPluginManager($plugin_manager);
+    $entity_manager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
+    $migration->setEntityManager($entity_manager);
 
     // We setup the requirements that test_a doesn't exist and test_c is not
     // completed yet.
     $migration->setRequirements(['test_a', 'test_b', 'test_c', 'test_d']);
 
-    $migration_b = $this->getMock(MigrationInterface::class);
-    $migration_c = $this->getMock(MigrationInterface::class);
-    $migration_d = $this->getMock(MigrationInterface::class);
+    $migration_b = $this->getMock('Drupal\migrate\Entity\MigrationInterface');
+    $migration_c = $this->getMock('Drupal\migrate\Entity\MigrationInterface');
+    $migration_d = $this->getMock('Drupal\migrate\Entity\MigrationInterface');
 
     $migration_b->expects($this->once())
       ->method('allRowsProcessed')
@@ -100,76 +105,44 @@ class MigrationTest extends UnitTestCase {
       ->method('allRowsProcessed')
       ->willReturn(TRUE);
 
-    $plugin_manager->expects($this->once())
-      ->method('createInstances')
+    $migration_storage = $this->getMock('Drupal\Core\Entity\EntityStorageInterface');
+    $migration_storage->expects($this->once())
+      ->method('loadMultiple')
       ->with(['test_a', 'test_b', 'test_c', 'test_d'])
       ->willReturn(['test_b' => $migration_b, 'test_c' => $migration_c, 'test_d' => $migration_d]);
+    $entity_manager->expects($this->once())
+      ->method('getStorage')
+      ->with('migration')
+      ->willReturn($migration_storage);
 
-    $this->setExpectedException(RequirementsException::class, 'Missing migrations test_a, test_c');
     $migration->checkRequirements();
   }
 
 }
 
-/**
- * Defines the TestMigration class.
- */
 class TestMigration extends Migration {
 
-  /**
-   * Constructs an instance of TestMigration object.
-   */
   public function __construct() {
   }
 
-  /**
-   * Sets the requirements values.
-   *
-   * @param array $requirements
-   *   The array of requirement values.
-   */
   public function setRequirements(array $requirements) {
     $this->requirements = $requirements;
   }
 
-  /**
-   * Sets the source Plugin.
-   *
-   * @param \Drupal\migrate\Plugin\MigrateSourceInterface $source_plugin
-   *   The source Plugin.
-   */
   public function setSourcePlugin(MigrateSourceInterface $source_plugin) {
     $this->sourcePlugin = $source_plugin;
   }
 
-  /**
-   * Sets the destination Plugin.
-   *
-   * @param \Drupal\migrate\Plugin\MigrateDestinationInterface $destination_plugin
-   *   The destination Plugin.
-   */
   public function setDestinationPlugin(MigrateDestinationInterface $destination_plugin) {
     $this->destinationPlugin = $destination_plugin;
   }
 
-  /**
-   * Sets the plugin manager service.
-   *
-   * @param \Drupal\migrate\Plugin\MigrationPluginManagerInterface $plugin_manager
-   *   The plugin manager service.
-   */
-  public function setMigrationPluginManager(MigrationPluginManagerInterface $plugin_manager) {
-    $this->migrationPluginManager = $plugin_manager;
+  public function setEntityManager(EntityManagerInterface $entity_manager) {
+    $this->entityManager = $entity_manager;
   }
 
 }
 
-/**
- * Defines the RequirementsAwareSourceInterface.
- */
 interface RequirementsAwareSourceInterface extends MigrateSourceInterface, RequirementsInterface {}
 
-/**
- * Defines the RequirementsAwareDestinationInterface.
- */
 interface RequirementsAwareDestinationInterface extends MigrateDestinationInterface, RequirementsInterface {}

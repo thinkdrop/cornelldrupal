@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\aggregator_test\Plugin\aggregator\fetcher\TestFetcher.
+ */
+
 namespace Drupal\aggregator_test\Plugin\aggregator\fetcher;
 
 use Drupal\aggregator\Plugin\FetcherInterface;
@@ -28,5 +33,4 @@ class TestFetcher extends DefaultFetcher implements FetcherInterface {
     }
     return parent::fetch($feed);
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\menu_test\TestControllers.
+ */
+
 namespace Drupal\menu_test;
 
 use Drupal\Component\Utility\SafeMarkup;
@@ -59,7 +64,7 @@ class TestControllers {
    */
   public function testDefaults($placeholder = NULL) {
     if ($placeholder) {
-      return ['#markup' => SafeMarkup::format("Sometimes there is a placeholder: '@placeholder'.", ['@placeholder' => $placeholder])];
+      return ['#markup' => SafeMarkup::format("Sometimes there is a placeholder: '@placeholder'.", array('@placeholder' => $placeholder))];
     }
     else {
       return ['#markup' => 'Sometimes there is no placeholder.'];
@@ -82,5 +87,4 @@ class TestControllers {
       ]
     ];
   }
-
 }

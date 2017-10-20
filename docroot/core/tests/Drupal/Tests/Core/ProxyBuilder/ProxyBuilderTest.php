@@ -156,7 +156,6 @@ EOS;
 
     return $expected_string;
   }
-
 }
 
 class TestServiceNoMethod {
@@ -165,7 +164,7 @@ class TestServiceNoMethod {
 
 class TestServiceComplexMethod {
 
-  public function complexMethod($parameter, callable $function, TestServiceNoMethod $test_service = NULL, array &$elements = []) {
+  public function complexMethod($parameter, callable $function, TestServiceNoMethod $test_service = NULL, array &$elements = array()) {
 
   }
 

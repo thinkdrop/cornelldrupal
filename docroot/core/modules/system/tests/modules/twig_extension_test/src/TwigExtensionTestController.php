@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\twig_extension_test\TwigExtensionTestController.
+ */
+
 namespace Drupal\twig_extension_test;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -14,7 +19,7 @@ class TwigExtensionTestController {
    * Menu callback for testing Twig filters in a Twig template.
    */
   public function testFilterRender() {
-    return [
+    return array(
       '#theme' => 'twig_extension_test_filter',
       '#message' => 'Every animal is not a mineral.',
       '#safe_join_items' => [
@@ -22,14 +27,14 @@ class TwigExtensionTestController {
         $this->t('<em>will be markup</em>'),
         ['#markup' => '<strong>will be rendered</strong>']
       ]
-    ];
+    );
   }
 
   /**
    * Menu callback for testing Twig functions in a Twig template.
    */
   public function testFunctionRender() {
-    return ['#theme' => 'twig_extension_test_function'];
+    return array('#theme' => 'twig_extension_test_function');
   }
 
 }

@@ -1,8 +1,12 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\ParamConverter\AdminPathConfigEntityConverter.
+ */
+
 namespace Drupal\Core\ParamConverter;
 
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Routing\AdminContext;
 use Symfony\Component\Routing\Route;
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -48,6 +52,7 @@ class AdminPathConfigEntityConverter extends EntityConverter {
    *   The config factory.
    * @param \Drupal\Core\Routing\AdminContext $admin_context
    *   The route admin context service.
+   *
    */
   public function __construct(EntityManagerInterface $entity_manager, ConfigFactoryInterface $config_factory, AdminContext $admin_context) {
     parent::__construct($entity_manager);
@@ -66,7 +71,7 @@ class AdminPathConfigEntityConverter extends EntityConverter {
     // entity types will have performed this check in self::applies().
     if (strpos($definition['type'], 'entity:{') === 0) {
       $entity_type = $this->entityManager->getDefinition($entity_type_id);
-      if (!$entity_type->entityClassImplements(ConfigEntityInterface::class)) {
+      if (!$entity_type->isSubclassOf('\Drupal\Core\Config\Entity\ConfigEntityInterface')) {
         return parent::convert($value, $definition, $name, $defaults);
       }
     }
@@ -94,7 +99,7 @@ class AdminPathConfigEntityConverter extends EntityConverter {
       // As we only want to override EntityConverter for ConfigEntities, find
       // out whether the current entity is a ConfigEntity.
       $entity_type = $this->entityManager->getDefinition($entity_type_id);
-      if ($entity_type->entityClassImplements(ConfigEntityInterface::class)) {
+      if ($entity_type->isSubclassOf('\Drupal\Core\Config\Entity\ConfigEntityInterface')) {
         return $this->adminContext->isAdminRoute($route);
       }
     }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\link\Unit\Plugin\Validation\Constraint\LinkExternalProtocolsConstraintValidatorTest.
+ */
+
 namespace Drupal\Tests\link\Unit\Plugin\Validation\Constraint;
 
 use Drupal\Component\Utility\UrlHelper;
@@ -7,7 +12,6 @@ use Drupal\Core\Url;
 use Drupal\link\Plugin\Validation\Constraint\LinkExternalProtocolsConstraint;
 use Drupal\link\Plugin\Validation\Constraint\LinkExternalProtocolsConstraintValidator;
 use Drupal\Tests\UnitTestCase;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @coversDefaultClass \Drupal\link\Plugin\Validation\Constraint\LinkExternalProtocolsConstraintValidator
@@ -20,7 +24,7 @@ class LinkExternalProtocolsConstraintValidatorTest extends UnitTestCase {
    * @dataProvider providerValidate
    */
   public function testValidate($value, $valid) {
-    $context = $this->getMock(ExecutionContextInterface::class);
+    $context = $this->getMock('Symfony\Component\Validator\ExecutionContextInterface');
 
     if ($valid) {
       $context->expects($this->never())
@@ -78,7 +82,7 @@ class LinkExternalProtocolsConstraintValidatorTest extends UnitTestCase {
       ->method('getUrl')
       ->willThrowException(new \InvalidArgumentException());
 
-    $context = $this->getMock(ExecutionContextInterface::class);
+    $context = $this->getMock('Symfony\Component\Validator\ExecutionContextInterface');
     $context->expects($this->never())
       ->method('addViolation');
 
@@ -98,7 +102,7 @@ class LinkExternalProtocolsConstraintValidatorTest extends UnitTestCase {
       ->method('getUrl')
       ->willReturn(Url::fromRoute('example.test'));
 
-    $context = $this->getMock(ExecutionContextInterface::class);
+    $context = $this->getMock('Symfony\Component\Validator\ExecutionContextInterface');
     $context->expects($this->never())
       ->method('addViolation');
 

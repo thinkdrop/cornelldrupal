@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\KeyValueStore\KeyValueDatabaseExpirableFactory.
+ */
+
 namespace Drupal\Core\KeyValueStore;
 
 use Drupal\Component\Serialization\SerializationInterface;
@@ -15,7 +20,7 @@ class KeyValueDatabaseExpirableFactory implements KeyValueExpirableFactoryInterf
    *
    * @var \Drupal\Core\KeyValueStore\DatabaseStorageExpirable[]
    */
-  protected $storages = [];
+  protected $storages = array();
 
   /**
    * The serialization class to use.
@@ -39,7 +44,7 @@ class KeyValueDatabaseExpirableFactory implements KeyValueExpirableFactoryInterf
    * @param \Drupal\Core\Database\Connection $connection
    *   The Connection object containing the key-value tables.
    */
-  public function __construct(SerializationInterface $serializer, Connection $connection) {
+  function __construct(SerializationInterface $serializer, Connection $connection) {
     $this->serializer = $serializer;
     $this->connection = $connection;
   }
@@ -62,5 +67,4 @@ class KeyValueDatabaseExpirableFactory implements KeyValueExpirableFactoryInterf
       ->condition('expire', REQUEST_TIME, '<')
       ->execute();
   }
-
 }

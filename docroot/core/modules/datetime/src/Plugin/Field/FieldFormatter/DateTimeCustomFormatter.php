@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\datetime\Plugin\Field\FieldFormatter\DateTimeCustomFormatter.
+ */
+
 namespace Drupal\datetime\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Datetime\DrupalDateTime;
@@ -23,16 +28,16 @@ class DateTimeCustomFormatter extends DateTimeFormatterBase {
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return [
+    return array(
       'date_format' => DATETIME_DATETIME_STORAGE_FORMAT,
-    ] + parent::defaultSettings();
+    ) + parent::defaultSettings();
   }
 
   /**
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $elements = [];
+    $elements = array();
 
     foreach ($items as $delta => $item) {
       $output = '';
@@ -76,12 +81,12 @@ class DateTimeCustomFormatter extends DateTimeFormatterBase {
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $form = parent::settingsForm($form, $form_state);
 
-    $form['date_format'] = [
+    $form['date_format'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Date/time format'),
-      '#description' => $this->t('See <a href="http://php.net/manual/function.date.php" target="_blank">the documentation for PHP date formats</a>.'),
+      '#description' => $this->t('See <a href=":url" target="_blank">the documentation for PHP date formats</a>.', [':url' => 'http://php.net/manual/function.date.php']),
       '#default_value' => $this->getSetting('date_format'),
-    ];
+    );
 
     return $form;
   }

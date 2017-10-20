@@ -1,10 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\dblog\Plugin\rest\resource\DBLogResource.
+ */
+
 namespace Drupal\dblog\Plugin\rest\resource;
 
 use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -31,23 +36,19 @@ class DBLogResource extends ResourceBase {
    * @return \Drupal\rest\ResourceResponse
    *   The response containing the log entry.
    *
-   * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-   *   Thrown when the log entry was not found.
-   * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-   *   Thrown when no log entry was provided.
+   * @throws \Symfony\Component\HttpKernel\Exception\HttpException
    */
   public function get($id = NULL) {
     if ($id) {
-      $record = db_query("SELECT * FROM {watchdog} WHERE wid = :wid", [':wid' => $id])
+      $record = db_query("SELECT * FROM {watchdog} WHERE wid = :wid", array(':wid' => $id))
         ->fetchAssoc();
       if (!empty($record)) {
         return new ResourceResponse($record);
       }
 
-      throw new NotFoundHttpException(t('Log entry with ID @id was not found', ['@id' => $id]));
+      throw new NotFoundHttpException(t('Log entry with ID @id was not found', array('@id' => $id)));
     }
 
-    throw new BadRequestHttpException(t('No log entry ID was provided'));
+    throw new HttpException(t('No log entry ID was provided'));
   }
-
 }

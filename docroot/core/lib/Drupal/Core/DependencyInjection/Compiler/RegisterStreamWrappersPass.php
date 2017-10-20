@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\DependencyInjection\Compiler\RegisterStreamWrappersPass.
+ */
+
 namespace Drupal\Core\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -24,7 +29,7 @@ class RegisterStreamWrappersPass implements CompilerPassInterface {
       $class = $container->getDefinition($id)->getClass();
       $scheme = $attributes[0]['scheme'];
 
-      $stream_wrapper_manager->addMethodCall('addStreamWrapper', [$id, $class, $scheme]);
+      $stream_wrapper_manager->addMethodCall('addStreamWrapper', array($id, $class, $scheme));
     }
   }
 

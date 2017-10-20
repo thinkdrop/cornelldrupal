@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Validation\Plugin\Validation\Constraint\AllowedValuesConstraintValidator.
+ */
+
 namespace Drupal\Core\Validation\Plugin\Validation\Constraint;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -63,8 +68,8 @@ class AllowedValuesConstraintValidator extends ChoiceValidator implements Contai
 
     // The parent implementation ignores values that are not set, but makes
     // sure some choices are available firstly. However, we want to support
-    // empty choices for undefined values; for instance, if a term reference
-    // field points to an empty vocabulary.
+    // empty choices for undefined values, e.g. if a term reference field
+    // points to an empty vocabulary.
     if (!isset($value)) {
       return;
     }

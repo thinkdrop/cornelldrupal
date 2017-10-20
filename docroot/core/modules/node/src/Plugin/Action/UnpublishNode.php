@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\Action\UnpublishNode.
+ */
+
 namespace Drupal\node\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;
@@ -20,7 +25,8 @@ class UnpublishNode extends ActionBase {
    * {@inheritdoc}
    */
   public function execute($entity = NULL) {
-    $entity->setUnpublished()->save();
+    $entity->status = NODE_NOT_PUBLISHED;
+    $entity->save();
   }
 
   /**

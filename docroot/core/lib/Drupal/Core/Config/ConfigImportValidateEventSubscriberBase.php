@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\ConfigImportValidateEventSubscriberBase.
+ */
+
 namespace Drupal\Core\Config;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -22,8 +27,8 @@ abstract class ConfigImportValidateEventSubscriberBase implements EventSubscribe
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
-    $events[ConfigEvents::IMPORT_VALIDATE][] = ['onConfigImporterValidate', 20];
+  static function getSubscribedEvents() {
+    $events[ConfigEvents::IMPORT_VALIDATE][] = array('onConfigImporterValidate', 20);
     return $events;
   }
 

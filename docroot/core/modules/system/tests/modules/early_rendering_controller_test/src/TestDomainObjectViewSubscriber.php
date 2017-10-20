@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\early_rendering_controller_test\TestDomainObjectViewSubscriber.
+ */
+
 namespace Drupal\early_rendering_controller_test;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -37,7 +42,7 @@ class TestDomainObjectViewSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  static function getSubscribedEvents() {
     $events[KernelEvents::VIEW][] = ['onViewTestDomainObject'];
 
     return $events;

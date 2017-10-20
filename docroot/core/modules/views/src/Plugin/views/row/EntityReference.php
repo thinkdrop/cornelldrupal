@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\row\EntityReference.
+ */
+
 namespace Drupal\views\Plugin\views\row;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -25,7 +30,7 @@ class EntityReference extends Fields {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['separator'] = ['default' => '-'];
+    $options['separator'] = array('default' => '-');
 
     return $options;
   }
@@ -53,5 +58,4 @@ class EntityReference extends Fields {
 
     return parent::preRender($row);
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Query\Sql\QueryAggregate.
+ */
+
 namespace Drupal\Core\Entity\Query\Sql;
 
 use Drupal\Core\Entity\Query\QueryAggregateInterface;
@@ -15,7 +20,7 @@ class QueryAggregate extends Query implements QueryAggregateInterface {
    * @var array
    *   An array of expressions.
    */
-  protected $sqlExpressions = [];
+  protected $sqlExpressions = array();
 
   /**
    * {@inheritdoc}
@@ -39,7 +44,7 @@ class QueryAggregate extends Query implements QueryAggregateInterface {
   public function prepare() {
     parent::prepare();
     // Throw away the id fields.
-    $this->sqlFields = [];
+    $this->sqlFields = array();
     return $this;
   }
 
@@ -105,7 +110,7 @@ class QueryAggregate extends Query implements QueryAggregateInterface {
       $sql_field = $this->getSqlField($field, $group_by['langcode']);
       $this->sqlGroupBy[$sql_field] = $sql_field;
       list($table, $real_sql_field) = explode('.', $sql_field);
-      $this->sqlFields[$sql_field] = [$table, $real_sql_field, $this->createSqlAlias($field, $real_sql_field)];
+      $this->sqlFields[$sql_field] = array($table, $real_sql_field, $this->createSqlAlias($field, $real_sql_field));
     }
 
     return $this;
@@ -118,7 +123,7 @@ class QueryAggregate extends Query implements QueryAggregateInterface {
    *   Returns the called object.
    */
   protected function addSortAggregate() {
-    if (!$this->count) {
+    if(!$this->count) {
       foreach ($this->sortAggregate as $alias => $sort) {
         $this->sqlQuery->orderBy($alias, $sort['direction']);
       }
@@ -151,7 +156,7 @@ class QueryAggregate extends Query implements QueryAggregateInterface {
    *   replaced with underscores and if a default fallback to .value happened,
    *   the _value is stripped.
    */
-  public function createSqlAlias($field, $sql_field) {
+  function createSqlAlias($field, $sql_field) {
     $alias = str_replace('.', '_', $sql_field);
     // If the alias contains of field_*_value remove the _value at the end.
     if (substr($alias, 0, 6) === 'field_' && substr($field, -6) !== '_value' && substr($alias, -6) === '_value') {
@@ -170,7 +175,7 @@ class QueryAggregate extends Query implements QueryAggregateInterface {
     if ($this->count) {
       return parent::result();
     }
-    $return = [];
+    $return = array();
     foreach ($this->sqlQuery->execute() as $row) {
       $return[] = (array)$row;
     }

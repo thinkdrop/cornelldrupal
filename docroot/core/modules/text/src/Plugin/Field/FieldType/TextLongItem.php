@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\text\Plugin\Field\FieldType\TextLongItem.
+ */
+
 namespace Drupal\text\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -22,21 +27,21 @@ class TextLongItem extends TextItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return [
-      'columns' => [
-        'value' => [
+    return array(
+      'columns' => array(
+        'value' => array(
           'type' => 'text',
           'size' => 'big',
-        ],
-        'format' => [
+        ),
+        'format' => array(
           'type' => 'varchar_ascii',
           'length' => 255,
-        ],
-      ],
-      'indexes' => [
-        'format' => ['format'],
-      ],
-    ];
+        ),
+      ),
+      'indexes' => array(
+        'format' => array('format'),
+      ),
+    );
   }
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\KeyValueStore\MemoryStorage.
+ */
+
 namespace Drupal\Core\KeyValueStore;
 
 /**
@@ -12,7 +17,7 @@ class MemoryStorage extends StorageBase {
    *
    * @var array
    */
-  protected $data = [];
+  protected $data = array();
 
   /**
    * {@inheritdoc}
@@ -95,7 +100,6 @@ class MemoryStorage extends StorageBase {
    * {@inheritdoc}
    */
   public function deleteAll() {
-    $this->data = [];
+    $this->data = array();
   }
-
 }

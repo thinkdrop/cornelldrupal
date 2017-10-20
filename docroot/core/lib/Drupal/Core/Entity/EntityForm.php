@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\EntityForm.
+ */
+
 namespace Drupal\Core\Entity;
 
 use Drupal\Core\Form\FormBase;
@@ -204,9 +209,9 @@ class EntityForm extends FormBase implements EntityFormInterface {
 
     $count = 0;
     foreach (Element::children($element) as $action) {
-      $element[$action] += [
+      $element[$action] += array(
         '#weight' => ++$count * 5,
-      ];
+      );
     }
 
     if (!empty($element)) {
@@ -226,11 +231,11 @@ class EntityForm extends FormBase implements EntityFormInterface {
     // @todo Consider renaming the action key from submit to save. The impacts
     //   are hard to predict. For example, see
     //   \Drupal\language\Element\LanguageConfiguration::processLanguageConfiguration().
-    $actions['submit'] = [
+    $actions['submit'] = array(
       '#type' => 'submit',
       '#value' => $this->t('Save'),
-      '#submit' => ['::submitForm', '::save'],
-    ];
+      '#submit' => array('::submitForm', '::save'),
+    );
 
     if (!$this->entity->isNew() && $this->entity->hasLinkTemplate('delete-form')) {
       $route_info = $this->entity->urlInfo('delete-form');
@@ -239,14 +244,14 @@ class EntityForm extends FormBase implements EntityFormInterface {
         $query['destination'] = $this->getRequest()->query->get('destination');
         $route_info->setOption('query', $query);
       }
-      $actions['delete'] = [
+      $actions['delete'] = array(
         '#type' => 'link',
         '#title' => $this->t('Delete'),
         '#access' => $this->entity->access('delete'),
-        '#attributes' => [
-          'class' => ['button', 'button--danger'],
-        ],
-      ];
+        '#attributes' => array(
+          'class' => array('button', 'button--danger'),
+        ),
+      );
       $actions['delete']['#url'] = $route_info;
     }
 
@@ -294,7 +299,7 @@ class EntityForm extends FormBase implements EntityFormInterface {
     // properties.
     if (isset($form['#entity_builders'])) {
       foreach ($form['#entity_builders'] as $function) {
-        call_user_func_array($form_state->prepareCallback($function), [$entity->getEntityTypeId(), $entity, &$form, &$form_state]);
+        call_user_func_array($function, array($entity->getEntityTypeId(), $entity, &$form, &$form_state));
       }
     }
 
@@ -353,19 +358,7 @@ class EntityForm extends FormBase implements EntityFormInterface {
       $entity = $route_match->getParameter($entity_type_id);
     }
     else {
-      $values = [];
-      // If the entity has bundles, fetch it from the route match.
-      $entity_type = $this->entityTypeManager->getDefinition($entity_type_id);
-      if ($bundle_key = $entity_type->getKey('bundle')) {
-        if (($bundle_entity_type_id = $entity_type->getBundleEntityType()) && $route_match->getRawParameter($bundle_entity_type_id)) {
-          $values[$bundle_key] = $route_match->getParameter($bundle_entity_type_id)->id();
-        }
-        elseif ($route_match->getRawParameter($bundle_key)) {
-          $values[$bundle_key] = $route_match->getParameter($bundle_key);
-        }
-      }
-
-      $entity = $this->entityTypeManager->getStorage($entity_type_id)->create($values);
+      $entity = $this->entityManager->getStorage($entity_type_id)->create([]);
     }
 
     return $entity;
@@ -391,7 +384,7 @@ class EntityForm extends FormBase implements EntityFormInterface {
       if (function_exists($function)) {
         // Ensure we pass an updated translation object and form display at
         // each invocation, since they depend on form state which is alterable.
-        $args = [$this->entity, $this->operation, &$form_state];
+        $args = array($this->entity, $this->operation, &$form_state);
         call_user_func_array($function, $args);
       }
     }

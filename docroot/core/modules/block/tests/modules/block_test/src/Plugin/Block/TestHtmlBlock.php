@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block_test\Plugin\Block\TestHtmlBlock.
+ */
+
 namespace Drupal\block_test\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
@@ -18,10 +23,10 @@ class TestHtmlBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    return [
+    return array(
       '#attributes' => \Drupal::state()->get('block_test.attributes'),
       '#children' => \Drupal::state()->get('block_test.content'),
-    ];
+    );
   }
 
 }

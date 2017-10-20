@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\datetime\Tests\Views\FilterDateTimeTest.
+ */
+
 namespace Drupal\datetime\Tests\Views;
 
 use Drupal\views\Views;
@@ -29,7 +34,7 @@ class FilterDateTimeTest extends DateTimeHandlerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  public function setUp() {
     parent::setUp();
 
     static::$date = REQUEST_TIME + 86400;
@@ -100,7 +105,7 @@ class FilterDateTimeTest extends DateTimeHandlerTestBase {
   }
 
   /**
-   * Test between operations.
+   *  Test between operations.
    */
   protected function _testBetween() {
     $view = Views::getView('test_filter_datetime');
@@ -136,8 +141,7 @@ class FilterDateTimeTest extends DateTimeHandlerTestBase {
     $view->initHandlers();
     $view->filter[$field]->operator = 'not between';
     $view->filter[$field]->value['min'] = '2001-01-01';
-    // Set maximum date to date of node 1 to test range borders.
-    $view->filter[$field]->value['max'] = '2001-10-10T12:12:12';
+    $view->filter[$field]->value['max'] = '2002-01-01';
     $view->setDisplay('default');
     $this->executeView($view);
     $expected_result = [

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Archiver\Zip.
+ */
+
 namespace Drupal\Core\Archiver;
 
 /**
@@ -29,7 +34,7 @@ class Zip implements ArchiverInterface {
   public function __construct($file_path) {
     $this->zip = new \ZipArchive();
     if ($this->zip->open($file_path) !== TRUE) {
-      throw new ArchiverException(t('Cannot open %file_path', ['%file_path' => $file_path]));
+      throw new ArchiverException(t('Cannot open %file_path', array('%file_path' => $file_path)));
     }
   }
 
@@ -54,7 +59,7 @@ class Zip implements ArchiverInterface {
   /**
    * {@inheritdoc}
    */
-  public function extract($path, array $files = []) {
+  public function extract($path, Array $files = array()) {
     if ($files) {
       $this->zip->extractTo($path, $files);
     }
@@ -69,8 +74,8 @@ class Zip implements ArchiverInterface {
    * {@inheritdoc}
    */
   public function listContents() {
-    $files = [];
-    for ($i = 0; $i < $this->zip->numFiles; $i++) {
+    $files = array();
+    for ($i=0; $i < $this->zip->numFiles; $i++) {
       $files[] = $this->zip->getNameIndex($i);
     }
     return $files;
@@ -89,5 +94,4 @@ class Zip implements ArchiverInterface {
   public function getArchive() {
     return $this->zip;
   }
-
 }

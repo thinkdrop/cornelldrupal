@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Element\Page.
+ */
+
 namespace Drupal\Core\Render\Element;
 
 /**
@@ -15,10 +20,10 @@ class Page extends RenderElement {
    * {@inheritdoc}
    */
   public function getInfo() {
-    return [
+    return array(
       '#theme' => 'page',
       '#title' => '',
-    ];
+    );
   }
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Routing\RouteSubscriber.
+ */
+
 namespace Drupal\node\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
@@ -19,13 +24,13 @@ class RouteSubscriber extends RouteSubscriberBase {
     // a node listing instead of the path's child links.
     $route = $collection->get('system.admin_content');
     if ($route) {
-      $route->setDefaults([
+      $route->setDefaults(array(
         '_title' => 'Content',
         '_entity_list' => 'node',
-      ]);
-      $route->setRequirements([
+      ));
+      $route->setRequirements(array(
         '_permission' => 'access content overview',
-      ]);
+      ));
     }
   }
 

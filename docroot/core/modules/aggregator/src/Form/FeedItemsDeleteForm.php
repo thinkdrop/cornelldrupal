@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\aggregator\Form\FeedItemsDeleteForm.
+ */
+
 namespace Drupal\aggregator\Form;
 
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
@@ -15,7 +20,7 @@ class FeedItemsDeleteForm extends ContentEntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete all items from the feed %feed?', ['%feed' => $this->entity->label()]);
+    return $this->t('Are you sure you want to delete all items from the feed %feed?', array('%feed' => $this->entity->label()));
   }
 
   /**

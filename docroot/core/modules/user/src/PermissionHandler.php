@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\PermissionHandler.
+ */
+
 namespace Drupal\user;
 
-use Drupal\Core\Discovery\YamlDiscovery;
+use Drupal\Component\Discovery\YamlDiscovery;
 use Drupal\Core\Controller\ControllerResolverInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -59,7 +64,7 @@ class PermissionHandler implements PermissionHandlerInterface {
   /**
    * The YAML discovery class to find all .permissions.yml files.
    *
-   * @var \Drupal\Core\Discovery\YamlDiscovery
+   * @var \Drupal\Component\Discovery\YamlDiscovery
    */
   protected $yamlDiscovery;
 
@@ -91,7 +96,7 @@ class PermissionHandler implements PermissionHandlerInterface {
   /**
    * Gets the YAML discovery.
    *
-   * @return \Drupal\Core\Discovery\YamlDiscovery
+   * @return \Drupal\Component\Discovery\YamlDiscovery
    *   The YAML discovery.
    */
   protected function getYamlDiscovery() {
@@ -136,8 +141,8 @@ class PermissionHandler implements PermissionHandlerInterface {
    *   - provider: The provider of the permission.
    */
   protected function buildPermissionsYaml() {
-    $all_permissions = [];
-    $all_callback_permissions = [];
+    $all_permissions = array();
+    $all_callback_permissions = array();
 
     foreach ($this->getYamlDiscovery()->findAll() as $provider => $permissions) {
       // The top-level 'permissions_callback' is a list of methods in controller
@@ -151,15 +156,15 @@ class PermissionHandler implements PermissionHandlerInterface {
             // defaults can then get processed below.
             foreach ($callback_permissions as $name => $callback_permission) {
               if (!is_array($callback_permission)) {
-                $callback_permission = [
+                $callback_permission = array(
                   'title' => $callback_permission,
-                ];
+                );
               }
 
-              $callback_permission += [
+              $callback_permission += array(
                 'description' => NULL,
-                'provider' => $provider,
-              ];
+              );
+              $callback_permission['provider'] = $provider;
 
               $all_callback_permissions[$name] = $callback_permission;
             }
@@ -171,13 +176,13 @@ class PermissionHandler implements PermissionHandlerInterface {
 
       foreach ($permissions as &$permission) {
         if (!is_array($permission)) {
-          $permission = [
+          $permission = array(
             'title' => $permission,
-          ];
+          );
         }
         $permission['title'] = $this->t($permission['title']);
         $permission['description'] = isset($permission['description']) ? $this->t($permission['description']) : NULL;
-        $permission['provider'] = !empty($permission['provider']) ? $permission['provider'] : $provider;
+        $permission['provider'] = $provider;
       }
 
       $all_permissions += $permissions;
@@ -198,7 +203,7 @@ class PermissionHandler implements PermissionHandlerInterface {
    *   - description: The description of the permission, defaults to NULL.
    *   - provider: The provider of the permission.
    */
-  protected function sortPermissions(array $all_permissions = []) {
+  protected function sortPermissions(array $all_permissions = array()) {
     // Get a list of all the modules providing permissions and sort by
     // display name.
     $modules = $this->getModuleNames();
@@ -221,7 +226,7 @@ class PermissionHandler implements PermissionHandlerInterface {
    *   Returns the human readable names of all modules keyed by machine name.
    */
   protected function getModuleNames() {
-    $modules = [];
+    $modules = array();
     foreach (array_keys($this->moduleHandler->getModuleList()) as $module) {
       $modules[$module] = $this->moduleHandler->getName($module);
     }

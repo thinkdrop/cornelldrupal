@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\field\Plugin\migrate\process\d7\FieldSettings.
+ */
+
 namespace Drupal\field\Plugin\migrate\process\d7;
 
 use Drupal\migrate\MigrateExecutableInterface;
@@ -22,7 +27,7 @@ class FieldSettings extends ProcessPluginBase {
     switch ($row->getSourceProperty('type')) {
       case 'image':
         if (!is_array($value['default_image'])) {
-          $value['default_image'] = ['uuid' => ''];
+          $value['default_image'] = array('uuid' => '');
         }
         break;
 

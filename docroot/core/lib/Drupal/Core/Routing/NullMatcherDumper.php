@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Routing\NullMatcherDumper.
+ */
+
 namespace Drupal\Core\Routing;
 
 use Symfony\Component\Routing\RouteCollection;
@@ -39,7 +44,7 @@ class NullMatcherDumper implements MatcherDumperInterface {
    * @param array $options
    *   An array of options.
    */
-  public function dump(array $options = []) {
+  public function dump(array $options = array()) {
     // The dumper is reused for multiple providers, so reset the queued routes.
     $this->routes = NULL;
   }

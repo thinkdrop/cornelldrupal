@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\field\TimeInterval.
+ */
+
 namespace Drupal\views\Plugin\views\field;
 
 use Drupal\Core\Datetime\DateFormatterInterface;
@@ -58,7 +63,7 @@ class TimeInterval extends FieldPluginBase {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['granularity'] = ['default' => 2];
+    $options['granularity'] = array('default' => 2);
 
     return $options;
   }
@@ -69,12 +74,12 @@ class TimeInterval extends FieldPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['granularity'] = [
+    $form['granularity'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Granularity'),
       '#description' => $this->t('How many different units to display in the string.'),
       '#default_value' => $this->options['granularity'],
-    ];
+    );
   }
 
   /**

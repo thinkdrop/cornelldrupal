@@ -36,7 +36,10 @@ class DependencySerializationTest extends UnitTestCase {
     $dependencySerialization->setContainer($container);
 
     $string = serialize($dependencySerialization);
-    /** @var \Drupal\Tests\Core\DependencyInjection\DependencySerializationTestDummy $dependencySerialization */
+    $object = unserialize($string);
+
+    $string = serialize($dependencySerialization);
+    /** @var \Drupal\Tests\Core\DependencyInjection\DependencySerializationTestDummy $object */
     $dependencySerialization = unserialize($string);
 
     $this->assertSame($service, $dependencySerialization->service);
@@ -90,5 +93,4 @@ class DependencySerializationTestDummy implements ContainerAwareInterface {
   public function getServiceIds() {
     return $this->_serviceIds;
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\TypedData\Plugin\DataType\FloatData.
+ */
+
 namespace Drupal\Core\TypedData\Plugin\DataType;
 
 use Drupal\Core\TypedData\PrimitiveBase;
@@ -24,5 +29,4 @@ class FloatData extends PrimitiveBase implements FloatInterface {
   public function getCastedValue() {
     return (float) $this->value;
   }
-
 }

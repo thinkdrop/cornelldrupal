@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Annotation\FieldWidget.
+ */
+
 namespace Drupal\Core\Field\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
@@ -60,7 +65,7 @@ class FieldWidget extends Plugin {
    *
    * @var array
    */
-  public $field_types = [];
+  public $field_types = array();
 
   /**
    * Does the field widget handles multiple values at once.

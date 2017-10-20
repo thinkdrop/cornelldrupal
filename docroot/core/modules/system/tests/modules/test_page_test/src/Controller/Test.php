@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\test_page_test\Controller\Test.
+ */
+
 namespace Drupal\test_page_test\Controller;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -15,7 +20,7 @@ class Test {
    *   A render array as expected by drupal_render()
    */
   public function renderTitle() {
-    $build = [];
+    $build = array();
     $build['#markup'] = 'Hello Drupal';
     $build['#title'] = 'Foo';
 
@@ -29,7 +34,7 @@ class Test {
    *   A render array as expected by drupal_render().
    */
   public function staticTitle() {
-    $build = [];
+    $build = array();
     $build['#markup'] = 'Hello Drupal';
 
     return $build;
@@ -66,9 +71,9 @@ class Test {
    *   A render array as expected by drupal_render()
    */
   public function renderPage() {
-    return [
+    return array(
       '#markup' => 'Content',
-    ];
+    );
   }
 
   /**
@@ -79,33 +84,6 @@ class Test {
    */
   public function httpResponseException($code) {
     throw new HttpException($code);
-  }
-
-  public function error() {
-    trigger_error('foo', E_USER_NOTICE);
-    return [
-      '#markup' => 'Content',
-    ];
-  }
-
-  /**
-   * Renders a page with encoded markup.
-   *
-   * @return array
-   *   A render array as expected by drupal_render()
-   */
-  public function renderEncodedMarkup() {
-    return ['#plain_text' => 'Bad html <script>alert(123);</script>'];
-  }
-
-  /**
-   * Renders a page with pipe character in link test.
-   *
-   * @return array
-   *   A render array as expected by drupal_render()
-   */
-  public function renderPipeInLink() {
-    return ['#markup' => '<a href="http://example.com">foo|bar|baz</a>'];
   }
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\FileUsage\FileUsageInterface.
+ */
+
 namespace Drupal\file\FileUsage;
 
 use Drupal\file\FileInterface;
@@ -25,8 +30,8 @@ interface FileUsageInterface {
    *   The name of the module using the file.
    * @param string $type
    *   The type of the object that contains the referenced file.
-   * @param string $id
-   *   The unique ID of the object containing the referenced file.
+   * @param int $id
+   *   The unique, numeric ID of the object containing the referenced file.
    * @param int $count
    *   (optional) The number of references to add to the object. Defaults to 1.
    */
@@ -43,10 +48,10 @@ interface FileUsageInterface {
    *   (optional) The type of the object that contains the referenced file. May
    *   be omitted if all module references to a file are being deleted. Defaults
    *   to NULL.
-   * @param string $id
-   *   (optional) The unique ID of the object containing the referenced file.
-   *   May be omitted if all module references to a file are being deleted.
-   *   Defaults to NULL.
+   * @param int $id
+   *   (optional) The unique, numeric ID of the object containing the referenced
+   *   file. May be omitted if all module references to a file are being
+   *   deleted. Defaults to NULL.
    * @param int $count
    *   (optional) The number of references to delete from the object. Defaults
    *   to 1. Zero may be specified to delete all references to the file within a
@@ -64,7 +69,7 @@ interface FileUsageInterface {
    *   A nested array with usage data. The first level is keyed by module name,
    *   the second by object type and the third by the object id. The value of
    *   the third level contains the usage count.
+   *
    */
   public function listUsage(FileInterface $file);
-
 }

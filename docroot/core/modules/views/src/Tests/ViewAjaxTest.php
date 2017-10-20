@@ -1,9 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Tests\ViewAjaxTest.
+ */
+
 namespace Drupal\views\Tests;
 
 use Drupal\Component\Serialization\Json;
-use Drupal\Core\EventSubscriber\MainContentViewSubscriber;
 
 /**
  * Tests the ajax view functionality.
@@ -17,7 +21,7 @@ class ViewAjaxTest extends ViewTestBase {
    *
    * @var array
    */
-  public static $testViews = ['test_ajax_view', 'test_view'];
+  public static $testViews = array('test_ajax_view');
 
   protected function setUp() {
     parent::setUp();
@@ -38,16 +42,16 @@ class ViewAjaxTest extends ViewTestBase {
     $this->assertEqual($drupal_settings['views']['ajaxViews'][$view_entry]['view_name'], 'test_ajax_view', 'The view\'s ajaxViews array entry has the correct \'view_name\' key.');
     $this->assertEqual($drupal_settings['views']['ajaxViews'][$view_entry]['view_display_id'], 'page_1', 'The view\'s ajaxViews array entry has the correct \'view_display_id\' key.');
 
-    $data = [];
+    $data = array();
     $data['view_name'] = 'test_ajax_view';
     $data['view_display_id'] = 'test_ajax_view';
 
-    $post = [
+    $post = array(
       'view_name' => 'test_ajax_view',
       'view_display_id' => 'page_1',
-    ];
+    );
     $post += $this->getAjaxPageStatePostData();
-    $response = $this->drupalPost('views/ajax', '', $post, ['query' => [MainContentViewSubscriber::WRAPPER_FORMAT => 'drupal_ajax']]);
+    $response = $this->drupalPost('views/ajax', 'application/vnd.drupal-ajax', $post);
     $data = Json::decode($response);
 
     $this->assertTrue(isset($data[0]['settings']['views']['ajaxViews']));
@@ -59,16 +63,6 @@ class ViewAjaxTest extends ViewTestBase {
     $this->setRawContent($data[1]['data']);
     $result = $this->xpath('//div[contains(@class, "views-row")]');
     $this->assertEqual(count($result), 2, 'Ensure that two items are rendered in the HTML.');
-  }
-
-  /**
-   * Ensures that non-ajax view cannot be accessed via an ajax HTTP request.
-   */
-  public function testNonAjaxViewViaAjax() {
-    $this->drupalPost('views/ajax', '', ['view_name' => 'test_ajax_view', 'view_display_id' => 'default'], ['query' => [MainContentViewSubscriber::WRAPPER_FORMAT => 'drupal_ajax']]);
-    $this->assertResponse(200);
-    $this->drupalPost('views/ajax', '', ['view_name' => 'test_view', 'view_display_id' => 'default'], ['query' => [MainContentViewSubscriber::WRAPPER_FORMAT => 'drupal_ajax']]);
-    $this->assertResponse(403);
   }
 
 }

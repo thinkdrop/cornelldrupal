@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Routing\TrustedRedirectResponseTest.
+ */
+
 namespace Drupal\Tests\Core\Routing;
 
 use Drupal\Core\Cache\CacheableMetadata;
@@ -29,6 +34,7 @@ class TrustedRedirectResponseTest extends UnitTestCase {
 
   /**
    * @covers ::setTargetUrl
+   * @expectedException \InvalidArgumentException
    */
   public function testSetTargetUrlWithUntrustedUrl() {
     $request_context = new RequestContext();
@@ -39,7 +45,6 @@ class TrustedRedirectResponseTest extends UnitTestCase {
 
     $redirect_response = new TrustedRedirectResponse('/example');
 
-    $this->setExpectedException(\InvalidArgumentException::class);
     $redirect_response->setTargetUrl('http://evil-url.com/example');
   }
 

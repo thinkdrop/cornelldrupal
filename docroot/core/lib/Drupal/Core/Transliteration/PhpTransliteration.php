@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Transliteration\PhpTransliteration.
+ */
+
 namespace Drupal\Core\Transliteration;
 
 use Drupal\Component\Transliteration\PhpTransliteration as BaseTransliteration;
@@ -24,12 +29,13 @@ class PhpTransliteration extends BaseTransliteration {
    * Constructs a PhpTransliteration object.
    *
    * @param string $data_directory
-   *   The directory where data files reside. If NULL, defaults to subdirectory
-   *   'data' underneath the directory where the class's PHP file resides.
+   *   (optional) The directory where data files reside. If omitted, defaults
+   *   to subdirectory 'data' underneath the directory where the class's PHP
+   *   file resides.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler to execute the transliteration_overrides alter hook.
    */
-  public function __construct($data_directory, ModuleHandlerInterface $module_handler) {
+  public function __construct($data_directory = NULL, ModuleHandlerInterface $module_handler) {
     parent::__construct($data_directory);
 
     $this->moduleHandler = $module_handler;

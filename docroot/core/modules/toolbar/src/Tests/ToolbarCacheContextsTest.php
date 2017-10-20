@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\toolbar\Tests\ToolbarCacheContextsTest.
+ */
+
 namespace Drupal\toolbar\Tests;
 
 use Drupal\Core\Cache\Cache;
@@ -142,5 +147,6 @@ class ToolbarCacheContextsTest extends WebTestBase {
     $this->container = \Drupal::getContainer();
     $this->container->get('router.builder')->rebuildIfNeeded();
   }
+
 
 }

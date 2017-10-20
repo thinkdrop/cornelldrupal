@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Authentication\AuthenticationProviderInterface.
+ */
+
 namespace Drupal\Core\Authentication;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -24,10 +29,10 @@ interface AuthenticationProviderInterface {
   /**
    * Authenticates the user.
    *
-   * @param \Symfony\Component\HttpFoundation\Request|null $request
+   * @param \Symfony\Component\HttpFoundation\Request|NULL $request
    *   The request object.
    *
-   * @return \Drupal\Core\Session\AccountInterface|null
+   * @return \Drupal\Core\Session\AccountInterface|NULL
    *   AccountInterface - in case of a successful authentication.
    *   NULL - in case where authentication failed.
    */

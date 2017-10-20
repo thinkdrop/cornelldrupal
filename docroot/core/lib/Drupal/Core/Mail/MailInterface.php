@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Mail\MailInterface.
+ */
+
 namespace Drupal\Core\Mail;
 
 /**
@@ -30,7 +35,7 @@ interface MailInterface {
    *
    * @see \Drupal\Core\Mail\MailManagerInterface
    */
-  public function format(array $message);
+   public function format(array $message);
 
   /**
    * Sends a message composed by \Drupal\Core\Mail\MailManagerInterface->mail().
@@ -60,6 +65,5 @@ interface MailInterface {
    * @return bool
    *   TRUE if the mail was successfully accepted for delivery, otherwise FALSE.
    */
-  public function mail(array $message);
-
+   public function mail(array $message);
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Utility\UnroutedUrlAssemblerTest.
+ */
+
 namespace Drupal\Tests\Core\Utility;
 
 use Drupal\Core\GeneratedUrl;
@@ -56,17 +61,17 @@ class UnroutedUrlAssemblerTest extends UnitTestCase {
 
   /**
    * @covers ::assemble
+   * @expectedException \InvalidArgumentException
    */
   public function testAssembleWithNeitherExternalNorDomainLocalUri() {
-    $this->setExpectedException(\InvalidArgumentException::class);
     $this->unroutedUrlAssembler->assemble('wrong-url');
   }
 
   /**
    * @covers ::assemble
+   * @expectedException \InvalidArgumentException
    */
   public function testAssembleWithLeadingSlash() {
-    $this->setExpectedException(\InvalidArgumentException::class);
     $this->unroutedUrlAssembler->assemble('/drupal.org');
   }
 
@@ -77,11 +82,11 @@ class UnroutedUrlAssemblerTest extends UnitTestCase {
    * @dataProvider providerTestAssembleWithExternalUrl
    */
   public function testAssembleWithExternalUrl($uri, array $options, $expected) {
-    $this->setupRequestStack(FALSE);
-    $this->assertEquals($expected, $this->unroutedUrlAssembler->assemble($uri, $options));
-    $generated_url = $this->unroutedUrlAssembler->assemble($uri, $options, TRUE);
-    $this->assertEquals($expected, $generated_url->getGeneratedUrl());
-    $this->assertInstanceOf('\Drupal\Core\Render\BubbleableMetadata', $generated_url);
+   $this->setupRequestStack(FALSE);
+   $this->assertEquals($expected, $this->unroutedUrlAssembler->assemble($uri, $options));
+   $generated_url = $this->unroutedUrlAssembler->assemble($uri, $options, TRUE);
+   $this->assertEquals($expected, $generated_url->getGeneratedUrl());
+   $this->assertInstanceOf('\Drupal\Core\Render\BubbleableMetadata', $generated_url);
   }
 
   /**

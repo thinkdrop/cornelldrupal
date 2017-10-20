@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\field\Custom.
+ */
+
 namespace Drupal\views\Plugin\views\field;
 
 use Drupal\Component\Utility\Xss;
@@ -37,8 +42,8 @@ class Custom extends FieldPluginBase {
     $options = parent::defineOptions();
 
     // Override the alter text option to always alter the text.
-    $options['alter']['contains']['alter_text'] = ['default' => TRUE];
-    $options['hide_alter_empty'] = ['default' => FALSE];
+    $options['alter']['contains']['alter_text'] = array('default' => TRUE);
+    $options['hide_alter_empty'] = array('default' => FALSE);
     return $options;
   }
 
@@ -52,7 +57,7 @@ class Custom extends FieldPluginBase {
     unset($form['alter']['alter_text']);
     unset($form['alter']['text']['#states']);
     unset($form['alter']['help']['#states']);
-    $form['#pre_render'][] = [$this, 'preRenderCustomForm'];
+    $form['#pre_render'][] = array($this, 'preRenderCustomForm');
   }
 
   /**

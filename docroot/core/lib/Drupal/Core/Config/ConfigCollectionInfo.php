@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\ConfigCollectionInfo.
+ */
+
 namespace Drupal\Core\Config;
 
 use Symfony\Component\EventDispatcher\Event;
@@ -17,20 +22,20 @@ class ConfigCollectionInfo extends Event {
    *
    * @var array
    */
-  protected $collections = [];
+  protected $collections = array();
 
   /**
    * Adds a collection to the list of possible collections.
    *
    * @param string $collection
    *   Collection name to add.
-   * @param \Drupal\Core\Config\ConfigFactoryOverrideInterface $override_service
+   * @param \Drupal\Core\Config\ConfigFactoryOverrideInterface
    *   (optional) The configuration factory override service responsible for the
    *   collection.
    *
    * @throws \InvalidArgumentException
    *   Exception thrown if $collection is equal to
-   *   \Drupal\Core\Config\StorageInterface::DEFAULT_COLLECTION.
+   *   \Drupal\Core\Config\StorageInterface::DEFAULT_COLLECTION
    */
   public function addCollection($collection, ConfigFactoryOverrideInterface $override_service = NULL) {
     if ($collection == StorageInterface::DEFAULT_COLLECTION) {
@@ -63,7 +68,7 @@ class ConfigCollectionInfo extends Event {
    * @param string $collection
    *   The configuration collection.
    *
-   * @return \Drupal\Core\Config\ConfigFactoryOverrideInterface|null
+   * @return \Drupal\Core\Config\ConfigFactoryOverrideInterface|NULL
    *   The override service responsible for the collection if one exists. NULL
    *   if not.
    */

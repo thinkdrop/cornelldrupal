@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate\Event\MigrateEvents.
+ */
+
 namespace Drupal\migrate\Event;
 
 /**
@@ -81,7 +86,7 @@ final class MigrateEvents {
    *
    * This event allows modules to perform an action whenever a specific item
    * is about to be saved by the destination plugin. The event listener method
-   * receives a \Drupal\migrate\Event\MigratePreRowSaveEvent instance.
+   * receives a \Drupal\migrate\Event\MigratePreSaveEvent instance.
    *
    * @Event
    *

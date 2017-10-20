@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Plugin\Validation\Constraint\BundleConstraint.
+ */
+
 namespace Drupal\Core\Entity\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -37,7 +42,7 @@ class BundleConstraint extends Constraint {
   public function getBundleOption() {
     // Support passing the bundle as string, but force it to be an array.
     if (!is_array($this->bundle)) {
-      $this->bundle = [$this->bundle];
+      $this->bundle = array($this->bundle);
     }
     return $this->bundle;
   }
@@ -53,7 +58,6 @@ class BundleConstraint extends Constraint {
    * {@inheritdoc}
    */
   public function getRequiredOptions() {
-    return ['bundle'];
+    return array('bundle');
   }
-
 }

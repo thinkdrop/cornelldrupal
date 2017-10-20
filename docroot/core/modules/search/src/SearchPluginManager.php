@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\SearchPluginManager.
+ */
+
 namespace Drupal\search;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -27,5 +32,4 @@ class SearchPluginManager extends DefaultPluginManager {
     $this->setCacheBackend($cache_backend, 'search_plugins');
     $this->alterInfo('search_plugin');
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\image\Plugin\ImageEffect\DesaturateImageEffect.
+ */
+
 namespace Drupal\image\Plugin\ImageEffect;
 
 use Drupal\Core\Image\ImageInterface;
@@ -21,7 +26,7 @@ class DesaturateImageEffect extends ImageEffectBase {
    */
   public function applyEffect(ImageInterface $image) {
     if (!$image->desaturate()) {
-      $this->logger->error('Image desaturate failed using the %toolkit toolkit on %path (%mimetype, %dimensions)', ['%toolkit' => $image->getToolkitId(), '%path' => $image->getSource(), '%mimetype' => $image->getMimeType(), '%dimensions' => $image->getWidth() . 'x' . $image->getHeight()]);
+      $this->logger->error('Image desaturate failed using the %toolkit toolkit on %path (%mimetype, %dimensions)', array('%toolkit' => $image->getToolkitId(), '%path' => $image->getSource(), '%mimetype' => $image->getMimeType(), '%dimensions' => $image->getWidth() . 'x' . $image->getHeight()));
       return FALSE;
     }
     return TRUE;

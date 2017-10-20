@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\serialization\Normalizer\TypedDataNormalizer.
+ */
+
 namespace Drupal\serialization\Normalizer;
 
 /**
@@ -17,7 +22,7 @@ class TypedDataNormalizer extends NormalizerBase {
   /**
    * {@inheritdoc}
    */
-  public function normalize($object, $format = NULL, array $context = []) {
+  public function normalize($object, $format = NULL, array $context = array()) {
     return $object->getValue();
   }
 

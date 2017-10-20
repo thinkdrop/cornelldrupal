@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Entity\Plugin\EntityReferenceSelection\Broken.
+ */
+
 namespace Drupal\Core\Entity\Plugin\EntityReferenceSelection;
 
 use Drupal\Core\Database\Query\SelectInterface;
@@ -20,9 +25,9 @@ class Broken implements SelectionInterface {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['selection_handler'] = [
+    $form['selection_handler'] = array(
       '#markup' => t('The selected selection handler is broken.'),
-    ];
+    );
     return $form;
   }
 
@@ -40,7 +45,7 @@ class Broken implements SelectionInterface {
    * {@inheritdoc}
    */
   public function getReferenceableEntities($match = NULL, $match_operator = 'CONTAINS', $limit = 0) {
-    return [];
+    return array();
   }
 
   /**
@@ -54,7 +59,7 @@ class Broken implements SelectionInterface {
    * {@inheritdoc}
    */
   public function validateReferenceableEntities(array $ids) {
-    return [];
+    return array();
   }
 
   /**

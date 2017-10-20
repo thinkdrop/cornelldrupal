@@ -1,9 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\field\Unit\Plugin\migrate\process\d6\FieldSettingsTest.
+ */
+
 namespace Drupal\Tests\field\Unit\Plugin\migrate\process\d6;
 
 use Drupal\field\Plugin\migrate\process\d6\FieldSettings;
-use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Entity\MigrationInterface;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Row;
 use Drupal\Tests\UnitTestCase;
@@ -28,7 +33,7 @@ class FieldSettingsTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $result = $plugin->transform([$field_type, $field_settings, NULL], $executable, $row, 'foo');
+    $result = $plugin->transform([$field_type, $field_settings], $executable, $row, 'foo');
     $this->assertSame($allowed_values, $result['allowed_values']);
   }
 
@@ -36,32 +41,32 @@ class FieldSettingsTest extends UnitTestCase {
    * Provides field settings for testGetSettings().
    */
   public function getSettingsProvider() {
-    return [
-      [
+    return array(
+      array(
         'list_integer',
-        ['allowed_values' => "1|One\n2|Two\n3"],
-        [
+        array('allowed_values' => "1|One\n2|Two\n3"),
+        array(
           '1' => 'One',
           '2' => 'Two',
           '3' => '3',
-        ],
-      ],
-      [
+        ),
+      ),
+      array(
         'list_string',
-        ['allowed_values' => NULL],
-        [],
-      ],
-      [
+        array('allowed_values' => NULL),
+        array(),
+      ),
+      array(
         'list_float',
-        ['allowed_values' => ""],
-        [],
-      ],
-      [
+        array('allowed_values' => ""),
+        array(),
+      ),
+      array(
         'boolean',
-        [],
-        [],
-      ],
-    ];
+        array(),
+        array(),
+      ),
+    );
   }
 
 }

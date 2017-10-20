@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\EventSubscriber\AjaxResponseSubscriber.
+ */
+
 namespace Drupal\Core\EventSubscriber;
 
 use Drupal\Component\Utility\Html;
@@ -94,7 +99,7 @@ class AjaxResponseSubscriber implements EventSubscriberInterface {
         // the JSON data by making it the value of a textarea.
         // @see http://malsup.com/jquery/form/#file-upload
         // @see https://www.drupal.org/node/1009382
-        $response->setContent('<textarea>' . $response->getContent() . '</textarea>');
+        $response->setContent('<textarea>' . $response->getContent()  . '</textarea>');
       }
 
       // User-uploaded files cannot set any response headers, so a custom header
@@ -110,8 +115,8 @@ class AjaxResponseSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events[KernelEvents::RESPONSE][] = ['onResponse', -100];
-    $events[KernelEvents::REQUEST][] = ['onRequest', 50];
+    $events[KernelEvents::RESPONSE][] = array('onResponse', -100);
+    $events[KernelEvents::REQUEST][] = array('onRequest', 50);
 
     return $events;
   }

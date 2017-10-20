@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\block_test\Plugin\Block\TestCacheBlock.
+ */
+
 namespace Drupal\block_test\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
@@ -20,7 +25,7 @@ class TestCacheBlock extends BlockBase {
   public function build() {
     $content = \Drupal::state()->get('block_test.content');
 
-    $build = [];
+    $build = array();
     if (!empty($content)) {
       $build['#markup'] = $content;
     }

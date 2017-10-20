@@ -1,17 +1,17 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Entity\EntityUnitTestBase.
+ */
+
 namespace Drupal\system\Tests\Entity;
 
 use Drupal\simpletest\KernelTestBase;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\user\Entity\Role;
-use Drupal\user\Entity\User;
 
 /**
  * Defines an abstract test base for entity unit tests.
- *
- * @deprecated in Drupal 8.1.x, will be removed before Drupal 8.2.x. Use
- *   \Drupal\KernelTests\Core\Entity\EntityKernelTestBase instead.
  */
 abstract class EntityUnitTestBase extends KernelTestBase {
 
@@ -34,7 +34,7 @@ abstract class EntityUnitTestBase extends KernelTestBase {
    *
    * @var array
    */
-  protected $generatedIds = [];
+  protected $generatedIds = array();
 
   /**
    * The state service.
@@ -65,7 +65,7 @@ abstract class EntityUnitTestBase extends KernelTestBase {
         // Only check the modules, if the $modules property was not inherited.
         $rp = new \ReflectionProperty($class, 'modules');
         if ($rp->class == $class) {
-          foreach (array_intersect(['node', 'comment'], $class::$modules) as $module) {
+          foreach (array_intersect(array('node', 'comment'), $class::$modules) as $module) {
             $this->installEntitySchema($module);
           }
           if (in_array('forum', $class::$modules, TRUE)) {
@@ -82,7 +82,7 @@ abstract class EntityUnitTestBase extends KernelTestBase {
       $class = get_parent_class($class);
     }
 
-    $this->installConfig(['field']);
+    $this->installConfig(array('field'));
   }
 
   /**
@@ -96,22 +96,22 @@ abstract class EntityUnitTestBase extends KernelTestBase {
    * @return \Drupal\user\Entity\User
    *   The created user entity.
    */
-  protected function createUser($values = [], $permissions = []) {
+  protected function createUser($values = array(), $permissions = array()) {
     if ($permissions) {
       // Create a new role and apply permissions to it.
-      $role = Role::create([
+      $role = entity_create('user_role', array(
         'id' => strtolower($this->randomMachineName(8)),
         'label' => $this->randomMachineName(8),
-      ]);
+      ));
       $role->save();
       user_role_grant_permissions($role->id(), $permissions);
       $values['roles'][] = $role->id();
     }
 
-    $account = User::create($values + [
+    $account = entity_create('user', $values + array(
       'name' => $this->randomMachineName(),
       'status' => 1,
-    ]);
+    ));
     $account->enforceIsNew();
     $account->save();
     return $account;
@@ -128,7 +128,7 @@ abstract class EntityUnitTestBase extends KernelTestBase {
    */
   protected function reloadEntity(EntityInterface $entity) {
     $controller = $this->entityManager->getStorage($entity->getEntityTypeId());
-    $controller->resetCache([$entity->id()]);
+    $controller->resetCache(array($entity->id()));
     return $controller->load($entity->id());
   }
 
@@ -141,7 +141,7 @@ abstract class EntityUnitTestBase extends KernelTestBase {
   protected function getHooksInfo() {
     $key = 'entity_test.hooks';
     $hooks = $this->state->get($key);
-    $this->state->set($key, []);
+    $this->state->set($key, array());
     return $hooks;
   }
 
@@ -152,7 +152,7 @@ abstract class EntityUnitTestBase extends KernelTestBase {
    *   The module to install.
    */
   protected function installModule($module) {
-    $this->enableModules([$module]);
+    $this->enableModules(array($module));
     $this->refreshServices();
   }
 
@@ -163,7 +163,7 @@ abstract class EntityUnitTestBase extends KernelTestBase {
    *   The module to uninstall.
    */
   protected function uninstallModule($module) {
-    $this->disableModules([$module]);
+    $this->disableModules(array($module));
     $this->refreshServices();
   }
 
@@ -192,7 +192,8 @@ abstract class EntityUnitTestBase extends KernelTestBase {
       // Drupal supported databases and is known to work for other databases
       // like SQL Server 2014 and Oracle 10 too.
       $id = $string ? $this->randomMachineName() : mt_rand(1, 0x7FFFFFFF);
-    } while (isset($this->generatedIds[$id]));
+    }
+    while (isset($this->generatedIds[$id]));
     $this->generatedIds[$id] = $id;
     return $id;
   }

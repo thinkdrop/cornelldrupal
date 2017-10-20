@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Validation\Plugin\Validation\Constraint\ComplexDataConstraint.
+ */
+
 namespace Drupal\Core\Validation\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
@@ -29,7 +34,7 @@ class ComplexDataConstraint extends Constraint {
   public function __construct($options = NULL) {
     // Allow skipping the 'properties' key in the options.
     if (is_array($options) && !array_key_exists('properties', $options)) {
-      $options = ['properties' => $options];
+      $options = array('properties' => $options);
     }
     parent::__construct($options);
     $constraint_manager = \Drupal::service('validation.constraint');
@@ -55,7 +60,6 @@ class ComplexDataConstraint extends Constraint {
    * {@inheritdoc}
    */
   public function getRequiredOptions() {
-    return ['properties'];
+    return array('properties');
   }
-
 }

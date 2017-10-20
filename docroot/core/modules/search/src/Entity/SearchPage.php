@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\Entity\SearchPage.
+ */
+
 namespace Drupal\search\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -73,7 +78,7 @@ class SearchPage extends ConfigEntityBase implements SearchPageInterface, Entity
    *
    * @var array
    */
-  protected $configuration = [];
+  protected $configuration = array();
 
   /**
    * The search plugin ID.
@@ -129,7 +134,7 @@ class SearchPage extends ConfigEntityBase implements SearchPageInterface, Entity
    * {@inheritdoc}
    */
   public function getPluginCollections() {
-    return ['configuration' => $this->getPluginCollection()];
+    return array('configuration' => $this->getPluginCollection());
   }
 
   /**

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\aggregator\FeedViewBuilder.
+ */
+
 namespace Drupal\aggregator;
 
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -11,7 +16,7 @@ use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * View builder handler for aggregator feeds.
+ * Render controller for aggregator feed items.
  */
 class FeedViewBuilder extends EntityViewBuilder {
 
@@ -68,65 +73,65 @@ class FeedViewBuilder extends EntityViewBuilder {
 
         if ($view_mode == 'full') {
           // Also add the pager.
-          $build[$id]['pager'] = ['#type' => 'pager'];
+          $build[$id]['pager'] = array('#type' => 'pager');
         }
       }
 
       if ($display->getComponent('description')) {
-        $build[$id]['description'] = [
+        $build[$id]['description'] = array(
           '#markup' => $entity->getDescription(),
           '#allowed_tags' => _aggregator_allowed_tags(),
           '#prefix' => '<div class="feed-description">',
           '#suffix' => '</div>',
-        ];
+        );
       }
 
       if ($display->getComponent('image')) {
-        $image_link = [];
+        $image_link = array();
         // Render the image as link if it is available.
         $image = $entity->getImage();
         $label = $entity->label();
         $link_href = $entity->getWebsiteUrl();
         if ($image && $label && $link_href) {
-          $link_title = [
+          $link_title = array(
             '#theme' => 'image',
             '#uri' => $image,
             '#alt' => $label,
-          ];
-          $image_link = [
+          );
+          $image_link = array(
             '#type' => 'link',
             '#title' => $link_title,
             '#url' => Url::fromUri($link_href),
-            '#options' => [
-              'attributes' => ['class' => ['feed-image']],
-            ],
-          ];
+            '#options' => array(
+              'attributes' => array('class' => array('feed-image')),
+            ),
+          );
         }
         $build[$id]['image'] = $image_link;
       }
 
       if ($display->getComponent('feed_icon')) {
-        $build[$id]['feed_icon'] = [
+        $build[$id]['feed_icon'] = array(
           '#theme' => 'feed_icon',
           '#url' => $entity->getUrl(),
-          '#title' => t('@title feed', ['@title' => $entity->label()]),
-        ];
+          '#title' => t('@title feed', array('@title' => $entity->label())),
+        );
       }
 
       if ($display->getComponent('more_link')) {
         $title_stripped = strip_tags($entity->label());
-        $build[$id]['more_link'] = [
+        $build[$id]['more_link'] = array(
           '#type' => 'link',
-          '#title' => t('More<span class="visually-hidden"> posts about @title</span>', [
+          '#title' => t('More<span class="visually-hidden"> posts about @title</span>', array(
             '@title' => $title_stripped,
-          ]),
+          )),
           '#url' => Url::fromRoute('entity.aggregator_feed.canonical', ['aggregator_feed' => $entity->id()]),
-          '#options' => [
-            'attributes' => [
+          '#options' => array(
+            'attributes' => array(
               'title' => $title_stripped,
-            ],
-          ],
-        ];
+            ),
+          ),
+        );
       }
 
     }

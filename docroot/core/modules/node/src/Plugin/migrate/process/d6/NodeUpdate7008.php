@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\migrate\process\d6\NodeUpdate7008.
+ */
+
 namespace Drupal\node\Plugin\migrate\process\d6;
 
 use Drupal\migrate\MigrateExecutableInterface;
@@ -22,7 +27,7 @@ class NodeUpdate7008 extends ProcessPluginBase {
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     if ($value === 'administer nodes') {
-      return [$value, 'access content overview'];
+      return array($value, 'access content overview');
     }
     return $value;
   }

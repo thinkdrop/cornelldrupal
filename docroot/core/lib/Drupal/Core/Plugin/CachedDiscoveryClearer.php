@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Plugin\CachedDiscoveryClearer.
+ */
+
 namespace Drupal\Core\Plugin;
 
 use Drupal\Component\Plugin\Discovery\CachedDiscoveryInterface;
@@ -14,7 +19,7 @@ class CachedDiscoveryClearer implements CachedDiscoveryClearerInterface {
    *
    * @var \Drupal\Component\Plugin\Discovery\CachedDiscoveryInterface[]
    */
-  protected $cachedDiscoveries = [];
+  protected $cachedDiscoveries = array();
 
   /**
    * {@inheritdoc}

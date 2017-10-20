@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\StreamWrapper\LocalStream.
+ */
+
 namespace Drupal\Core\StreamWrapper;
 
 /**
@@ -52,19 +57,19 @@ abstract class LocalStream implements StreamWrapperInterface {
    * @return string
    *   String specifying the path.
    */
-  abstract public function getDirectoryPath();
+  abstract function getDirectoryPath();
 
   /**
    * {@inheritdoc}
    */
-  public function setUri($uri) {
+  function setUri($uri) {
     $this->uri = $uri;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getUri() {
+  function getUri() {
     return $this->uri;
   }
 
@@ -98,7 +103,7 @@ abstract class LocalStream implements StreamWrapperInterface {
   /**
    * {@inheritdoc}
    */
-  public function realpath() {
+  function realpath() {
     return $this->getLocalPath();
   }
 
@@ -189,7 +194,7 @@ abstract class LocalStream implements StreamWrapperInterface {
    * @see http://php.net/manual/streamwrapper.stream-lock.php
    */
   public function stream_lock($operation) {
-    if (in_array($operation, [LOCK_SH, LOCK_EX, LOCK_UN, LOCK_NB])) {
+    if (in_array($operation, array(LOCK_SH, LOCK_EX, LOCK_UN, LOCK_NB))) {
       return flock($this->handle, $operation);
     }
 
@@ -567,5 +572,4 @@ abstract class LocalStream implements StreamWrapperInterface {
     // have a return value.
     return TRUE;
   }
-
 }

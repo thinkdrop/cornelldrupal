@@ -1,11 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\simpletest\Unit\TestBaseTest.
+ */
+
 namespace Drupal\Tests\simpletest\Unit;
 
 use Drupal\Tests\UnitTestCase;
 
 /**
- * @requires extension curl
  * @coversDefaultClass \Drupal\simpletest\TestBase
  * @group simpletest
  */
@@ -25,13 +29,13 @@ class TestBaseTest extends UnitTestCase {
    */
   public function getTestBaseForAssertionTests($test_id) {
     $mock_test_base = $this->getMockBuilder('Drupal\simpletest\TestBase')
-      ->setConstructorArgs([$test_id])
-      ->setMethods(['storeAssertion'])
-      ->getMockForAbstractClass();
+        ->setConstructorArgs(array($test_id))
+        ->setMethods(array('storeAssertion'))
+        ->getMockForAbstractClass();
     // Override storeAssertion() so we don't need a database.
     $mock_test_base->expects($this->any())
-      ->method('storeAssertion')
-      ->will($this->returnValue(NULL));
+        ->method('storeAssertion')
+        ->will($this->returnValue(NULL));
     return $mock_test_base;
   }
 
@@ -62,16 +66,16 @@ class TestBaseTest extends UnitTestCase {
    *   - The string to validate.
    */
   public function providerRandomStringValidate() {
-    return [
-      [FALSE, ' curry paste'],
-      [FALSE, 'curry paste '],
-      [FALSE, 'curry  paste'],
-      [FALSE, 'curry   paste'],
-      [TRUE, 'curry paste'],
-      [TRUE, 'thai green curry paste'],
-      [TRUE, '@startswithat'],
-      [TRUE, 'contains@at'],
-    ];
+    return array(
+      array(FALSE, ' curry paste'),
+      array(FALSE, 'curry paste '),
+      array(FALSE, 'curry  paste'),
+      array(FALSE, 'curry   paste'),
+      array(TRUE, 'curry paste'),
+      array(TRUE, 'thai green curry paste'),
+      array(TRUE, '@startswithat'),
+      array(TRUE, 'contains@at'),
+    );
   }
 
   /**
@@ -136,7 +140,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertInternalType(
         'array',
-        $this->invokeProtectedMethod($test_base, 'checkRequirements', [])
+        $this->invokeProtectedMethod($test_base, 'checkRequirements', array())
     );
   }
 
@@ -153,14 +157,14 @@ class TestBaseTest extends UnitTestCase {
    *   - Caller, passed to assert().
    */
   public function providerAssert() {
-    return [
-      [TRUE, 'pass', TRUE, 'Yay pass', 'test', []],
-      [FALSE, 'fail', FALSE, 'Boo fail', 'test', []],
-      [TRUE, 'pass', 'pass', 'Yay pass', 'test', []],
-      [FALSE, 'fail', 'fail', 'Boo fail', 'test', []],
-      [FALSE, 'exception', 'exception', 'Boo fail', 'test', []],
-      [FALSE, 'debug', 'debug', 'Boo fail', 'test', []],
-    ];
+    return array(
+      array(TRUE, 'pass', TRUE, 'Yay pass', 'test', array()),
+      array(FALSE, 'fail', FALSE, 'Boo fail', 'test', array()),
+      array(TRUE, 'pass', 'pass', 'Yay pass', 'test', array()),
+      array(FALSE, 'fail', 'fail', 'Boo fail', 'test', array()),
+      array(FALSE, 'exception', 'exception', 'Boo fail', 'test', array()),
+      array(FALSE, 'debug', 'debug', 'Boo fail', 'test', array()),
+    );
   }
 
   /**
@@ -185,7 +189,7 @@ class TestBaseTest extends UnitTestCase {
     $this->assertEquals(
         $expected,
         $ref_assert->invokeArgs($test_base,
-          [$status, $message, $group, $caller]
+          array($status, $message, $group, $caller)
         )
     );
 
@@ -211,10 +215,10 @@ class TestBaseTest extends UnitTestCase {
    * Data provider for assertTrue().
    */
   public function providerAssertTrue() {
-    return [
-      [TRUE, TRUE],
-      [FALSE, FALSE],
-    ];
+    return array(
+      array(TRUE, TRUE),
+      array(FALSE, FALSE),
+    );
   }
 
   /**
@@ -225,7 +229,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         $expected,
-        $this->invokeProtectedMethod($test_base, 'assertTrue', [$value])
+        $this->invokeProtectedMethod($test_base, 'assertTrue', array($value))
     );
   }
 
@@ -237,7 +241,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         (!$expected),
-        $this->invokeProtectedMethod($test_base, 'assertFalse', [$value])
+        $this->invokeProtectedMethod($test_base, 'assertFalse', array($value))
     );
   }
 
@@ -245,10 +249,10 @@ class TestBaseTest extends UnitTestCase {
    * Data provider for assertNull().
    */
   public function providerAssertNull() {
-    return [
-      [TRUE, NULL],
-      [FALSE, ''],
-    ];
+    return array(
+      array(TRUE, NULL),
+      array(FALSE, ''),
+    );
   }
 
   /**
@@ -259,7 +263,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         $expected,
-        $this->invokeProtectedMethod($test_base, 'assertNull', [$value])
+        $this->invokeProtectedMethod($test_base, 'assertNull', array($value))
     );
   }
 
@@ -271,7 +275,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         (!$expected),
-        $this->invokeProtectedMethod($test_base, 'assertNotNull', [$value])
+        $this->invokeProtectedMethod($test_base, 'assertNotNull', array($value))
     );
   }
 
@@ -325,7 +329,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         $expected_identical,
-        $this->invokeProtectedMethod($test_base, 'assertIdentical', [$first, $second])
+        $this->invokeProtectedMethod($test_base, 'assertIdentical', array($first, $second))
     );
   }
 
@@ -337,7 +341,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         (!$expected_identical),
-        $this->invokeProtectedMethod($test_base, 'assertNotIdentical', [$first, $second])
+        $this->invokeProtectedMethod($test_base, 'assertNotIdentical', array($first, $second))
     );
   }
 
@@ -349,7 +353,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         $expected_equal,
-        $this->invokeProtectedMethod($test_base, 'assertEqual', [$first, $second])
+        $this->invokeProtectedMethod($test_base, 'assertEqual', array($first, $second))
     );
   }
 
@@ -361,7 +365,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         (!$expected_equal),
-        $this->invokeProtectedMethod($test_base, 'assertNotEqual', [$first, $second])
+        $this->invokeProtectedMethod($test_base, 'assertNotEqual', array($first, $second))
     );
   }
 
@@ -374,11 +378,11 @@ class TestBaseTest extends UnitTestCase {
     $obj2 = $obj1;
     $obj3 = clone $obj1;
     $obj4 = new \stdClass();
-    return [
-      [TRUE, $obj1, $obj2],
-      [TRUE, $obj1, $obj3],
-      [FALSE, $obj1, $obj4],
-    ];
+    return array(
+      array(TRUE, $obj1, $obj2),
+      array(TRUE, $obj1, $obj3),
+      array(FALSE, $obj1, $obj4),
+    );
   }
 
   /**
@@ -389,7 +393,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
       $expected,
-      $this->invokeProtectedMethod($test_base, 'assertIdenticalObject', [$first, $second])
+      $this->invokeProtectedMethod($test_base, 'assertIdenticalObject', array($first, $second))
     );
   }
 
@@ -400,7 +404,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         TRUE,
-        $this->invokeProtectedMethod($test_base, 'pass', [])
+        $this->invokeProtectedMethod($test_base, 'pass', array())
     );
   }
 
@@ -411,7 +415,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertEquals(
         FALSE,
-        $this->invokeProtectedMethod($test_base, 'fail', [])
+        $this->invokeProtectedMethod($test_base, 'fail', array())
     );
   }
 
@@ -423,10 +427,10 @@ class TestBaseTest extends UnitTestCase {
    *   - Group for use in assert().
    */
   public function providerError() {
-    return [
-      ['debug', 'User notice'],
-      ['exception', 'Not User notice'],
-    ];
+    return array(
+      array('debug', 'User notice'),
+      array('exception', 'Not User notice'),
+    );
   }
 
   /**
@@ -436,7 +440,7 @@ class TestBaseTest extends UnitTestCase {
   public function testError($status, $group) {
     // Mock up a TestBase object.
     $mock_test_base = $this->getMockBuilder('Drupal\simpletest\TestBase')
-      ->setMethods(['assert'])
+      ->setMethods(array('assert'))
       ->getMockForAbstractClass();
 
     // Set expectations for assert().
@@ -451,7 +455,7 @@ class TestBaseTest extends UnitTestCase {
     // Invoke error().
     $this->assertEquals(
         "$status:$group",
-        $this->invokeProtectedMethod($mock_test_base, 'error', ['msg', $group])
+        $this->invokeProtectedMethod($mock_test_base, 'error', array('msg', $group))
     );
   }
 
@@ -462,7 +466,7 @@ class TestBaseTest extends UnitTestCase {
     $test_base = $this->getTestBaseForAssertionTests('test_id');
     $this->assertInstanceOf(
         'Drupal\Component\Utility\Random',
-        $this->invokeProtectedMethod($test_base, 'getRandomGenerator', [])
+        $this->invokeProtectedMethod($test_base, 'getRandomGenerator', array())
     );
   }
 

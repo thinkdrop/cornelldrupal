@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Form\DeleteMultiple.
+ */
+
 namespace Drupal\node\Form;
 
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -20,7 +25,7 @@ class DeleteMultiple extends ConfirmFormBase {
    *
    * @var string[][]
    */
-  protected $nodeInfo = [];
+  protected $nodeInfo = array();
 
   /**
    * The tempstore factory.
@@ -130,10 +135,10 @@ class DeleteMultiple extends ConfirmFormBase {
       }
     }
 
-    $form['nodes'] = [
+    $form['nodes'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
-    ];
+    );
     $form = parent::buildForm($form, $form_state);
 
     return $form;
@@ -167,7 +172,7 @@ class DeleteMultiple extends ConfirmFormBase {
 
       if ($delete_nodes) {
         $this->storage->delete($delete_nodes);
-        $this->logger('content')->notice('Deleted @count posts.', ['@count' => count($delete_nodes)]);
+        $this->logger('content')->notice('Deleted @count posts.', array('@count' => count($delete_nodes)));
       }
 
       if ($delete_translations) {
@@ -182,7 +187,7 @@ class DeleteMultiple extends ConfirmFormBase {
         }
         if ($count) {
           $total_count += $count;
-          $this->logger('content')->notice('Deleted @count content translations.', ['@count' => $count]);
+          $this->logger('content')->notice('Deleted @count content translations.', array('@count' => $count));
         }
       }
 

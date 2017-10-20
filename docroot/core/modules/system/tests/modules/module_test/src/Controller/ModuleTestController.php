@@ -1,8 +1,11 @@
 <?php
 
-namespace Drupal\module_test\Controller;
+/**
+ * @file
+ * Contains \Drupal\module_test\Controller\ModuleTestController.
+ */
 
-use Drupal\module_autoload_test\SomeClass;
+namespace Drupal\module_test\Controller;
 
 /**
  * Controller routines for module_test routes.
@@ -10,40 +13,24 @@ use Drupal\module_autoload_test\SomeClass;
 class ModuleTestController {
 
   /**
-   * Returns dynamically invoked hook results for the 'module_test' module
-   *
-   * @return array
-   *   Renderable array.
+   * @todo Remove module_test_hook_dynamic_loading_invoke().
    */
   public function hookDynamicLoadingInvoke() {
-    $result = \Drupal::moduleHandler()->invoke('module_test', 'test_hook');
-    return $result['module_test'];
+    return module_test_hook_dynamic_loading_invoke();
   }
 
   /**
-   * Returns dynamically invoked hook results for all modules.
-   *
-   * @return array
-   *   Renderable array.
+   * @todo Remove module_test_hook_dynamic_loading_invoke_all().
    */
   public function hookDynamicLoadingInvokeAll() {
-    $result = \Drupal::moduleHandler()->invokeAll('test_hook');
-    return $result['module_test'];
+    return module_test_hook_dynamic_loading_invoke_all();
   }
 
   /**
-   * Returns the result of an autoloaded class's public method.
-   *
-   * @return array
-   *   Renderable array.
+   * @todo Remove module_test_class_loading().
    */
   public function testClassLoading() {
-    $markup = NULL;
-    if (class_exists('Drupal\module_autoload_test\SomeClass')) {
-      $obj = new SomeClass();
-      $markup = $obj->testMethod();
-    }
-    return ['#markup' => $markup];
+    return ['#markup' => module_test_class_loading()];
   }
 
 }

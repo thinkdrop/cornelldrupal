@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\content_translation\ContentTranslationManager.
+ */
+
 namespace Drupal\content_translation;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -40,7 +45,7 @@ class ContentTranslationManager implements ContentTranslationManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function getTranslationHandler($entity_type_id) {
+  function getTranslationHandler($entity_type_id) {
     return $this->entityManager->getHandler($entity_type_id, 'translation');
   }
 
@@ -66,7 +71,7 @@ class ContentTranslationManager implements ContentTranslationManagerInterface {
    * {@inheritdoc}
    */
   public function getSupportedEntityTypes() {
-    $supported_types = [];
+    $supported_types = array();
     foreach ($this->entityManager->getDefinitions() as $entity_type_id => $entity_type) {
       if ($this->isSupported($entity_type_id)) {
         $supported_types[$entity_type_id] = $entity_type;
@@ -82,7 +87,7 @@ class ContentTranslationManager implements ContentTranslationManagerInterface {
     $config = $this->loadContentLanguageSettings($entity_type_id, $bundle);
     $config->setThirdPartySetting('content_translation', 'enabled', $value)->save();
     $entity_type = $this->entityManager->getDefinition($entity_type_id);
-    $this->updatesManager->updateDefinitions([$entity_type_id => $entity_type]);
+    $this->updatesManager->updateDefinitions(array($entity_type_id => $entity_type));
   }
 
   /**
@@ -92,7 +97,7 @@ class ContentTranslationManager implements ContentTranslationManagerInterface {
     $enabled = FALSE;
 
     if ($this->isSupported($entity_type_id)) {
-      $bundles = !empty($bundle) ? [$bundle] : array_keys($this->entityManager->getBundleInfo($entity_type_id));
+      $bundles = !empty($bundle) ? array($bundle) : array_keys($this->entityManager->getBundleInfo($entity_type_id));
       foreach ($bundles as $bundle) {
         $config = $this->loadContentLanguageSettings($entity_type_id, $bundle);
         if ($config->getThirdPartySetting('content_translation', 'enabled', FALSE)) {

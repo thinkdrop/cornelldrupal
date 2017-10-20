@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Logger\LoggerChannel.
+ */
+
 namespace Drupal\Core\Logger;
 
 use Drupal\Core\Session\AccountInterface;
@@ -15,26 +20,6 @@ class LoggerChannel implements LoggerChannelInterface {
   use LoggerTrait;
 
   /**
-   * Maximum call depth to self::log() for a single log message.
-   *
-   * It's very easy for logging channel code to call out to other library code
-   * that will create log messages. In that case, we will recurse back in to
-   * LoggerChannel::log() multiple times while processing a single originating
-   * message. To prevent infinite recursion, we track the call depth and bail
-   * out at LoggerChannel::MAX_CALL_DEPTH iterations.
-   *
-   * @var int
-   */
-  const MAX_CALL_DEPTH = 5;
-
-  /**
-   * Number of times LoggerChannel::log() has been called for a single message.
-   *
-   * @var int
-   */
-  protected $callDepth = 0;
-
-  /**
    * The name of the channel of this logger instance.
    *
    * @var string
@@ -46,7 +31,7 @@ class LoggerChannel implements LoggerChannelInterface {
    *
    * @var array
    */
-  protected $levelTranslation = [
+  protected $levelTranslation = array(
     LogLevel::EMERGENCY => RfcLogLevel::EMERGENCY,
     LogLevel::ALERT => RfcLogLevel::ALERT,
     LogLevel::CRITICAL => RfcLogLevel::CRITICAL,
@@ -55,14 +40,14 @@ class LoggerChannel implements LoggerChannelInterface {
     LogLevel::NOTICE => RfcLogLevel::NOTICE,
     LogLevel::INFO => RfcLogLevel::INFO,
     LogLevel::DEBUG => RfcLogLevel::DEBUG,
-  ];
+  );
 
   /**
    * An array of arrays of \Psr\Log\LoggerInterface keyed by priority.
    *
    * @var array
    */
-  protected $loggers = [];
+  protected $loggers = array();
 
   /**
    * The request stack object.
@@ -91,14 +76,9 @@ class LoggerChannel implements LoggerChannelInterface {
   /**
    * {@inheritdoc}
    */
-  public function log($level, $message, array $context = []) {
-    if ($this->callDepth == self::MAX_CALL_DEPTH) {
-      return;
-    }
-    $this->callDepth++;
-
+  public function log($level, $message, array $context = array()) {
     // Merge in defaults.
-    $context += [
+    $context += array(
       'channel' => $this->channel,
       'link' => '',
       'user' => NULL,
@@ -107,23 +87,15 @@ class LoggerChannel implements LoggerChannelInterface {
       'referer' => '',
       'ip' => '',
       'timestamp' => time(),
-    ];
+    );
     // Some context values are only available when in a request context.
     if ($this->requestStack && $request = $this->requestStack->getCurrentRequest()) {
       $context['request_uri'] = $request->getUri();
       $context['referer'] = $request->headers->get('Referer', '');
       $context['ip'] = $request->getClientIP();
-      try {
-        if ($this->currentUser) {
-          $context['user'] = $this->currentUser;
-          $context['uid'] = $this->currentUser->id();
-        }
-      }
-      catch (\Exception $e) {
-        // An exception might be thrown if the database connection is not
-        // available or due to another unexpected reason. It is more important
-        // to log the error that we already have so any additional exceptions
-        // are ignored.
+      if ($this->currentUser) {
+        $context['user'] = $this->currentUser;
+        $context['uid'] = $this->currentUser->id();
       }
     }
 
@@ -135,8 +107,6 @@ class LoggerChannel implements LoggerChannelInterface {
     foreach ($this->sortLoggers() as $logger) {
       $logger->log($level, $message, $context);
     }
-
-    $this->callDepth--;
   }
 
   /**
@@ -174,7 +144,7 @@ class LoggerChannel implements LoggerChannelInterface {
    *   An array of sorted loggers by priority.
    */
   protected function sortLoggers() {
-    $sorted = [];
+    $sorted = array();
     krsort($this->loggers);
 
     foreach ($this->loggers as $loggers) {

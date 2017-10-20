@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\filter\Plugin\Filter\FilterHtmlEscape.
+ */
+
 namespace Drupal\filter\Plugin\Filter;
 
 use Drupal\filter\FilterProcessResult;
@@ -29,7 +34,7 @@ class FilterHtmlEscape extends FilterBase {
    */
   public function getHTMLRestrictions() {
     // Nothing is allowed.
-    return ['allowed' => []];
+    return array('allowed' => array());
   }
 
   /**

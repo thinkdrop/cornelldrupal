@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\menu_ui\Controller\MenuController.
+ */
+
 namespace Drupal\menu_ui\Controller;
 
 use Drupal\Component\Utility\Xss;
@@ -49,7 +54,7 @@ class MenuController extends ControllerBase {
    *   The available menu and menu items.
    */
   public function getParentOptions(Request $request) {
-    $available_menus = [];
+    $available_menus = array();
     if ($menus = $request->request->get('menus')) {
       foreach ($menus as $menu) {
         $available_menus[$menu] = $menu;

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\link\LinkItemInterface.
+ */
+
 namespace Drupal\link;
 
 use Drupal\Core\Field\FieldItemInterface;
@@ -36,7 +41,7 @@ interface LinkItemInterface extends FieldItemInterface {
    * Gets the URL object.
    *
    * @return \Drupal\Core\Url
-   *   Returns a Url object.
+   *   Returns an Url object.
    */
   public function getUrl();
 

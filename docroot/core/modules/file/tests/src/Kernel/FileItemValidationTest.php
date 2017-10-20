@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\file\Kernel\FileItemValidationTest.
+ */
+
 namespace Drupal\Tests\file\Kernel;
 
 use Drupal\entity_test\Entity\EntityTest;
@@ -45,7 +50,6 @@ class FileItemValidationTest extends KernelTestBase {
       'status' => 1,
     ]);
     $this->user->save();
-    $this->container->get('current_user')->setAccount($this->user);
   }
 
   /**
@@ -86,7 +90,6 @@ class FileItemValidationTest extends KernelTestBase {
     // Test for max filesize.
     $file = File::create([
       'uri' => 'vfs://drupal_root/sites/default/files/test.txt',
-      'uid' => $this->user->id(),
     ]);
     $file->setPermanent();
     $file->save();

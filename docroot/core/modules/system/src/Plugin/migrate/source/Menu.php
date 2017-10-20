@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Plugin\migrate\source\Menu.
+ */
+
 namespace Drupal\system\Plugin\migrate\source;
 
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
@@ -25,11 +30,11 @@ class Menu extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return [
+    return array(
       'menu_name' => $this->t('The menu name. Primary key.'),
       'title' => $this->t('The human-readable name of the menu.'),
       'description' => $this->t('A description of the menu'),
-    ];
+    );
   }
 
   /**

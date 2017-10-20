@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Ajax\DataCommand.
+ */
+
 namespace Drupal\Core\Ajax;
 
 /**
@@ -48,7 +53,7 @@ class DataCommand implements CommandInterface {
    *   A CSS selector for the elements to which the data will be attached.
    * @param string $name
    *   The key of the data to be attached to elements matched by the selector.
-   * @param mixed $value
+   * @param type $value
    *   The value of the data to be attached to elements matched by the selector.
    */
   public function __construct($selector, $name, $value) {
@@ -62,12 +67,13 @@ class DataCommand implements CommandInterface {
    */
   public function render() {
 
-    return [
+    return array(
       'command' => 'data',
       'selector' => $this->selector,
       'name' => $this->name,
       'value' => $this->value,
-    ];
+    );
   }
 
 }
+

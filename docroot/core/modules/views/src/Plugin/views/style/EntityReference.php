@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\style\EntityReference.
+ */
+
 namespace Drupal\views\Plugin\views\style;
 
 use Drupal\Component\Utility\Xss;
@@ -41,7 +46,7 @@ class EntityReference extends StylePluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['search_fields'] = ['default' => []];
+    $options['search_fields'] = array('default' => array());
 
     return $options;
   }
@@ -53,7 +58,7 @@ class EntityReference extends StylePluginBase {
     parent::buildOptionsForm($form, $form_state);
 
     $options = $this->displayHandler->getFieldLabels(TRUE);
-    $form['search_fields'] = [
+    $form['search_fields'] = array(
       '#type' => 'checkboxes',
       '#title' => $this->t('Search fields'),
       '#options' => $options,
@@ -61,7 +66,7 @@ class EntityReference extends StylePluginBase {
       '#default_value' => $this->options['search_fields'],
       '#description' => $this->t('Select the field(s) that will be searched when using the autocomplete widget.'),
       '#weight' => -3,
-    ];
+    );
   }
 
   /**
@@ -81,7 +86,7 @@ class EntityReference extends StylePluginBase {
 
     // @todo We don't display grouping info for now. Could be useful for select
     // widget, though.
-    $results = [];
+    $results = array();
     foreach ($sets as $records) {
       foreach ($records as $values) {
         $results[$values->{$id_field_alias}] = $this->view->rowPlugin->render($values);
@@ -100,5 +105,4 @@ class EntityReference extends StylePluginBase {
   public function evenEmpty() {
     return TRUE;
   }
-
 }

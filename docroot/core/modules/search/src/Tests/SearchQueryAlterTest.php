@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\search\Tests\SearchQueryAlterTest.
+ */
+
 namespace Drupal\search\Tests;
 
 /**
@@ -13,22 +18,22 @@ class SearchQueryAlterTest extends SearchTestBase {
    *
    * @var array
    */
-  public static $modules = ['search_query_alter'];
+  public static $modules = array('search_query_alter');
 
   /**
    * Tests that the query alter works.
    */
-  public function testQueryAlter() {
-    // Log in with sufficient privileges.
-    $this->drupalLogin($this->drupalCreateUser(['create page content', 'search content']));
+  function testQueryAlter() {
+    // Login with sufficient privileges.
+    $this->drupalLogin($this->drupalCreateUser(array('create page content', 'search content')));
 
     // Create a node and an article with the same keyword. The query alter
     // test module will alter the query so only articles should be returned.
-    $data = [
+    $data = array(
       'type' => 'page',
       'title' => 'test page',
-      'body' => [['value' => 'pizza']],
-    ];
+      'body' => array(array('value' => 'pizza')),
+    );
     $this->drupalCreateNode($data);
 
     $data['type'] = 'article';
@@ -40,10 +45,9 @@ class SearchQueryAlterTest extends SearchTestBase {
     search_update_totals();
 
     // Search for the body keyword 'pizza'.
-    $this->drupalPostForm('search/node', ['keys' => 'pizza'], t('Search'));
+    $this->drupalPostForm('search/node', array('keys' => 'pizza'), t('Search'));
     // The article should be there but not the page.
     $this->assertText('article', 'Article is in search results');
     $this->assertNoText('page', 'Page is not in search results');
   }
-
 }

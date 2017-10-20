@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\FieldItemList.
+ */
+
 namespace Drupal\Core\Field;
 
 use Drupal\Core\Access\AccessResult;
@@ -24,7 +29,7 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
    *
    * @var \Drupal\Core\Field\FieldItemInterface[]
    */
-  protected $list = [];
+  protected $list = array();
 
   /**
    * The langcode of the field values held in the object.
@@ -99,7 +104,7 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
    * @todo Revisit the need when all entity types are converted to NG entities.
    */
   public function getValue($include_computed = FALSE) {
-    $values = [];
+    $values = array();
     foreach ($this->list as $delta => $item) {
       $values[$delta] = $item->getValue($include_computed);
     }
@@ -110,10 +115,10 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
    * {@inheritdoc}
    */
   public function setValue($values, $notify = TRUE) {
-    // Support passing in only the value of the first item, either as a literal
+    // Support passing in only the value of the first item, either as a litteral
     // (value of the first property) or as an array of properties.
     if (isset($values) && (!is_array($values) || (!empty($values) && !is_numeric(current(array_keys($values)))))) {
-      $values = [0 => $values];
+      $values = array(0 => $values);
     }
     parent::setValue($values, $notify);
   }
@@ -249,7 +254,7 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
   /**
    * {@inheritdoc}
    */
-  public function view($display_options = []) {
+  public function view($display_options = array()) {
     $view_builder = \Drupal::entityManager()->getViewBuilder($this->getEntity()->getEntityTypeId());
     return $view_builder->viewField($this, $display_options);
   }
@@ -257,7 +262,7 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
   /**
    * {@inheritdoc}
    */
-  public function generateSampleItems($count = 1) {
+   public function generateSampleItems($count = 1) {
     $field_definition = $this->getFieldDefinition();
     $field_type_class = \Drupal::service('plugin.manager.field.field_type')->getPluginClass($field_definition->getType());
     for ($delta = 0; $delta < $count; $delta++) {
@@ -278,10 +283,10 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
     if ($cardinality != FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED) {
       $constraints[] = $this->getTypedDataManager()
         ->getValidationConstraintManager()
-        ->create('Count', [
+        ->create('Count', array(
           'max' => $cardinality,
-          'maxMessage' => t('%name: this field cannot hold more than @count values.', ['%name' => $this->getFieldDefinition()->getLabel(), '@count' => $cardinality]),
-        ]);
+          'maxMessage' => t('%name: this field cannot hold more than @count values.', array('%name' => $this->getFieldDefinition()->getLabel(), '@count' => $cardinality)),
+        ));
     }
 
     return $constraints;
@@ -294,7 +299,7 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
     if (empty($this->getFieldDefinition()->getDefaultValueCallback())) {
       if ($widget = $this->defaultValueWidget($form_state)) {
         // Place the input in a separate place in the submitted values tree.
-        $element = ['#parents' => ['default_value_input']];
+        $element = array('#parents' => array('default_value_input'));
         $element += $widget->form($this, $element, $form_state);
 
         return $element;
@@ -365,7 +370,7 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
       $entity_form_display = entity_get_form_display($entity->getEntityTypeId(), $entity->bundle(), 'default');
       $widget = $entity_form_display->getRenderer($this->getFieldDefinition()->getName());
       if (!$widget) {
-        $widget = \Drupal::service('plugin.manager.field.widget')->getInstance(['field_definition' => $this->getFieldDefinition()]);
+        $widget = \Drupal::service('plugin.manager.field.widget')->getInstance(array('field_definition' => $this->getFieldDefinition()));
       }
 
       $form_state->set('default_value_widget', $widget);

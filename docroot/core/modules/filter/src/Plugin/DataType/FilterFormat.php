@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\filter\Plugin\DataType\FilterFormat.
+ */
+
 namespace Drupal\filter\Plugin\DataType;
 
 use Drupal\Core\Session\AccountInterface;
@@ -44,5 +49,4 @@ class FilterFormat extends StringData implements OptionsProviderInterface {
     // @todo: Avoid calling functions but move to injected dependencies.
     return array_map(function ($format) { return $format->label(); }, filter_formats($account));
   }
-
 }

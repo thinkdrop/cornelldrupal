@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Authentication\AuthenticationCollectorInterface.
+ */
+
 namespace Drupal\Core\Authentication;
 
 /**
@@ -41,7 +46,7 @@ interface AuthenticationCollectorInterface {
    * @param string $provider_id
    *   The provider ID.
    *
-   * @return \Drupal\Core\Authentication\AuthenticationProviderInterface|null
+   * @return \Drupal\Core\Authentication\AuthenticationProviderInterface|NULL
    *   The authentication provider which matches the ID.
    */
   public function getProvider($provider_id);

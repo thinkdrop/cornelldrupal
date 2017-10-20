@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\FieldItemInterface.
+ */
+
 namespace Drupal\Core\Field;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -98,7 +103,7 @@ interface FieldItemInterface extends ComplexDataInterface {
   /**
    * Gets the langcode of the field values held in the object.
    *
-   * @return string
+   * @return $langcode
    *   The langcode.
    */
   public function getLangcode();
@@ -173,7 +178,7 @@ interface FieldItemInterface extends ComplexDataInterface {
    * @see \Drupal\Core\Entity\EntityViewBuilderInterface::viewFieldItem()
    * @see \Drupal\Core\Field\FieldItemListInterface::view()
    */
-  public function view($display_options = []);
+  public function view($display_options = array());
 
   /**
    * Defines custom presave behavior for field values.

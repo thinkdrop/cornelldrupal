@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Form\VocabularyDeleteForm.
+ */
+
 namespace Drupal\taxonomy\Form;
 
 use Drupal\Core\Entity\EntityDeleteForm;
@@ -20,7 +25,7 @@ class VocabularyDeleteForm extends EntityDeleteForm {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return $this->t('Are you sure you want to delete the vocabulary %title?', ['%title' => $this->entity->label()]);
+    return $this->t('Are you sure you want to delete the vocabulary %title?', array('%title' => $this->entity->label()));
   }
 
   /**
@@ -34,7 +39,7 @@ class VocabularyDeleteForm extends EntityDeleteForm {
    * {@inheritdoc}
    */
   protected function getDeletionMessage() {
-    return $this->t('Deleted vocabulary %name.', ['%name' => $this->entity->label()]);
+    return $this->t('Deleted vocabulary %name.', array('%name' => $this->entity->label()));
   }
 
 }

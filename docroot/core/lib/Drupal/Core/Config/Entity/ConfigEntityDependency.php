@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Config\Entity\ConfigEntityDependency.
+ */
+
 namespace Drupal\Core\Config\Entity;
 
 use Drupal\Component\Utility\NestedArray;
@@ -57,7 +62,7 @@ class ConfigEntityDependency {
    *   The list of dependencies of the supplied type.
    */
   public function getDependencies($type) {
-    $dependencies = [];
+    $dependencies = array();
     if (isset($this->dependencies[$type])) {
       $dependencies = $this->dependencies[$type];
     }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file\FileUsage\FileUsageBase.
+ */
+
 namespace Drupal\file\FileUsage;
 
 use Drupal\file\FileInterface;
@@ -32,5 +37,4 @@ abstract class FileUsageBase implements FileUsageInterface {
       $file->save();
     }
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\router_test\TestContent.
+ */
+
 namespace Drupal\router_test;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -63,7 +68,7 @@ class TestContent extends ControllerBase {
    */
   public function subrequestTest(UserInterface $user) {
     $request = \Drupal::request();
-    $request = Request::create('/router_test/test13/' . $user->id(), 'GET', $request->query->all(), $request->cookies->all(), [], $request->server->all());
+    $request = Request::create('/router_test/test13/' . $user->id(), 'GET', $request->query->all(), $request->cookies->all(), array(), $request->server->all());
 
     return $this->httpKernel->handle($request, HttpKernelInterface::SUB_REQUEST);
   }

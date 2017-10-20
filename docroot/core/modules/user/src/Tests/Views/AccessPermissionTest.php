@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Tests\Views\AccessPermissionTest.
+ */
+
 namespace Drupal\user\Tests\Views;
 
 use Drupal\user\Plugin\views\access\Permission;
@@ -19,12 +24,12 @@ class AccessPermissionTest extends AccessTestBase {
    *
    * @var array
    */
-  public static $testViews = ['test_access_perm'];
+  public static $testViews = array('test_access_perm');
 
   /**
    * Tests perm access plugin.
    */
-  public function testAccessPerm() {
+  function testAccessPerm() {
     $view = Views::getView('test_access_perm');
     $view->setDisplay();
 

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Theme\AdminNegotiator.
+ */
+
 namespace Drupal\user\Theme;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
@@ -51,8 +56,6 @@ class AdminNegotiator implements ThemeNegotiatorInterface {
    *   The config factory.
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
    *   The entity manager.
-   * @param \Drupal\Core\Routing\AdminContext $admin_context
-   *   The route admin context to determine whether the route is an admin one.
    */
   public function __construct(AccountInterface $user, ConfigFactoryInterface $config_factory, EntityManagerInterface $entity_manager, AdminContext $admin_context) {
     $this->user = $user;

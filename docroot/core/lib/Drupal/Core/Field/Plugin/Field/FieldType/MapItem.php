@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Plugin\Field\FieldType\MapItem.
+ */
+
 namespace Drupal\Core\Field\Plugin\Field\FieldType;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
@@ -22,22 +27,22 @@ class MapItem extends FieldItemBase {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     // The properties are dynamic and can not be defined statically.
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return [
-      'columns' => [
-        'value' => [
+    return array(
+      'columns' => array(
+        'value' => array(
           'type' => 'blob',
           'size' => 'big',
           'serialize' => TRUE,
-        ],
-      ],
-    ];
+        ),
+      ),
+    );
   }
 
   /**
@@ -53,7 +58,7 @@ class MapItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public function setValue($values, $notify = TRUE) {
-    $this->values = [];
+    $this->values = array();
     if (!isset($values)) {
       return;
     }
@@ -80,7 +85,7 @@ class MapItem extends FieldItemBase {
    */
   public function __get($name) {
     if (!isset($this->values[$name])) {
-      $this->values[$name] = [];
+      $this->values[$name] = array();
     }
 
     return $this->values[$name];

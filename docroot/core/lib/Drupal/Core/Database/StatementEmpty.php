@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Database\StatementEmpty.
+ */
+
 namespace Drupal\Core\Database;
 
 
@@ -26,7 +31,7 @@ class StatementEmpty implements \Iterator, StatementInterface {
   /**
    * {@inheritdoc}
    */
-  public function execute($args = [], $options = []) {
+  public function execute($args = array(), $options = array()) {
     return FALSE;
   }
 
@@ -50,7 +55,7 @@ class StatementEmpty implements \Iterator, StatementInterface {
   /**
    * {@inheritdoc}
    */
-  public function setFetchMode($mode, $a1 = NULL, $a2 = []) {
+  public function setFetchMode($mode, $a1 = NULL, $a2 = array()) {
     return;
   }
 
@@ -86,28 +91,28 @@ class StatementEmpty implements \Iterator, StatementInterface {
    * {@inheritdoc}
    */
   public function fetchAll($mode = NULL, $column_index = NULL, $constructor_arguments = NULL) {
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
   public function fetchCol($index = 0) {
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
   public function fetchAllKeyed($key_index = 0, $value_index = 1) {
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
   public function fetchAllAssoc($key, $fetch = NULL) {
-    return [];
+    return array();
   }
 
   /**

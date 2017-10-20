@@ -1,25 +1,27 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate\Plugin\migrate\destination\Entity.
+ */
+
 namespace Drupal\migrate\Plugin\migrate\destination;
 
 use Drupal\Component\Plugin\DependentPluginInterface;
 use Drupal\Core\Entity\DependencyTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Entity\MigrationInterface;
 use Drupal\migrate\Row;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides entity destination plugin.
- *
  * @MigrateDestination(
  *   id = "entity",
  *   deriver = "Drupal\migrate\Plugin\Derivative\MigrateEntity"
  * )
  */
 abstract class Entity extends DestinationBase implements ContainerFactoryPluginInterface, DependentPluginInterface {
-
   use DependencyTrait;
 
   /**
@@ -75,32 +77,17 @@ abstract class Entity extends DestinationBase implements ContainerFactoryPluginI
   }
 
   /**
-   * Finds the entity type from configuration or plugin ID.
+   * Finds the entity type from configuration or plugin id.
    *
    * @param string $plugin_id
-   *   The plugin ID.
+   *   The plugin id.
    *
    * @return string
    *   The entity type.
    */
   protected static function getEntityTypeId($plugin_id) {
-    // Remove "entity:".
+    // Remove "entity:"
     return substr($plugin_id, 7);
-  }
-
-  /**
-   * Gets the bundle for the row taking into account the default.
-   *
-   * @param \Drupal\migrate\Row $row
-   *   The current row we're importing.
-   *
-   * @return string
-   *   The bundle for this row.
-   */
-  public function getBundle(Row $row) {
-    $default_bundle = isset($this->configuration['default_bundle']) ? $this->configuration['default_bundle'] : '';
-    $bundle_key = $this->getKey('bundle');
-    return $row->getDestinationProperty($bundle_key) ?: $default_bundle;
   }
 
   /**
@@ -116,23 +103,17 @@ abstract class Entity extends DestinationBase implements ContainerFactoryPluginI
    * @param \Drupal\migrate\Row $row
    *   The row object.
    * @param array $old_destination_id_values
-   *   The old destination IDs.
+   *   The old destination ids.
    *
    * @return \Drupal\Core\Entity\EntityInterface
-   *   The entity we are importing into.
+   *   The entity we're importing into.
    */
   protected function getEntity(Row $row, array $old_destination_id_values) {
-    $entity_id = reset($old_destination_id_values) ?: $this->getEntityId($row);
+    $entity_id = $old_destination_id_values ? reset($old_destination_id_values) : $this->getEntityId($row);
     if (!empty($entity_id) && ($entity = $this->storage->load($entity_id))) {
-      // Allow updateEntity() to change the entity.
-      $entity = $this->updateEntity($entity, $row) ?: $entity;
+      $this->updateEntity($entity, $row);
     }
     else {
-      // Attempt to ensure we always have a bundle.
-      if ($bundle = $this->getBundle($row)) {
-        $row->setDestinationProperty($this->getKey('bundle'), $bundle);
-      }
-
       // Stubs might need some required fields filled in.
       if ($row->isStub()) {
         $this->processStubRow($row);
@@ -144,13 +125,12 @@ abstract class Entity extends DestinationBase implements ContainerFactoryPluginI
   }
 
   /**
-   * Gets the entity ID of the row.
+   * Get the entity id of the row.
    *
    * @param \Drupal\migrate\Row $row
    *   The row of data.
-   *
    * @return string
-   *   The entity ID for the row that we are importing.
+   *   The entity id for the row we're importing.
    */
   protected function getEntityId(Row $row) {
     return $row->getDestinationProperty($this->getKey('id'));

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Plugin\ContextAwarePluginBase.
+ */
+
 namespace Drupal\Core\Plugin;
 
 use Drupal\Component\Plugin\ConfigurablePluginInterface;
@@ -17,7 +22,7 @@ use Drupal\Core\Plugin\Context\ContextInterface;
 /**
  * Base class for plugins that are context aware.
  */
-abstract class ContextAwarePluginBase extends ComponentContextAwarePluginBase implements ContextAwarePluginInterface, CacheableDependencyInterface {
+abstract class ContextAwarePluginBase extends ComponentContextAwarePluginBase implements ContextAwarePluginInterface {
   use TypedDataTrait;
   use StringTranslationTrait;
   use DependencySerializationTrait;
@@ -41,11 +46,11 @@ abstract class ContextAwarePluginBase extends ComponentContextAwarePluginBase im
   /**
    * {@inheritdoc}
    *
-   * This code is identical to the Component in order to pick up a different
-   * Context class.
-   *
    * @return \Drupal\Core\Plugin\Context\ContextInterface
    *   The context object.
+   *
+   * This code is identical to the Component in order to pick up a different
+   * Context class.
    */
   public function getContext($name) {
     // Check for a valid context value.

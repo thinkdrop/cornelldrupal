@@ -1,8 +1,14 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Update\InvalidUpdateHookTest.
+ */
+
 namespace Drupal\system\Tests\Update;
 
 use Drupal\simpletest\WebTestBase;
+use Drupal\Core\Extension\ExtensionSchemaVersionException;
 
 /**
  * Tests that a module implementing hook_update_8000() causes an error to be
@@ -17,7 +23,7 @@ class InvalidUpdateHookTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['update_test_invalid_hook', 'update_script_test', 'dblog'];
+  public static $modules = array('update_test_invalid_hook', 'update_script_test', 'dblog');
 
   /**
    * URL for the upgrade script.
@@ -38,10 +44,10 @@ class InvalidUpdateHookTest extends WebTestBase {
     require_once \Drupal::root() . '/core/includes/update.inc';
 
     $this->updateUrl = $GLOBALS['base_url'] . '/update.php';
-    $this->updateUser = $this->drupalCreateUser(['administer software updates']);
+    $this->updateUser = $this->drupalCreateUser(array('administer software updates'));
   }
 
-  public function testInvalidUpdateHook() {
+  function testInvalidUpdateHook() {
     // Confirm that a module with hook_update_8000() cannot be updated.
     $this->drupalLogin($this->updateUser);
     $this->drupalGet($this->updateUrl);

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\PageDisplayVariantSelectionEvent.
+ */
+
 namespace Drupal\Core\Render;
 
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
@@ -54,7 +59,7 @@ class PageDisplayVariantSelectionEvent extends Event implements RefinableCacheab
   /**
    * Constructs the page display variant plugin selection event.
    *
-   * @param string $plugin_id
+   * @param string
    *   The ID of the page display variant plugin to use by default.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The current route match, for context.
@@ -80,7 +85,7 @@ class PageDisplayVariantSelectionEvent extends Event implements RefinableCacheab
   /**
    * The selected page display variant plugin ID.
    *
-   * @return string
+   * @return string;
    */
   public function getPluginId() {
     return $this->pluginId;

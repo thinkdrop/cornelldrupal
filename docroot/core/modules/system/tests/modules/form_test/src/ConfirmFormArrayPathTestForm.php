@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\form_test\ConfirmFormArrayPathTestForm.
+ */
+
 namespace Drupal\form_test;
 
 use Drupal\Core\Url;
@@ -20,11 +25,11 @@ class ConfirmFormArrayPathTestForm extends ConfirmFormTestForm {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('form_test.route6', [], [
-      'query' => [
+    return new Url('form_test.route6', array(), array(
+      'query' => array(
         'destination' => 'admin/config',
-      ],
-    ]);
+      ),
+    ));
   }
 
   /**

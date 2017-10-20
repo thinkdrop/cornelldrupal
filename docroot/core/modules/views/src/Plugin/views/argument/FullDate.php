@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\argument\FullDate.
+ */
+
 namespace Drupal\views\Plugin\views\argument;
 
 /**
@@ -30,7 +35,7 @@ class FullDate extends Date {
   /**
    * Provide a link to the next level of the view
    */
-  public function title() {
+  function title() {
     return format_date(strtotime($this->argument . " 00:00:00 UTC"), 'custom', $this->format, 'UTC');
   }
 

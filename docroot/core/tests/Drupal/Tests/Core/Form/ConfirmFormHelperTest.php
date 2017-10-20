@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Form\ConfirmFormHelperTest.
+ */
+
 namespace Drupal\Tests\Core\Form;
 
 use Drupal\Core\Form\ConfirmFormHelper;
@@ -71,12 +76,12 @@ class ConfirmFormHelperTest extends UnitTestCase {
    */
   public function testCancelLinkRouteWithUrl() {
     $cancel_route = new Url(
-      'foo_bar.baz', [
+      'foo_bar.baz', array(
         'baz' => 'banana',
-      ],
-      [
+      ),
+      array(
         'absolute' => TRUE,
-      ]
+      )
     );
     $form = $this->getMock('Drupal\Core\Form\ConfirmFormInterface');
     $form->expects($this->any())
@@ -95,7 +100,7 @@ class ConfirmFormHelperTest extends UnitTestCase {
    * @dataProvider providerTestCancelLinkDestination
    */
   public function testCancelLinkDestination($destination) {
-    $query = ['destination' => $destination];
+    $query = array('destination' => $destination);
     $form = $this->getMock('Drupal\Core\Form\ConfirmFormInterface');
 
     $path_validator = $this->getMock('Drupal\Core\Path\PathValidatorInterface');

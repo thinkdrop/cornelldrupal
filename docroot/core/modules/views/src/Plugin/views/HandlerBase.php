@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\HandlerBase.
+ */
+
 namespace Drupal\views\Plugin\views;
 
 use Drupal\Component\Utility\Html;
@@ -45,6 +50,13 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
   public $tableAlias;
 
   /**
+   * When a table has been moved this property is set.
+   *
+   * @var string
+   */
+  public $actualTable;
+
+  /**
    * The actual field in the database table, maybe different
    * on other kind of query plugins/special handlers.
    *
@@ -58,6 +70,13 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
    * @var string
    */
   public $field;
+
+  /**
+   * When a field has been moved this property is set.
+   *
+   * @var string
+   */
+  public $actualField;
 
   /**
    * The relationship used for this field.
@@ -105,6 +124,15 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
     // we have to do a lookup because the type is singular but the
     // option is stored as the plural.
 
+    // If the 'moved to' keyword moved our handler, let's fix that now.
+    if (isset($this->actualTable)) {
+      $options['table'] = $this->actualTable;
+    }
+
+    if (isset($this->actualField)) {
+      $options['field'] = $this->actualField;
+    }
+
     $this->unpackOptions($this->options, $options);
 
     // This exist on most handlers, but not all. So they are still optional.
@@ -138,12 +166,12 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['id'] = ['default' => ''];
-    $options['table'] = ['default' => ''];
-    $options['field'] = ['default' => ''];
-    $options['relationship'] = ['default' => 'none'];
-    $options['group_type'] = ['default' => 'group'];
-    $options['admin_label'] = ['default' => ''];
+    $options['id'] = array('default' => '');
+    $options['table'] = array('default' => '');
+    $options['field'] = array('default' => '');
+    $options['relationship'] = array('default' => 'none');
+    $options['group_type'] = array('default' => 'group');
+    $options['admin_label'] = array('default' => '');
 
     return $options;
   }
@@ -156,7 +184,7 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
       return $this->options['admin_label'];
     }
     $title = ($short && isset($this->definition['title short'])) ? $this->definition['title short'] : $this->definition['title'];
-    return $this->t('@group: @title', ['@group' => $this->definition['group'], '@title' => $title]);
+    return $this->t('@group: @title', array('@group' => $this->definition['group'], '@title' => $title));
   }
 
   /**
@@ -248,36 +276,36 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
     // be moved into one because of the $form_state->getValues() hierarchy. Those
     // elements can add a #fieldset => 'fieldset_name' property, and they'll
     // be moved to their fieldset during pre_render.
-    $form['#pre_render'][] = [get_class($this), 'preRenderAddFieldsetMarkup'];
+    $form['#pre_render'][] = array(get_class($this), 'preRenderAddFieldsetMarkup');
 
     parent::buildOptionsForm($form, $form_state);
 
-    $form['fieldsets'] = [
+    $form['fieldsets'] = array(
       '#type' => 'value',
-      '#value' => ['more', 'admin_label'],
-    ];
+      '#value' => array('more', 'admin_label'),
+    );
 
-    $form['admin_label'] = [
+    $form['admin_label'] = array(
       '#type' => 'details',
-      '#title' => $this->t('Administrative title'),
+      '#title' =>$this->t('Administrative title'),
       '#weight' => 150,
-    ];
-    $form['admin_label']['admin_label'] = [
+    );
+    $form['admin_label']['admin_label'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Administrative title'),
       '#description' => $this->t('This title will be displayed on the views edit page instead of the default one. This might be useful if you have the same item twice.'),
       '#default_value' => $this->options['admin_label'],
-      '#parents' => ['options', 'admin_label'],
-    ];
+      '#parents' => array('options', 'admin_label'),
+    );
 
     // This form is long and messy enough that the "Administrative title" option
     // belongs in "Administrative title" fieldset at the bottom of the form.
-    $form['more'] = [
+    $form['more'] = array(
       '#type' => 'details',
       '#title' => $this->t('More'),
       '#weight' => 200,
       '#optional' => TRUE,
-    ];
+    );
 
     // Allow to alter the default values brought into the form.
     // @todo Do we really want to keep this hook.
@@ -329,13 +357,13 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
       $group_types[$id] = $aggregate['title'];
     }
 
-    $form['group_type'] = [
+    $form['group_type'] = array(
       '#type' => 'select',
       '#title' => $this->t('Aggregation type'),
       '#default_value' => $this->options['group_type'],
       '#description' => $this->t('Select the aggregation function to use on this field.'),
       '#options' => $group_types,
-    ];
+    );
   }
 
   /**
@@ -454,7 +482,7 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
   public function access(AccountInterface $account) {
     if (isset($this->definition['access callback']) && function_exists($this->definition['access callback'])) {
       if (isset($this->definition['access arguments']) && is_array($this->definition['access arguments'])) {
-        return call_user_func_array($this->definition['access callback'], [$account] + $this->definition['access arguments']);
+        return call_user_func_array($this->definition['access callback'], array($account) + $this->definition['access arguments']);
       }
       return $this->definition['access callback']($account);
     }
@@ -537,7 +565,7 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
    * Determine if this item is 'exposed', meaning it provides form elements
    * to let users modify the view.
    *
-   * @return bool
+   * @return TRUE/FALSE
    */
   public function isExposed() {
     return !empty($this->options['exposed']);
@@ -587,7 +615,7 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function validate() { return []; }
+  public function validate() { return array(); }
 
   /**
    * {@inheritdoc}
@@ -703,16 +731,16 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
    */
   public static function breakString($str, $force_int = FALSE) {
     $operator = NULL;
-    $value = [];
+    $value = array();
 
     // Determine if the string has 'or' operators (plus signs) or 'and'
     // operators (commas) and split the string accordingly.
-    if (preg_match('/^([\w0-9-_\.]+[+ ]+)+[\w0-9-_\.]+$/u', $str)) {
+    if (preg_match('/^([\w0-9-_]+[+ ]+)+[\w0-9-_]+$/u', $str)) {
       // The '+' character in a query string may be parsed as ' '.
       $operator = 'or';
       $value = preg_split('/[+ ]/', $str);
     }
-    elseif (preg_match('/^([\w0-9-_\.]+[, ]+)*[\w0-9-_\.]+$/u', $str)) {
+    elseif (preg_match('/^([\w0-9-_]+[, ]+)*[\w0-9-_]+$/u', $str)) {
       $operator = 'and';
       $value = explode(',', $str);
     }
@@ -726,7 +754,7 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
       $value = array_map('intval', $value);
     }
 
-    return (object) ['value' => $value, 'operator' => $operator];
+    return (object) array('value' => $value, 'operator' => $operator);
   }
 
   /**
@@ -815,20 +843,4 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
     // Write to cache
     $view->cacheSet();
   }
-
-  /**
-   * Calculates options stored on the handler
-   *
-   * @param array $options
-   *   The options stored in the handler
-   * @param array $form_state_options
-   *   The newly submitted form state options.
-   *
-   * @return array
-   *   The new options
-   */
-  public function submitFormCalculateOptions(array $options, array $form_state_options) {
-    return $form_state_options + $options;
-  }
-
 }

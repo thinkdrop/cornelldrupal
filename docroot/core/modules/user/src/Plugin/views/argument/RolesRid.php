@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Plugin\views\argument\RolesRid.
+ */
+
 namespace Drupal\user\Plugin\views\argument;
 
 use Drupal\Core\Entity\EntityManagerInterface;
@@ -52,7 +57,7 @@ class RolesRid extends ManyToOne {
    */
   public function titleQuery() {
     $entities = $this->roleStorage->loadMultiple($this->value);
-    $titles = [];
+    $titles = array();
     foreach ($entities as $entity) {
       $titles[] = $entity->label();
     }

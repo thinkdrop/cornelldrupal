@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\paramconverter_test\TestControllers.
+ */
+
 namespace Drupal\paramconverter_test;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -24,5 +29,4 @@ class TestControllers {
     \Drupal::service('renderer')->addCacheableDependency($build, $node);
     return $build;
   }
-
 }

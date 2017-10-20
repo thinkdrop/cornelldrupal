@@ -1,20 +1,19 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\text\Plugin\migrate\cckfield\TextField.
+ */
+
 namespace Drupal\text\Plugin\migrate\cckfield;
 
-use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Entity\MigrationInterface;
 use Drupal\migrate\Row;
 use Drupal\migrate_drupal\Plugin\migrate\cckfield\CckFieldPluginBase;
 
 /**
  * @MigrateCckField(
- *   id = "text",
- *   type_map = {
- *     "text" = "text",
- *     "text_long" = "text_long",
- *     "text_with_summary" = "text_with_summary"
- *   },
- *   core = {6,7}
+ *   id = "text"
  * )
  */
 class TextField extends CckFieldPluginBase {
@@ -87,11 +86,11 @@ class TextField extends CckFieldPluginBase {
       ];
     }
 
-    $process = [
+    $process = array(
       'plugin' => 'iterator',
       'source' => $field_name,
       'process' => $process,
-    ];
+    );
     $migration->setProcessOfProperty($field_name, $process);
   }
 
@@ -100,29 +99,27 @@ class TextField extends CckFieldPluginBase {
    */
   public function getFieldType(Row $row) {
     $widget_type = $row->getSourceProperty('widget_type');
-    $settings = $row->getSourceProperty('global_settings');
 
     if ($widget_type == 'text_textfield') {
+      $settings = $row->getSourceProperty('global_settings');
       $field_type = $settings['text_processing'] ? 'text' : 'string';
       if (empty($settings['max_length']) || $settings['max_length'] > 255) {
         $field_type .= '_long';
       }
       return $field_type;
     }
-
-    if ($widget_type == 'text_textarea') {
-      $field_type = $settings['text_processing'] ? 'text_long' : 'string_long';
-      return $field_type;
-    }
-
-    switch ($widget_type) {
-      case 'optionwidgets_buttons':
-      case 'optionwidgets_select':
-        return 'list_string';
-      case 'optionwidgets_onoff':
-        return 'boolean';
-      default:
-        return parent::getFieldType($row);
+    else {
+      switch ($widget_type) {
+        case 'optionwidgets_buttons':
+        case 'optionwidgets_select':
+          return 'list_string';
+        case 'optionwidgets_onoff':
+          return 'boolean';
+        case 'text_textarea':
+          return 'text_long';
+        default:
+          break;
+      }
     }
   }
 

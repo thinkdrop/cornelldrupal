@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Extension\ModuleHandler.
+ */
+
 namespace Drupal\Core\Extension;
 
 use Drupal\Component\Graph\Graph;
@@ -85,13 +90,6 @@ class ModuleHandler implements ModuleHandlerInterface {
   protected $root;
 
   /**
-   * A list of module include file keys.
-   *
-   * @var array
-   */
-  protected $includeFileKeys = [];
-
-  /**
    * Constructs a ModuleHandler object.
    *
    * @param string $root
@@ -106,9 +104,9 @@ class ModuleHandler implements ModuleHandlerInterface {
    * @see \Drupal\Core\DrupalKernel
    * @see \Drupal\Core\CoreServiceProvider
    */
-  public function __construct($root, array $module_list = [], CacheBackendInterface $cache_backend) {
+  public function __construct($root, array $module_list = array(), CacheBackendInterface $cache_backend) {
     $this->root = $root;
-    $this->moduleList = [];
+    $this->moduleList = array();
     foreach ($module_list as $name => $module) {
       $this->moduleList[$name] = new Extension($this->root, $module['type'], $module['pathname'], $module['filename']);
     }
@@ -178,7 +176,7 @@ class ModuleHandler implements ModuleHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function setModuleList(array $module_list = []) {
+  public function setModuleList(array $module_list = array()) {
     $this->moduleList = $module_list;
     // Reset the implementations, so a new call triggers a reloading of the
     // available hooks.
@@ -221,7 +219,7 @@ class ModuleHandler implements ModuleHandlerInterface {
    */
   public function buildModuleDependencies(array $modules) {
     foreach ($modules as $module) {
-      $graph[$module->getName()]['edges'] = [];
+      $graph[$module->getName()]['edges'] = array();
       if (isset($module->info['dependencies']) && is_array($module->info['dependencies'])) {
         foreach ($module->info['dependencies'] as $dependency) {
           $dependency_data = static::parseDependency($dependency);
@@ -232,8 +230,8 @@ class ModuleHandler implements ModuleHandlerInterface {
     $graph_object = new Graph($graph);
     $graph = $graph_object->searchAndSort();
     foreach ($graph as $module_name => $data) {
-      $modules[$module_name]->required_by = isset($data['reverse_paths']) ? $data['reverse_paths'] : [];
-      $modules[$module_name]->requires = isset($data['paths']) ? $data['paths'] : [];
+      $modules[$module_name]->required_by = isset($data['reverse_paths']) ? $data['reverse_paths'] : array();
+      $modules[$module_name]->requires = isset($data['paths']) ? $data['paths'] : array();
       $modules[$module_name]->sort = $data['weight'];
     }
     return $modules;
@@ -265,21 +263,14 @@ class ModuleHandler implements ModuleHandlerInterface {
     }
 
     $name = $name ?: $module;
-    $key = $type . ':' . $module . ':' . $name;
-    if (isset($this->includeFileKeys[$key])) {
-      return $this->includeFileKeys[$key];
-    }
     if (isset($this->moduleList[$module])) {
       $file = $this->root . '/' . $this->moduleList[$module]->getPath() . "/$name.$type";
       if (is_file($file)) {
         require_once $file;
-        $this->includeFileKeys[$key] = $file;
         return $file;
       }
-      else {
-        $this->includeFileKeys[$key] = FALSE;
-      }
     }
+
     return FALSE;
   }
 
@@ -305,7 +296,7 @@ class ModuleHandler implements ModuleHandlerInterface {
    * @see \Drupal\Core\Extension\ModuleHandler::getHookInfo()
    */
   protected function buildHookInfo() {
-    $this->hookInfo = [];
+    $this->hookInfo = array();
     // Make sure that the modules are loaded before checking.
     $this->reload();
     // $this->invokeAll() would cause an infinite recursion.
@@ -356,7 +347,7 @@ class ModuleHandler implements ModuleHandlerInterface {
     // invoked, since this can quickly lead to
     // \Drupal::moduleHandler()->implementsHook() being called several thousand
     // times per request.
-    $this->cacheBackend->set('module_implements', []);
+    $this->cacheBackend->set('module_implements', array());
     $this->cacheBackend->delete('hook_info');
   }
 
@@ -383,7 +374,7 @@ class ModuleHandler implements ModuleHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function invoke($module, $hook, array $args = []) {
+  public function invoke($module, $hook, array $args = array()) {
     if (!$this->implementsHook($module, $hook)) {
       return;
     }
@@ -394,8 +385,8 @@ class ModuleHandler implements ModuleHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function invokeAll($hook, array $args = []) {
-    $return = [];
+  public function invokeAll($hook, array $args = array()) {
+    $return = array();
     $implementations = $this->getImplementations($hook);
     foreach ($implementations as $module) {
       $function = $module . '_' . $hook;
@@ -438,7 +429,7 @@ class ModuleHandler implements ModuleHandlerInterface {
     // list of functions to call, and on subsequent calls, iterate through them
     // quickly.
     if (!isset($this->alterFunctions[$cid])) {
-      $this->alterFunctions[$cid] = [];
+      $this->alterFunctions[$cid] = array();
       $hook = $type . '_alter';
       $modules = $this->getImplementations($hook);
       if (!isset($extra_types)) {
@@ -452,7 +443,7 @@ class ModuleHandler implements ModuleHandlerInterface {
       else {
         // For multiple hooks, we need $modules to contain every module that
         // implements at least one of them.
-        $extra_modules = [];
+        $extra_modules = array();
         foreach ($extra_types as $extra_type) {
           $extra_modules = array_merge($extra_modules, $this->getImplementations($extra_type . '_alter'));
         }
@@ -516,8 +507,8 @@ class ModuleHandler implements ModuleHandlerInterface {
    */
   protected function getImplementationInfo($hook) {
     if (!isset($this->implementations)) {
-      $this->implementations = [];
-      $this->verified = [];
+      $this->implementations = array();
+      $this->verified = array();
       if ($cache = $this->cacheBackend->get('module_implements')) {
         $this->implementations = $cache->data;
       }
@@ -561,7 +552,7 @@ class ModuleHandler implements ModuleHandlerInterface {
    * @see \Drupal\Core\Extension\ModuleHandler::getImplementationInfo()
    */
   protected function buildImplementationInfo($hook) {
-    $implementations = [];
+    $implementations = array();
     $hook_info = $this->getHookInfo();
     foreach ($this->moduleList as $module => $extension) {
       $include_file = isset($hook_info[$hook]['group']) && $this->loadInclude($module, 'inc', $module . '.' . $hook_info[$hook]['group']);
@@ -581,8 +572,8 @@ class ModuleHandler implements ModuleHandlerInterface {
       $this->alter('module_implements', $implementations, $hook);
       // Verify new or modified implementations.
       foreach (array_diff_assoc($implementations, $implementations_before) as $module => $group) {
-        // If an implementation of hook_module_implements_alter() changed or
-        // added a group, the respective file needs to be included.
+        // If drupal_alter('module_implements') changed or added a $group, the
+        // respective file needs to be included.
         if ($group) {
           $this->loadInclude($module, 'inc', "$module.$group");
         }
@@ -658,7 +649,7 @@ class ModuleHandler implements ModuleHandlerInterface {
    * @see drupal_check_incompatibility()
    */
   public static function parseDependency($dependency) {
-    $value = [];
+    $value = array();
     // Split out the optional project name.
     if (strpos($dependency, ':') !== FALSE) {
       list($project_name, $dependency) = explode(':', $dependency);
@@ -691,11 +682,11 @@ class ModuleHandler implements ModuleHandlerInterface {
             }
             // Equivalence can be checked by adding two restrictions.
             if ($op == '=' || $op == '==') {
-              $value['versions'][] = ['op' => '<', 'version' => ($matches['major'] + 1) . '.x'];
+              $value['versions'][] = array('op' => '<', 'version' => ($matches['major'] + 1) . '.x');
               $op = '>=';
             }
           }
-          $value['versions'][] = ['op' => $op, 'version' => $matches['major'] . '.' . $matches['minor']];
+          $value['versions'][] = array('op' => $op, 'version' => $matches['major'] . '.' . $matches['minor']);
         }
       }
     }
@@ -706,7 +697,7 @@ class ModuleHandler implements ModuleHandlerInterface {
    * {@inheritdoc}
    */
   public function getModuleDirectories() {
-    $dirs = [];
+    $dirs = array();
     foreach ($this->getModuleList() as $name => $module) {
       $dirs[$name] = $this->root . '/' . $module->getPath();
     }

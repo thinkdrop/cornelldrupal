@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Entity\Update\UpdateApiEntityDefinitionUpdateTest.
+ */
+
 namespace Drupal\system\Tests\Entity\Update;
 
 use Drupal\Core\Entity\Exception\FieldStorageDefinitionUpdateForbiddenException;
@@ -39,7 +44,7 @@ class UpdateApiEntityDefinitionUpdateTest extends WebTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  public function setUp() {
     parent::setUp();
 
     $this->entityManager = $this->container->get('entity.manager');
@@ -55,7 +60,7 @@ class UpdateApiEntityDefinitionUpdateTest extends WebTestBase {
   public function testSingleUpdates() {
     // Create a test entity.
     $user_ids = [mt_rand(), mt_rand()];
-    $entity = EntityTest::create(['name' => $this->randomString(), 'user_id' => $user_ids]);
+    $entity = EntityTest::create(['name' => $this->randomString(),  'user_id' => $user_ids]);
     $entity->save();
 
     // Check that only a single value is stored for 'user_id'.
@@ -66,9 +71,6 @@ class UpdateApiEntityDefinitionUpdateTest extends WebTestBase {
     // Make 'user_id' multiple by applying updates.
     $this->enableUpdates('entity_test', 'entity_definition_updates', 8001);
     $this->applyUpdates();
-
-    // Ensure the 'entity_test__user_id' table got created.
-    $this->assertTrue(\Drupal::database()->schema()->tableExists('entity_test__user_id'));
 
     // Check that data was correctly migrated.
     $entity = $this->reloadEntity($entity);
@@ -106,7 +108,7 @@ class UpdateApiEntityDefinitionUpdateTest extends WebTestBase {
   public function testMultipleUpdates() {
     // Create a test entity.
     $user_ids = [mt_rand(), mt_rand()];
-    $entity = EntityTest::create(['name' => $this->randomString(), 'user_id' => $user_ids]);
+    $entity = EntityTest::create(['name' => $this->randomString(),  'user_id' => $user_ids]);
     $entity->save();
 
     // Check that only a single value is stored for 'user_id'.
@@ -134,9 +136,9 @@ class UpdateApiEntityDefinitionUpdateTest extends WebTestBase {
   /**
    * Tests that entity updates are correctly reported in the status report page.
    */
-  public function testStatusReport() {
+  function testStatusReport() {
     // Create a test entity.
-    $entity = EntityTest::create(['name' => $this->randomString(), 'user_id' => mt_rand()]);
+    $entity = EntityTest::create(['name' => $this->randomString(),  'user_id' => mt_rand()]);
     $entity->save();
 
     // Check that the status report initially displays no error.

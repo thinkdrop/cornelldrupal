@@ -1,15 +1,16 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Plugin\PluginFormInterface.
+ */
+
 namespace Drupal\Core\Plugin;
 
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Provides an interface for an embeddable plugin form.
- *
- * Plugins can implement this form directly, or a standalone class can be used.
- * Decoupled forms can implement \Drupal\Component\Plugin\PluginAwareInterface
- * in order to gain access to the plugin.
  *
  * @ingroup plugin_api
  */
@@ -26,14 +27,13 @@ interface PluginFormInterface {
    * callback and build the rest of the form in the callback. By the time the
    * callback is executed, the element's #parents and #array_parents properties
    * will have been set by the form API. For more documentation on #parents and
-   * #array_parents, see \Drupal\Core\Render\Element\FormElement.
+   * #array_parents, see
+   * https://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/8.
    *
    * @param array $form
    *   An associative array containing the initial structure of the plugin form.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form. Calling code should pass on a subform
-   *   state created through
-   *   \Drupal\Core\Form\SubformState::createForSubform().
+   *   The current state of the complete form.
    *
    * @return array
    *   The form structure.
@@ -47,9 +47,7 @@ interface PluginFormInterface {
    *   An associative array containing the structure of the plugin form as built
    *   by static::buildConfigurationForm().
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form. Calling code should pass on a subform
-   *   state created through
-   *   \Drupal\Core\Form\SubformState::createForSubform().
+   *   The current state of the complete form.
    */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state);
 
@@ -60,9 +58,7 @@ interface PluginFormInterface {
    *   An associative array containing the structure of the plugin form as built
    *   by static::buildConfigurationForm().
    * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The current state of the form. Calling code should pass on a subform
-   *   state created through
-   *   \Drupal\Core\Form\SubformState::createForSubform().
+   *   The current state of the complete form.
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state);
 

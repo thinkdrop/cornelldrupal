@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Render\Markup.
+ */
+
 namespace Drupal\Core\Render;
 
 use Drupal\Component\Render\MarkupInterface;
@@ -22,5 +27,4 @@ use Drupal\Component\Render\MarkupTrait;
  */
 final class Markup implements MarkupInterface, \Countable {
   use MarkupTrait;
-
 }

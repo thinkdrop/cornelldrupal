@@ -1,9 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Component\Plugin\DefaultFactoryTest.
+ */
+
 namespace Drupal\Tests\Component\Plugin;
 
 use Drupal\Component\Plugin\Definition\PluginDefinitionInterface;
-use Drupal\Component\Plugin\Exception\PluginException;
 use Drupal\Component\Plugin\Factory\DefaultFactory;
 use Drupal\plugin_test\Plugin\plugin_test\fruit\Cherry;
 use Drupal\plugin_test\Plugin\plugin_test\fruit\FruitInterface;
@@ -48,9 +52,11 @@ class DefaultFactoryTest extends UnitTestCase {
    * Tests getPluginClass() with a missing class definition.
    *
    * @covers ::getPluginClass
+   *
+   * @expectedException \Drupal\Component\Plugin\Exception\PluginException
+   * @expectedExceptionMessage The plugin (cherry) did not specify an instance class.
    */
   public function testGetPluginClassWithMissingClassWithArrayPluginDefinition() {
-    $this->setExpectedException(PluginException::class, 'The plugin (cherry) did not specify an instance class.');
     DefaultFactory::getPluginClass('cherry', []);
   }
 
@@ -58,10 +64,12 @@ class DefaultFactoryTest extends UnitTestCase {
    * Tests getPluginClass() with a missing class definition.
    *
    * @covers ::getPluginClass
+   *
+   * @expectedException \Drupal\Component\Plugin\Exception\PluginException
+   * @expectedExceptionMessage The plugin (cherry) did not specify an instance class.
    */
   public function testGetPluginClassWithMissingClassWithObjectPluginDefinition() {
     $plugin_definition = $this->getMock(PluginDefinitionInterface::class);
-    $this->setExpectedException(PluginException::class, 'The plugin (cherry) did not specify an instance class.');
     DefaultFactory::getPluginClass('cherry', $plugin_definition);
   }
 
@@ -69,9 +77,11 @@ class DefaultFactoryTest extends UnitTestCase {
    * Tests getPluginClass() with a not existing class definition.
    *
    * @covers ::getPluginClass
+   *
+   * @expectedException \Drupal\Component\Plugin\Exception\PluginException
+   * @expectedExceptionMessage Plugin (kiwifruit) instance class "\Drupal\plugin_test\Plugin\plugin_test\fruit\Kiwifruit" does not exist.
    */
   public function testGetPluginClassWithNotExistingClassWithArrayPluginDefinition() {
-    $this->setExpectedException(PluginException::class, 'Plugin (kiwifruit) instance class "\Drupal\plugin_test\Plugin\plugin_test\fruit\Kiwifruit" does not exist.');
     DefaultFactory::getPluginClass('kiwifruit', ['class' => '\Drupal\plugin_test\Plugin\plugin_test\fruit\Kiwifruit']);
   }
 
@@ -79,6 +89,8 @@ class DefaultFactoryTest extends UnitTestCase {
    * Tests getPluginClass() with a not existing class definition.
    *
    * @covers ::getPluginClass
+   *
+   * @expectedException \Drupal\Component\Plugin\Exception\PluginException
    */
   public function testGetPluginClassWithNotExistingClassWithObjectPluginDefinition() {
     $plugin_class = '\Drupal\plugin_test\Plugin\plugin_test\fruit\Kiwifruit';
@@ -86,7 +98,6 @@ class DefaultFactoryTest extends UnitTestCase {
     $plugin_definition->expects($this->atLeastOnce())
       ->method('getClass')
       ->willReturn($plugin_class);
-    $this->setExpectedException(PluginException::class);
     DefaultFactory::getPluginClass('kiwifruit', $plugin_definition);
   }
 
@@ -122,10 +133,12 @@ class DefaultFactoryTest extends UnitTestCase {
    * Tests getPluginClass() with a required interface but no implementation.
    *
    * @covers ::getPluginClass
+   *
+   * @expectedException \Drupal\Component\Plugin\Exception\PluginException
+   * @expectedExceptionMessage Plugin "cherry" (Drupal\plugin_test\Plugin\plugin_test\fruit\Kale) must implement interface Drupal\plugin_test\Plugin\plugin_test\fruit\FruitInterface.
    */
   public function testGetPluginClassWithInterfaceAndInvalidClassWithArrayPluginDefinition() {
     $plugin_class = Kale::class;
-    $this->setExpectedException(PluginException::class, 'Plugin "cherry" (Drupal\plugin_test\Plugin\plugin_test\fruit\Kale) must implement interface Drupal\plugin_test\Plugin\plugin_test\fruit\FruitInterface.');
     DefaultFactory::getPluginClass('cherry', ['class' => $plugin_class, 'provider' => 'core'], FruitInterface::class);
   }
 
@@ -133,6 +146,8 @@ class DefaultFactoryTest extends UnitTestCase {
    * Tests getPluginClass() with a required interface but no implementation.
    *
    * @covers ::getPluginClass
+   *
+   * @expectedException \Drupal\Component\Plugin\Exception\PluginException
    */
   public function testGetPluginClassWithInterfaceAndInvalidClassWithObjectPluginDefinition() {
     $plugin_class = Kale::class;
@@ -140,8 +155,8 @@ class DefaultFactoryTest extends UnitTestCase {
     $plugin_definition->expects($this->atLeastOnce())
       ->method('getClass')
       ->willReturn($plugin_class);
-    $this->setExpectedException(PluginException::class);
     DefaultFactory::getPluginClass('cherry', $plugin_definition, FruitInterface::class);
   }
 
 }
+

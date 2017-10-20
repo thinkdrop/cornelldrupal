@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Contains \Drupal\language_elements_test\Form\LanguageConfigurationElementTest.
+ */
 
 namespace Drupal\language_elements_test\Form;
 
@@ -21,11 +25,11 @@ class LanguageConfigurationElementTest extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['langcode'] = [
+    $form['langcode'] = array(
       '#title' => t('Language select'),
       '#type' => 'language_select',
       '#default_value' => language_get_default_langcode('entity_test', 'some_bundle'),
-    ];
+    );
     return $form;
   }
 
@@ -34,5 +38,4 @@ class LanguageConfigurationElementTest extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
   }
-
 }

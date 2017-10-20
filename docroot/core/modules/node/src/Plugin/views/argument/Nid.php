@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\node\Plugin\views\argument\Nid.
+ */
+
 namespace Drupal\node\Plugin\views\argument;
 
 use Drupal\node\NodeStorageInterface;
@@ -52,7 +57,7 @@ class Nid extends NumericArgument {
    * Override the behavior of title(). Get the title of the node.
    */
   public function titleQuery() {
-    $titles = [];
+    $titles = array();
 
     $nodes = $this->nodeStorage->loadMultiple($this->value);
     foreach ($nodes as $node) {

@@ -15,10 +15,8 @@
    * @function Drupal.autocomplete.splitValues
    *
    * @param {string} value
-   *   The value being entered by the user.
    *
    * @return {Array}
-   *   Array of values, split by comma.
    */
   function autocompleteSplitValues(value) {
     // We will match the value against comma-separated terms.
@@ -55,10 +53,8 @@
    * @function Drupal.autocomplete.extractLastTerm
    *
    * @param {string} terms
-   *   The value of the field.
    *
    * @return {string}
-   *   The last value of the input field.
    */
   function extractLastTerm(terms) {
     return autocomplete.splitValues(terms).pop();
@@ -70,18 +66,11 @@
    * @function Drupal.autocomplete.options.search
    *
    * @param {object} event
-   *   The event triggered.
    *
    * @return {bool}
-   *   Whether to perform a search or not.
    */
   function searchHandler(event) {
     var options = autocomplete.options;
-
-    if (options.isComposing) {
-      return false;
-    }
-
     var term = autocomplete.extractLastTerm(event.target.value);
     // Abort search if the first character is in firstCharacterBlacklist.
     if (term.length > 0 && options.firstCharacterBlacklist.indexOf(term[0]) !== -1) {
@@ -95,9 +84,7 @@
    * JQuery UI autocomplete source callback.
    *
    * @param {object} request
-   *   The request object.
    * @param {function} response
-   *   The function to call with the response.
    */
   function sourceData(request, response) {
     var elementId = this.element.attr('id');
@@ -111,7 +98,6 @@
      * display the available terms to the user.
      *
      * @param {object} suggestions
-     *   Suggestions returned by the server.
      */
     function showSuggestions(suggestions) {
       var tagged = autocomplete.splitValues(request.term);
@@ -129,7 +115,6 @@
      * Transforms the data object into an array and update autocomplete results.
      *
      * @param {object} data
-     *   The data sent back from the server.
      */
     function sourceCallbackHandler(data) {
       autocomplete.cache[elementId][term] = data;
@@ -155,7 +140,6 @@
    * Handles an autocompletefocus event.
    *
    * @return {bool}
-   *   Always returns false.
    */
   function focusHandler() {
     return false;
@@ -165,20 +149,21 @@
    * Handles an autocompleteselect event.
    *
    * @param {jQuery.Event} event
-   *   The event triggered.
    * @param {object} ui
-   *   The jQuery UI settings object.
    *
    * @return {bool}
-   *   Returns false to indicate the event status.
    */
   function selectHandler(event, ui) {
     var terms = autocomplete.splitValues(event.target.value);
     // Remove the current input.
     terms.pop();
     // Add the selected item.
-    terms.push(ui.item.value);
-
+    if (ui.item.value.search(',') > 0) {
+      terms.push('"' + ui.item.value + '"');
+    }
+    else {
+      terms.push(ui.item.value);
+    }
     event.target.value = terms.join(', ');
     // Return false to tell jQuery UI that we've filled in the value already.
     return false;
@@ -187,13 +172,10 @@
   /**
    * Override jQuery UI _renderItem function to output HTML by default.
    *
-   * @param {jQuery} ul
-   *   jQuery collection of the ul element.
+   * @param {object} ul
    * @param {object} item
-   *   The list item to append.
    *
-   * @return {jQuery}
-   *   jQuery collection of the ul element.
+   * @return {object}
    */
   function renderItem(ul, item) {
     return $('<li>')
@@ -205,11 +187,6 @@
    * Attaches the autocomplete behavior to all required fields.
    *
    * @type {Drupal~behavior}
-   *
-   * @prop {Drupal~behaviorAttach} attach
-   *   Attaches the autocomplete behaviors.
-   * @prop {Drupal~behaviorDetach} detach
-   *   Detaches the autocomplete behaviors.
    */
   Drupal.behaviors.autocomplete = {
     attach: function (context) {
@@ -223,17 +200,8 @@
         });
         // Use jQuery UI Autocomplete on the textfield.
         $autocomplete.autocomplete(autocomplete.options)
-          .each(function () {
-            $(this).data('ui-autocomplete')._renderItem = autocomplete.options.renderItem;
-          });
-
-        // Use CompositionEvent to handle IME inputs. It requests remote server on "compositionend" event only.
-        $autocomplete.on('compositionstart.autocomplete', function () {
-          autocomplete.options.isComposing = true;
-        });
-        $autocomplete.on('compositionend.autocomplete', function () {
-          autocomplete.options.isComposing = false;
-        });
+          .data('ui-autocomplete')
+          ._renderItem = autocomplete.options.renderItem;
       }
     },
     detach: function (context, settings, trigger) {
@@ -270,9 +238,7 @@
       renderItem: renderItem,
       minLength: 1,
       // Custom options, used by Drupal.autocomplete.
-      firstCharacterBlacklist: '',
-      // Custom options, indicate IME usage status.
-      isComposing: false
+      firstCharacterBlacklist: ''
     },
     ajax: {
       dataType: 'json'

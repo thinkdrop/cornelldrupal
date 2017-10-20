@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\responsive_image\Entity\ResponsiveImageStyle.
+ */
+
 namespace Drupal\responsive_image\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
@@ -68,7 +73,7 @@ class ResponsiveImageStyle extends ConfigEntityBase implements ResponsiveImageSt
    *
    * @var array
    */
-  protected $image_style_mappings = [];
+  protected $image_style_mappings = array();
 
   /**
    * @var array
@@ -103,18 +108,18 @@ class ResponsiveImageStyle extends ConfigEntityBase implements ResponsiveImageSt
     // If there is an existing mapping, overwrite it.
     foreach ($this->image_style_mappings as &$mapping) {
       if ($mapping['breakpoint_id'] === $breakpoint_id && $mapping['multiplier'] === $multiplier) {
-        $mapping = [
+        $mapping = array(
           'breakpoint_id' => $breakpoint_id,
           'multiplier' => $multiplier,
-        ] + $image_style_mapping;
+        ) + $image_style_mapping;
         $this->keyedImageStyleMappings = NULL;
         return $this;
       }
     }
-    $this->image_style_mappings[] = [
+    $this->image_style_mappings[] = array(
       'breakpoint_id' => $breakpoint_id,
       'multiplier' => $multiplier,
-    ] + $image_style_mapping;
+    ) + $image_style_mapping;
     $this->keyedImageStyleMappings = NULL;
     return $this;
   }
@@ -132,8 +137,8 @@ class ResponsiveImageStyle extends ConfigEntityBase implements ResponsiveImageSt
    */
   public function getKeyedImageStyleMappings() {
     if (!$this->keyedImageStyleMappings) {
-      $this->keyedImageStyleMappings = [];
-      foreach ($this->image_style_mappings as $mapping) {
+      $this->keyedImageStyleMappings = array();
+      foreach($this->image_style_mappings as $mapping) {
         if (!static::isEmptyImageStyleMapping($mapping)) {
           $this->keyedImageStyleMappings[$mapping['breakpoint_id']][$mapping['multiplier']] = $mapping;
         }
@@ -188,7 +193,7 @@ class ResponsiveImageStyle extends ConfigEntityBase implements ResponsiveImageSt
    * {@inheritdoc}
    */
   public function removeImageStyleMappings() {
-    $this->image_style_mappings = [];
+    $this->image_style_mappings = array();
     $this->keyedImageStyleMappings = NULL;
     return $this;
   }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\toolbar\Unit\PageCache\AllowToolbarPathTest.
+ */
+
 namespace Drupal\Tests\toolbar\Unit\PageCache;
 
 use Drupal\toolbar\PageCache\AllowToolbarPath;
@@ -20,7 +25,7 @@ class AllowToolbarPathTest extends UnitTestCase {
    */
   protected $policy;
 
-  protected function setUp() {
+  public function setUp() {
     $this->policy = new AllowToolbarPath();
   }
 

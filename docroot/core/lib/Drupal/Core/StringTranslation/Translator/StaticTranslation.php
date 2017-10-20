@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\StringTranslation\Translator\StaticTranslation.
+ */
+
 namespace Drupal\Core\StringTranslation\Translator;
 
 /**
@@ -23,7 +28,7 @@ class StaticTranslation implements TranslatorInterface {
    * @param array $translations
    *   Array of override strings indexed by language and context
    */
-  public function __construct($translations = []) {
+  public function __construct($translations = array()) {
     $this->translations = $translations;
   }
 
@@ -46,19 +51,14 @@ class StaticTranslation implements TranslatorInterface {
    * {@inheritdoc}
    */
   public function reset() {
-    $this->translations = [];
+    $this->translations = array();
   }
 
   /**
-   * Retrieves translations for a given language.
+   * Add translations for new language.
    *
    * @param string $langcode
    *   The langcode of the language.
-   *
-   * @return array
-   *   A multidimensional array of translations, indexed by the context the
-   *   source string belongs to. The second level is using original strings as
-   *   keys. An empty array will be returned when no translations are available.
    */
   protected function getLanguage($langcode) {
     // This class is usually a base class but we do not declare as abstract
@@ -66,7 +66,7 @@ class StaticTranslation implements TranslatorInterface {
     // constructor. This can be useful while testing, but it does not support
     // loading specific languages. All available languages should be passed
     // in the constructor array.
-    return [];
+    return array();
   }
 
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\field\Url.
+ */
+
 namespace Drupal\views\Plugin\views\field;
 
 use Drupal\Core\Form\FormStateInterface;
@@ -21,7 +26,7 @@ class Url extends FieldPluginBase {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['display_as_link'] = ['default' => TRUE];
+    $options['display_as_link'] = array('default' => TRUE);
 
     return $options;
   }
@@ -30,11 +35,11 @@ class Url extends FieldPluginBase {
    * Provide link to the page being visited.
    */
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
-    $form['display_as_link'] = [
+    $form['display_as_link'] = array(
       '#title' => $this->t('Display as link'),
       '#type' => 'checkbox',
       '#default_value' => !empty($this->options['display_as_link']),
-    ];
+    );
     parent::buildOptionsForm($form, $form_state);
   }
 

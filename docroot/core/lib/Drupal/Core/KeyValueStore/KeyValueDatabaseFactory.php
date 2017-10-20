@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\KeyValueStore\KeyValueDatabaseFactory.
+ */
+
 namespace Drupal\Core\KeyValueStore;
 
 use Drupal\Component\Serialization\SerializationInterface;
@@ -32,7 +37,7 @@ class KeyValueDatabaseFactory implements KeyValueFactoryInterface {
    * @param \Drupal\Core\Database\Connection $connection
    *   The Connection object containing the key-value tables.
    */
-  public function __construct(SerializationInterface $serializer, Connection $connection) {
+  function __construct(SerializationInterface $serializer, Connection $connection) {
     $this->serializer = $serializer;
     $this->connection = $connection;
   }
@@ -43,5 +48,4 @@ class KeyValueDatabaseFactory implements KeyValueFactoryInterface {
   public function get($collection) {
     return new DatabaseStorage($collection, $this->serializer, $this->connection);
   }
-
 }

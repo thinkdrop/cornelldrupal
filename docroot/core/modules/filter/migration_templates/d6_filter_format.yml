@@ -6,8 +6,14 @@ source:
   plugin: d6_filter_format
 process:
   format:
-    plugin: machine_name
-    source: name
+    -
+      plugin: machine_name
+      source: name
+    -
+      plugin: dedupe_entity
+      entity_type: filter_format
+      field: format
+      length: 32
   name: name
   cache: cache
   filters:
@@ -16,16 +22,11 @@ process:
     key: '@id'
     process:
       id:
-        # If the filter ID cannot be mapped, it will be passed through
-        # unchanged because the bypass flag is set. The filter_id plugin
-        # will flatten the input value and default it to filter_null (the
-        # fallback filter plugin ID) if the flattened input value is not
-        # a valid plugin ID.
-        plugin: filter_id
+        plugin: static_map
+        default_value: filter_null
         source:
           - module
           - delta
-        bypass: true
         map:
           filter:
             - filter_html

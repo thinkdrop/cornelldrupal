@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\Form\FormStoragePageCacheTest.
+ */
+
 namespace Drupal\system\Tests\Form;
 
 use Drupal\simpletest\WebTestBase;
@@ -14,7 +19,7 @@ class FormStoragePageCacheTest extends WebTestBase {
   /**
    * @var array
    */
-  public static $modules = ['form_test'];
+  public static $modules = array('form_test');
 
   /**
    * {@inheritdoc}

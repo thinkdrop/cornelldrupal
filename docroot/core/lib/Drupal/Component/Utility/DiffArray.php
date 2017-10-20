@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Component\Utility\DiffArray.
+ */
+
 namespace Drupal\Component\Utility;
 
 /**
@@ -25,7 +30,7 @@ class DiffArray {
    *   in array2.
    */
   public static function diffAssocRecursive(array $array1, array $array2) {
-    $difference = [];
+    $difference = array();
 
     foreach ($array1 as $key => $value) {
       if (is_array($value)) {

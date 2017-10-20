@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\user\Tests\Views\FilterPermissionUiTest.
+ */
+
 namespace Drupal\user\Tests\Views;
 
 use Drupal\views\Tests\ViewTestBase;
@@ -30,7 +35,7 @@ class FilterPermissionUiTest extends ViewTestBase {
   protected function setUp() {
     parent::setUp(TRUE);
 
-    ViewTestData::createTestViews(get_class($this), ['user_test_views']);
+    ViewTestData::createTestViews(get_class($this), array('user_test_views'));
     $this->enableViewsTestModule();
   }
 

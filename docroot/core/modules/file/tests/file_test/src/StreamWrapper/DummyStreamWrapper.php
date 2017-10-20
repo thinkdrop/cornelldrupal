@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\file_test\StreamWrapper\DummyStreamWrapper.
+ */
+
 namespace Drupal\file_test\StreamWrapper;
 
 use Drupal\Core\StreamWrapper\LocalStream;
@@ -25,7 +30,7 @@ class DummyStreamWrapper extends LocalStream {
     return t('Dummy wrapper for simpletest.');
   }
 
-  public function getDirectoryPath() {
+  function getDirectoryPath() {
     return \Drupal::service('site.path') . '/files';
   }
 
@@ -34,7 +39,7 @@ class DummyStreamWrapper extends LocalStream {
    *
    * Return a dummy path for testing.
    */
-  public function getInternalUri() {
+  function getInternalUri() {
     return '/dummy/example.txt';
   }
 
@@ -43,8 +48,7 @@ class DummyStreamWrapper extends LocalStream {
    *
    * Return the HTML URI of a public file.
    */
-  public function getExternalUrl() {
+  function getExternalUrl() {
     return '/dummy/example.txt';
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Ajax\ViewAjaxResponse.
+ */
+
 namespace Drupal\views\Ajax;
 
 use Drupal\Core\Ajax\AjaxResponse;
@@ -32,7 +37,7 @@ class ViewAjaxResponse extends AjaxResponse {
   /**
    * Gets the executed view of this response.
    *
-   * @return \Drupal\views\ViewExecutable
+   * @return \Drupal\views\ViewExecutable $view
    *   The View executed on this ajax request.
    */
   public function getView() {

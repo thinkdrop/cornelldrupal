@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Validation\Plugin\Validation\Constraint\CountConstraint.
+ */
+
 namespace Drupal\Core\Validation\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraints\Count;
@@ -27,5 +32,4 @@ class CountConstraint extends Count {
   public function validatedBy() {
     return '\Symfony\Component\Validator\Constraints\CountValidator';
   }
-
 }

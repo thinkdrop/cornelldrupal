@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\action\ActionListBuilder.
+ */
+
 namespace Drupal\action;
 
 use Drupal\Core\Action\ActionManager;
@@ -86,10 +91,10 @@ class ActionListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header = [
+    $header = array(
       'type' => t('Action type'),
       'label' => t('Label'),
-    ] + parent::buildHeader();
+    ) + parent::buildHeader();
     return $header;
   }
 
@@ -97,7 +102,7 @@ class ActionListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function getDefaultOperations(EntityInterface $entity) {
-    $operations = $entity->isConfigurable() ? parent::getDefaultOperations($entity) : [];
+    $operations = $entity->isConfigurable() ? parent::getDefaultOperations($entity) : array();
     if (isset($operations['edit'])) {
       $operations['edit']['title'] = t('Configure');
     }
@@ -108,10 +113,10 @@ class ActionListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function render() {
-    $build['action_header']['#markup'] = '<h3>' . $this->t('Available actions:') . '</h3>';
+    $build['action_header']['#markup'] = '<h3>' . t('Available actions:') . '</h3>';
     $build['action_table'] = parent::render();
     if (!$this->hasConfigurableActions) {
-      unset($build['action_table']['table']['#header']['operations']);
+      unset($build['action_table']['#header']['operations']);
     }
     $build['action_admin_manage_form'] = \Drupal::formBuilder()->getForm('Drupal\action\Form\ActionAdminManageForm');
     return $build;

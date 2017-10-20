@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\filter_test\Plugin\Filter\FilterTestPlaceholders.
+ */
+
 namespace Drupal\filter_test\Plugin\Filter;
 
 use Drupal\filter\FilterProcessResult;
@@ -38,7 +43,7 @@ class FilterTestPlaceholders extends FilterBase {
    */
   public static function renderDynamicThing($thing) {
     return [
-      '#markup' => format_string('This is a dynamic @thing.', ['@thing' => $thing]),
+      '#markup' => format_string('This is a dynamic @thing.', array('@thing' => $thing)),
     ];
   }
 

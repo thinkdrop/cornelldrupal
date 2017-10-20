@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Plugin\Discovery\TestDerivativeDiscoveryWithObject.
+ */
+
 namespace Drupal\Tests\Core\Plugin\Discovery;
 
 use Drupal\Component\Plugin\Derivative\DeriverInterface;
@@ -26,7 +31,7 @@ class TestDerivativeDiscoveryWithObject implements DeriverInterface {
    * @return array
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
-    $plugins = [];
+    $plugins = array();
     for ($i = 0; $i < 2; $i++) {
       $plugins['test_discovery_' . $i] = $base_plugin_definition;
     }

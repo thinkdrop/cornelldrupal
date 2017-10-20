@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\system\Tests\System\AdminTest.
+ */
+
 namespace Drupal\system\Tests\System;
 
 use Drupal\Core\Menu\MenuTreeParameters;
@@ -31,7 +36,7 @@ class AdminTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['locale'];
+  public static $modules = array('locale');
 
   protected function setUp() {
     // testAdminPages() requires Locale module.
@@ -41,17 +46,17 @@ class AdminTest extends WebTestBase {
     // who can only access administration pages and perform some Locale module
     // administrative tasks, but not all of them.
     $this->adminUser = $this->drupalCreateUser(array_keys(\Drupal::service('user.permissions')->getPermissions()));
-    $this->webUser = $this->drupalCreateUser([
+    $this->webUser = $this->drupalCreateUser(array(
       'access administration pages',
       'translate interface',
-    ]);
+    ));
     $this->drupalLogin($this->adminUser);
   }
 
   /**
    * Tests output on administrative listing pages.
    */
-  public function testAdminPages() {
+  function testAdminPages() {
     // Go to Administration.
     $this->drupalGet('admin');
 
@@ -69,11 +74,11 @@ class AdminTest extends WebTestBase {
     // but no links to its individual sub-configuration pages. Also verify that
     // a user with access to only some Locale module administration pages only
     // sees links to the pages they have access to.
-    $admin_list_pages = [
+    $admin_list_pages = array(
       'admin/index',
       'admin/config',
       'admin/config/regional',
-    ];
+    );
 
     foreach ($admin_list_pages as $page) {
       // For the administrator, verify that there are links to Locale's primary
@@ -125,14 +130,14 @@ class AdminTest extends WebTestBase {
     $parameters = new MenuTreeParameters();
     $parameters->setRoot('system.admin')->excludeRoot()->setTopLevelOnly()->onlyEnabledLinks();
     $tree = $menu_tree->load(NULL, $parameters);
-    $manipulators = [
-      ['callable' => 'menu.default_tree_manipulators:checkAccess'],
-      ['callable' => 'menu.default_tree_manipulators:flatten'],
-    ];
+    $manipulators = array(
+      array('callable' => 'menu.default_tree_manipulators:checkAccess'),
+      array('callable' => 'menu.default_tree_manipulators:flatten'),
+    );
     $tree = $menu_tree->transform($tree, $manipulators);
 
     // Transform the tree to a list of menu links.
-    $menu_links = [];
+    $menu_links = array();
     foreach ($tree as $element) {
       $menu_links[] = $element->link;
     }
@@ -143,7 +148,7 @@ class AdminTest extends WebTestBase {
   /**
    * Test compact mode.
    */
-  public function testCompactMode() {
+  function testCompactMode() {
     // The front page defaults to 'user/login', which redirects to 'user/{user}'
     // for authenticated users. We cannot use '<front>', since this does not
     // match the redirected url.
@@ -151,7 +156,7 @@ class AdminTest extends WebTestBase {
 
     $this->drupalGet('admin/compact/on');
     $this->assertResponse(200, 'A valid page is returned after turning on compact mode.');
-    $this->assertUrl($frontpage_url, [], 'The user is redirected to the front page after turning on compact mode.');
+    $this->assertUrl($frontpage_url, array(), 'The user is redirected to the front page after turning on compact mode.');
     $this->assertTrue($this->cookies['Drupal.visitor.admin_compact_mode']['value'], 'Compact mode turns on.');
     $this->drupalGet('admin/compact/on');
     $this->assertTrue($this->cookies['Drupal.visitor.admin_compact_mode']['value'], 'Compact mode remains on after a repeat call.');
@@ -160,12 +165,11 @@ class AdminTest extends WebTestBase {
 
     $this->drupalGet('admin/compact/off');
     $this->assertResponse(200, 'A valid page is returned after turning off compact mode.');
-    $this->assertUrl($frontpage_url, [], 'The user is redirected to the front page after turning off compact mode.');
+    $this->assertUrl($frontpage_url, array(), 'The user is redirected to the front page after turning off compact mode.');
     $this->assertEqual($this->cookies['Drupal.visitor.admin_compact_mode']['value'], 'deleted', 'Compact mode turns off.');
     $this->drupalGet('admin/compact/off');
     $this->assertEqual($this->cookies['Drupal.visitor.admin_compact_mode']['value'], 'deleted', 'Compact mode remains off after a repeat call.');
     $this->drupalGet('');
     $this->assertTrue($this->cookies['Drupal.visitor.admin_compact_mode']['value'], 'Compact mode persists on new requests.');
   }
-
 }

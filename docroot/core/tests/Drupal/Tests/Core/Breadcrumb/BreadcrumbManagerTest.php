@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Breadcrumb\BreadcrumbManagerTest.
+ */
+
 namespace Drupal\Tests\Core\Breadcrumb;
 
 use Drupal\Core\Breadcrumb\Breadcrumb;
@@ -80,7 +85,7 @@ class BreadcrumbManagerTest extends UnitTestCase {
    */
   public function testBuildWithSingleBuilder() {
     $builder = $this->getMock('Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface');
-    $links = ['<a href="/example">Test</a>'];
+    $links = array('<a href="/example">Test</a>');
     $this->breadcrumb->setLinks($links);
     $this->breadcrumb->addCacheContexts(['foo'])->addCacheTags(['bar']);
 
@@ -95,7 +100,7 @@ class BreadcrumbManagerTest extends UnitTestCase {
     $route_match = $this->getMock('Drupal\Core\Routing\RouteMatchInterface');
     $this->moduleHandler->expects($this->once())
       ->method('alter')
-      ->with('system_breadcrumb', $this->breadcrumb, $route_match, ['builder' => $builder]);
+      ->with('system_breadcrumb', $this->breadcrumb, $route_match, array('builder' => $builder));
 
     $this->breadcrumbManager->addBuilder($builder, 0);
 
@@ -117,7 +122,7 @@ class BreadcrumbManagerTest extends UnitTestCase {
       ->method('build');
 
     $builder2 = $this->getMock('Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface');
-    $links2 = ['<a href="/example2">Test2</a>'];
+    $links2 = array('<a href="/example2">Test2</a>');
     $this->breadcrumb->setLinks($links2);
     $this->breadcrumb->addCacheContexts(['baz'])->addCacheTags(['qux']);
     $builder2->expects($this->once())
@@ -131,7 +136,7 @@ class BreadcrumbManagerTest extends UnitTestCase {
 
     $this->moduleHandler->expects($this->once())
       ->method('alter')
-      ->with('system_breadcrumb', $this->breadcrumb, $route_match, ['builder' => $builder2]);
+      ->with('system_breadcrumb', $this->breadcrumb, $route_match, array('builder' => $builder2));
 
     $this->breadcrumbManager->addBuilder($builder1, 0);
     $this->breadcrumbManager->addBuilder($builder2, 10);
@@ -169,7 +174,7 @@ class BreadcrumbManagerTest extends UnitTestCase {
 
     $this->moduleHandler->expects($this->once())
       ->method('alter')
-      ->with('system_breadcrumb', $this->breadcrumb, $route_match, ['builder' => $builder2]);
+      ->with('system_breadcrumb', $this->breadcrumb, $route_match, array('builder' => $builder2));
 
     $this->breadcrumbManager->addBuilder($builder1, 10);
     $this->breadcrumbManager->addBuilder($builder2, 0);
@@ -183,6 +188,8 @@ class BreadcrumbManagerTest extends UnitTestCase {
 
   /**
    * Tests a breadcrumb builder with a bad return value.
+   *
+   * @expectedException \UnexpectedValueException
    */
   public function testBuildWithInvalidBreadcrumbResult() {
     $builder = $this->getMock('Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface');
@@ -194,7 +201,6 @@ class BreadcrumbManagerTest extends UnitTestCase {
       ->will($this->returnValue('invalid_result'));
 
     $this->breadcrumbManager->addBuilder($builder, 0);
-    $this->setExpectedException(\UnexpectedValueException::class);
     $this->breadcrumbManager->build($this->getMock('Drupal\Core\Routing\RouteMatchInterface'));
   }
 

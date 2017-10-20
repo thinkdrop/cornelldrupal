@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\views\Plugin\views\display\DisplayPluginInterface.
+ */
+
 namespace Drupal\views\Plugin\views\display;
 
 use Drupal\views\ViewExecutable;
@@ -233,7 +238,7 @@ interface DisplayPluginInterface {
    * block display links to a page display, the page display will be returned
    * in both cases.
    *
-   * @return \Drupal\views\Plugin\views\display\DisplayRouterInterface|null
+   * @return \Drupal\views\Plugin\views\display\DisplayRouterInterface|NULL
    */
   public function getRoutedDisplay();
 
@@ -497,7 +502,7 @@ interface DisplayPluginInterface {
    *
    * Also might be used for some other AJAXy reason.
    */
-  public function preview();
+  function preview();
 
   /**
    * Returns the display type that this display requires.
@@ -545,6 +550,7 @@ interface DisplayPluginInterface {
    *
    * @return bool
    *   Returns whether the identifier is unique on all handlers.
+   *
    */
   public function isIdentifierUnique($id, $identifier);
 
@@ -568,7 +574,7 @@ interface DisplayPluginInterface {
    * Renders the exposed form as block.
    *
    * @return string|null
-   *   The rendered exposed form as string or NULL otherwise.
+   *  The rendered exposed form as string or NULL otherwise.
    */
   public function viewExposedFormBlocks();
 

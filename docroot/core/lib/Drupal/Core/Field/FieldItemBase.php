@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\FieldItemBase.
+ */
+
 namespace Drupal\Core\Field;
 
 use Drupal\Core\Entity\EntityInterface;
@@ -23,14 +28,14 @@ abstract class FieldItemBase extends Map implements FieldItemInterface {
    * {@inheritdoc}
    */
   public static function defaultStorageSettings() {
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
   public static function defaultFieldSettings() {
-    return [];
+    return array();
   }
 
   /**
@@ -65,7 +70,7 @@ abstract class FieldItemBase extends Map implements FieldItemInterface {
    * {@inheritdoc}
    */
   public function getLangcode() {
-    return $this->getParent()->getLangcode();
+    return $this->parent->getLangcode();
   }
 
   /**
@@ -106,7 +111,7 @@ abstract class FieldItemBase extends Map implements FieldItemInterface {
     // given.
     if (isset($values) && !is_array($values)) {
       $keys = array_keys($this->definition->getPropertyDefinitions());
-      $values = [$keys[0] => $values];
+      $values = array($keys[0] => $values);
     }
     parent::setValue($values, $notify);
   }
@@ -183,7 +188,7 @@ abstract class FieldItemBase extends Map implements FieldItemInterface {
   /**
    * {@inheritdoc}
    */
-  public function view($display_options = []) {
+  public function view($display_options = array()) {
     $view_builder = \Drupal::entityManager()->getViewBuilder($this->getEntity()->getEntityTypeId());
     return $view_builder->viewFieldItem($this, $display_options);
   }
@@ -217,14 +222,14 @@ abstract class FieldItemBase extends Map implements FieldItemInterface {
    * {@inheritdoc}
    */
   public function storageSettingsForm(array &$form, FormStateInterface $form_state, $has_data) {
-    return [];
+    return array();
   }
 
   /**
    * {@inheritdoc}
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
-    return [];
+    return array();
   }
 
   /**
@@ -259,7 +264,7 @@ abstract class FieldItemBase extends Map implements FieldItemInterface {
    * {@inheritdoc}
    */
   public static function calculateDependencies(FieldDefinitionInterface $field_definition) {
-    return [];
+    return array();
   }
 
   /**

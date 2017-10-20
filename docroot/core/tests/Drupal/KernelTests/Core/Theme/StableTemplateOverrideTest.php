@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\KernelTests\Core\Theme\StableTemplateOverrideTest.
+ */
+
 namespace Drupal\KernelTests\Core\Theme;
 
 use Drupal\Core\Theme\Registry;
@@ -24,7 +29,6 @@ class StableTemplateOverrideTest extends KernelTestBase {
    */
   protected $templatesToSkip = [
     'views-form-views-form',
-    'entity-moderation-form'
   ];
 
   /**
@@ -44,12 +48,13 @@ class StableTemplateOverrideTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  public function setUp() {
     parent::setUp();
     $this->themeHandler = $this->container->get('theme_handler');
 
     $this->container->get('theme_installer')->install(['stable']);
 
+    $this->installSchema('system', 'router');
     $this->installAllModules();
   }
 
@@ -63,9 +68,9 @@ class StableTemplateOverrideTest extends KernelTestBase {
     // Enable all core modules.
     $all_modules = system_rebuild_module_data();
     $all_modules = array_filter($all_modules, function ($module) {
-      // Filter contrib, hidden, experimental, already enabled modules, and
-      // modules in the Testing package.
-      if ($module->origin !== 'core' || !empty($module->info['hidden']) || $module->status == TRUE || $module->info['package'] == 'Testing' || $module->info['package'] == 'Core (Experimental)') {
+      // Filter contrib, hidden, already enabled modules and modules in the
+      // Testing package.
+      if ($module->origin !== 'core' || !empty($module->info['hidden']) || $module->status == TRUE || $module->info['package'] == 'Testing') {
         return FALSE;
       }
       return TRUE;

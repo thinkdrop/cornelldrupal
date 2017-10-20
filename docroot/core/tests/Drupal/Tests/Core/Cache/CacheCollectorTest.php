@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Tests\Core\Cache\CacheCollectorTest.
+ */
+
 namespace Drupal\Tests\Core\Cache;
 
 use Drupal\Core\Cache\Cache;
@@ -114,10 +119,10 @@ class CacheCollectorTest extends UnitTestCase {
     $key = $this->randomMachineName();
     $value = $this->randomMachineName();
 
-    $cache = (object) [
-      'data' => [$key => $value],
+    $cache = (object) array(
+      'data' => array($key => $value),
       'created' => (int) $_SERVER['REQUEST_TIME'],
-    ];
+    );
     $this->cacheBackend->expects($this->once())
       ->method('get')
       ->with($this->cid)
@@ -183,7 +188,7 @@ class CacheCollectorTest extends UnitTestCase {
       ->with($this->cid, FALSE);
     $this->cacheBackend->expects($this->once())
       ->method('set')
-      ->with($this->cid, [$key => $value], Cache::PERMANENT, []);
+      ->with($this->cid, array($key => $value), Cache::PERMANENT, array());
     $this->lock->expects($this->once())
       ->method('release')
       ->with($this->cid . ':Drupal\Core\Cache\CacheCollector');
@@ -222,10 +227,10 @@ class CacheCollectorTest extends UnitTestCase {
     $key = $this->randomMachineName();
     $value = $this->randomMachineName();
 
-    $cache = (object) [
-      'data' => [$key => $value],
+    $cache = (object) array(
+      'data' => array($key => $value),
       'created' => (int) $_SERVER['REQUEST_TIME'],
-    ];
+    );
     $this->cacheBackend->expects($this->at(0))
       ->method('get')
       ->with($this->cid)
@@ -243,10 +248,10 @@ class CacheCollectorTest extends UnitTestCase {
       ->method('acquire')
       ->with($this->cid . ':Drupal\Core\Cache\CacheCollector')
       ->will($this->returnValue(TRUE));
-    $cache = (object) [
-      'data' => [$key => $value],
+    $cache = (object) array(
+      'data' => array($key => $value),
       'created' => (int) $_SERVER['REQUEST_TIME'] + 1,
-    ];
+    );
     $this->cacheBackend->expects($this->at(0))
       ->method('get')
       ->with($this->cid)
@@ -279,17 +284,17 @@ class CacheCollectorTest extends UnitTestCase {
       ->method('acquire')
       ->with($this->cid . ':Drupal\Core\Cache\CacheCollector')
       ->will($this->returnValue(TRUE));
-    $cache = (object) [
-      'data' => ['other key' => 'other value'],
+    $cache = (object) array(
+      'data' => array('other key' => 'other value'),
       'created' => (int) $_SERVER['REQUEST_TIME'] + 1,
-    ];
+    );
     $this->cacheBackend->expects($this->at(0))
       ->method('get')
       ->with($this->cid)
       ->will($this->returnValue($cache));
     $this->cacheBackend->expects($this->once())
       ->method('set')
-      ->with($this->cid, ['other key' => 'other value', $key => $value], Cache::PERMANENT, []);
+      ->with($this->cid, array('other key' => 'other value', $key => $value), Cache::PERMANENT, array());
     $this->lock->expects($this->once())
       ->method('release')
       ->with($this->cid . ':Drupal\Core\Cache\CacheCollector');
@@ -305,10 +310,10 @@ class CacheCollectorTest extends UnitTestCase {
     $key = $this->randomMachineName();
     $value = $this->randomMachineName();
 
-    $cache = (object) [
-      'data' => [$key => $value],
+    $cache = (object) array(
+      'data' => array($key => $value),
       'created' => (int) $_SERVER['REQUEST_TIME'],
-    ];
+    );
     $this->cacheBackend->expects($this->at(0))
       ->method('get')
       ->with($this->cid)
@@ -327,11 +332,10 @@ class CacheCollectorTest extends UnitTestCase {
     // invalidation.
     $this->cacheBackend->expects($this->at(0))
       ->method('get')
-      ->with($this->cid, TRUE)
-      ->will($this->returnValue($cache));
+      ->with($this->cid, TRUE);
     $this->cacheBackend->expects($this->once())
       ->method('set')
-      ->with($this->cid, [], Cache::PERMANENT, []);
+      ->with($this->cid, array(), Cache::PERMANENT, array());
     $this->lock->expects($this->once())
       ->method('release')
       ->with($this->cid . ':Drupal\Core\Cache\CacheCollector');
@@ -393,7 +397,7 @@ class CacheCollectorTest extends UnitTestCase {
   public function testUpdateCacheClearTags() {
     $key = $this->randomMachineName();
     $value = $this->randomMachineName();
-    $tags = [$this->randomMachineName()];
+    $tags = array($this->randomMachineName());
     $this->collector = new CacheCollectorHelper($this->cid, $this->cacheBackend, $this->lock, $tags);
 
     // Set the data and request it.

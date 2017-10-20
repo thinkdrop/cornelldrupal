@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\config_translation\Routing\RouteSubscriber.
+ */
+
 namespace Drupal\config_translation\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
@@ -48,7 +53,7 @@ class RouteSubscriber extends RouteSubscriberBase {
    */
   public static function getSubscribedEvents() {
     // Come after field_ui.
-    $events[RoutingEvents::ALTER] = ['onAlterRoutes', -110];
+    $events[RoutingEvents::ALTER] = array('onAlterRoutes', -110);
     return $events;
   }
 

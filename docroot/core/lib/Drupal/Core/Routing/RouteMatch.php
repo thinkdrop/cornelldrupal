@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Routing\RouteMatch.
+ */
+
 namespace Drupal\Core\Routing;
 
 use Symfony\Cmf\Component\Routing\RouteObjectInterface;
@@ -44,7 +49,7 @@ class RouteMatch implements RouteMatchInterface {
    * Constructs a RouteMatch object.
    *
    * @param string $route_name
-   *   The name of the route.
+   *  The name of the route.
    * @param \Symfony\Component\Routing\Route $route
    *   The route.
    * @param array $parameters
@@ -52,7 +57,7 @@ class RouteMatch implements RouteMatchInterface {
    * @param array $raw_parameters
    *   The raw $parameters array.
    */
-  public function __construct($route_name, Route $route, array $parameters = [], array $raw_parameters = []) {
+  public function __construct($route_name, Route $route, array $parameters = array(), array $raw_parameters = array()) {
     $this->routeName = $route_name;
     $this->route = $route;
 
@@ -77,7 +82,7 @@ class RouteMatch implements RouteMatchInterface {
    */
   public static function createFromRequest(Request $request) {
     if ($request->attributes->get(RouteObjectInterface::ROUTE_OBJECT)) {
-      $raw_variables = [];
+      $raw_variables = array();
       if ($raw = $request->attributes->get('_raw_variables')) {
         $raw_variables = $raw->all();
       }
@@ -141,7 +146,7 @@ class RouteMatch implements RouteMatchInterface {
    *   Route parameter names as both the keys and values.
    */
   protected function getParameterNames() {
-    $names = [];
+    $names = array();
     if ($route = $this->getRouteObject()) {
       // Variables defined in path and host patterns are route parameters.
       $variables = $route->compile()->getVariables();

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Ajax\AlertCommand.
+ */
+
 namespace Drupal\Core\Ajax;
 
 /**
@@ -31,10 +36,10 @@ class AlertCommand implements CommandInterface {
    */
   public function render() {
 
-    return [
+    return array(
       'command' => 'alert',
       'text' => $this->text,
-    ];
+    );
   }
 
 }

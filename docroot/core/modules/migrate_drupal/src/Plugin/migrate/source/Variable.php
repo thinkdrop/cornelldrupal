@@ -1,10 +1,15 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\migrate_drupal\Plugin\migrate\source\Variable.
+ */
+
 namespace Drupal\migrate_drupal\Plugin\migrate\source;
 
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\State\StateInterface;
-use Drupal\migrate\Plugin\MigrationInterface;
+use Drupal\migrate\Entity\MigrationInterface;
 
 /**
  * Drupal variable source from database.
@@ -37,7 +42,7 @@ class Variable extends DrupalSqlBase {
    * {@inheritdoc}
    */
   protected function initializeIterator() {
-    return new \ArrayIterator([$this->values()]);
+    return new \ArrayIterator(array($this->values()));
   }
 
   /**
@@ -75,7 +80,7 @@ class Variable extends DrupalSqlBase {
   public function query() {
     return $this->getDatabase()
       ->select('variable', 'v')
-      ->fields('v', ['name', 'value'])
+      ->fields('v', array('name', 'value'))
       ->condition('name', $this->variables, 'IN');
   }
 

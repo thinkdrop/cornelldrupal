@@ -1,18 +1,17 @@
 <?php
 
-namespace Drupal\taxonomy\Tests;
+/**
+ * @file
+ * Contains \Drupal\taxonomy\Tests\TaxonomyTestBase.
+ */
 
-@trigger_error(__NAMESPACE__ . '\TaxonomyTestBase is deprecated in Drupal 8.4.0 and will be removed before Drupal 9.0.0. Instead, use \Drupal\Tests\taxonomy\Functional\TaxonomyTestBase', E_USER_DEPRECATED);
+namespace Drupal\taxonomy\Tests;
 
 use Drupal\field\Tests\EntityReference\EntityReferenceTestTrait;
 use Drupal\simpletest\WebTestBase;
-use Drupal\Tests\taxonomy\Functional\TaxonomyTestTrait;
 
 /**
  * Provides common helper methods for Taxonomy module tests.
- *
- * @deprecated Scheduled for removal in Drupal 9.0.0.
- *   Use \Drupal\Tests\taxonomy\Functional\TaxonomyTestBase instead.
  */
 abstract class TaxonomyTestBase extends WebTestBase {
 
@@ -24,7 +23,7 @@ abstract class TaxonomyTestBase extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = ['taxonomy', 'block'];
+  public static $modules = array('taxonomy', 'block');
 
   /**
    * {@inheritdoc}
@@ -35,8 +34,7 @@ abstract class TaxonomyTestBase extends WebTestBase {
 
     // Create Basic page and Article node types.
     if ($this->profile != 'standard') {
-      $this->drupalCreateContentType(['type' => 'article', 'name' => 'Article']);
+      $this->drupalCreateContentType(array('type' => 'article', 'name' => 'Article'));
     }
   }
-
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Contains \Drupal\Core\Field\Entity\BaseFieldOverride.
+ */
+
 namespace Drupal\Core\Field\Entity;
 
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -16,8 +21,7 @@ use Drupal\Core\Field\FieldException;
  *   id = "base_field_override",
  *   label = @Translation("Base field override"),
  *   handlers = {
- *     "storage" = "Drupal\Core\Field\BaseFieldOverrideStorage",
- *     "access" = "Drupal\Core\Field\BaseFieldOverrideAccessControlHandler",
+ *     "storage" = "Drupal\Core\Field\BaseFieldOverrideStorage"
  *   },
  *   config_prefix = "base_field_override",
  *   entity_keys = {
