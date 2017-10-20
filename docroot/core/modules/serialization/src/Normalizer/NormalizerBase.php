@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\serialization\Normalizer\NormalizerBase.
- */
-
 namespace Drupal\serialization\Normalizer;
 
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -21,6 +16,13 @@ abstract class NormalizerBase extends SerializerAwareNormalizer implements Norma
    * @var string|array
    */
   protected $supportedInterfaceOrClass;
+
+  /**
+   * List of formats which supports (de-)normalization.
+   *
+   * @var string|string[]
+   */
+  protected $format;
 
   /**
    * {@inheritdoc}
@@ -76,7 +78,7 @@ abstract class NormalizerBase extends SerializerAwareNormalizer implements Norma
       return TRUE;
     }
 
-    return in_array($format, (array) $this->format);
-   }
+    return in_array($format, (array) $this->format, TRUE);
+  }
 
 }

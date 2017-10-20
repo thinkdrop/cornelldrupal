@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\migrate\Plugin\migrate\source\EmptySource.
- */
-
 namespace Drupal\migrate\Plugin\migrate\source;
 
 /**
@@ -22,18 +17,21 @@ class EmptySource extends SourcePluginBase {
    * {@inheritdoc}
    */
   public function fields() {
-    return array(
+    return [
       'id' => t('ID'),
-    );
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function initializeIterator() {
-    return new \ArrayIterator(array(array('id' => '')));
+    return new \ArrayIterator([['id' => '']]);
   }
 
+  /**
+   * Allows class to decide how it will react when it is treated like a string.
+   */
   public function __toString() {
     return '';
   }

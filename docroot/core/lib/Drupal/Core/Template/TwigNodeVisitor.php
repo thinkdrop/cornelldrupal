@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\Core\Template\TwigNodeVisitor.
- */
-
 namespace Drupal\Core\Template;
 
 /**
@@ -40,12 +35,12 @@ class TwigNodeVisitor extends \Twig_BaseNodeVisitor {
       $class = get_class($node);
       $line = $node->getLine();
       return new $class(
-        new \Twig_Node_Expression_Function('render_var', new \Twig_Node(array($node->getNode('expr'))), $line),
+        new \Twig_Node_Expression_Function('render_var', new \Twig_Node([$node->getNode('expr')]), $line),
         $line
       );
     }
     // Change the 'escape' filter to our own 'drupal_escape' filter.
-    else if ($node instanceof \Twig_Node_Expression_Filter) {
+    elseif ($node instanceof \Twig_Node_Expression_Filter) {
       $name = $node->getNode('filter')->getAttribute('value');
       if ('escape' == $name || 'e' == $name) {
         // Use our own escape filter that is SafeMarkup aware.

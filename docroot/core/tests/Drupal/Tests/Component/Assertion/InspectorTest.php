@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Contains \Drupal\Tests\Component\Assertion\InspectorTest.
@@ -6,14 +7,14 @@
 
 namespace Drupal\Tests\Component\Assertion;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Drupal\Component\Assertion\Inspector;
 
 /**
  * @coversDefaultClass \Drupal\Component\Assertion\Inspector
- * @group Inspector
+ * @group Assertion
  */
-class InspectorTest extends PHPUnit_Framework_TestCase {
+class InspectorTest extends TestCase {
 
   /**
    * Tests asserting argument is an array or traversable object.
